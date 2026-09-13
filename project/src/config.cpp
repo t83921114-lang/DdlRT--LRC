@@ -1,6 +1,7 @@
 #include "config.h"
 #include "tinyxml2.h"
 #include <cassert>
+#include <limits>
 
 namespace ECProject
 {
@@ -17,7 +18,7 @@ namespace ECProject
   {
     assert(BlockSize % UnitSize == 0 && "Error: BlockSize must be divisible by UnitSize");
     assert((AppendMode == "REP_MODE" || AppendMode == "UNILRC_MODE" || AppendMode == "CACHED_MODE" || AppendMode == "EQUIOX_MODE") && "Error: AppendMode must be REP_MODE, UNILRC_MODE, or CACHED_MODE");
-    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS") && "Error: CodeType must be UniLRC, AzureLRC, OptimalLRC, or UniformLRC");
+    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS" || CodeType == "DdlRT_LRC") && "Error: unsupported CodeType");
     assert(DatanodeNumPerCluster > 0 && "Error: DatanodeNumPerCluster must be greater than 0");
     assert(ClusterNum > 0 && "Error: ClusterNum must be greater than 0");
     if (CodeType == "UniLRC")
@@ -47,6 +48,14 @@ namespace ECProject
       assert(DatanodeNumPerCluster >= 1 && "Error: DatanodeNumPerCluster must be >= 1 for RS code");
 
       assert(ClusterNum * DatanodeNumPerCluster >= n && "Error: ClusterNum * DatanodeNumPerCluster must be >= (k + r) for RS code");
+    }
+    if (CodeType == "DdlRT_LRC")
+    {
+      assert(k > 0 && r >= 1 && z >= 1 && "Error: DdlRT_LRC requires k > 0, r >= 1, and z >= 1");
+      assert(k % z == 0 && "Error: DdlRT_LRC requires k to be divisible by z");
+      assert(ClusterNum == 17 && "Error: DdlRT_LRC currently requires exactly 17 clusters");
+      assert(DatanodeNumPerCluster >= std::max(r + z, r + 1) && "Error: not enough datanodes for DdlRT_LRC rack capacity");
+      assert(get_ddlrt_lrc_racks(0) <= ClusterNum && "Error: one DdlRT_LRC stripe does not fit in the configured clusters");
     }
   }
 
@@ -119,8 +128,13 @@ namespace ECProject
       CoordinatorPort = std::stoi(elem->GetText());
     if (auto elem = root->FirstChildElement("AppendMode"))
       AppendMode = std::string(elem->GetText());
-    N = get_N(); // 获得N
-    get_num_arry();
+    if (CodeType == "DdlRT_LRC")
+      init_ddlrt_lrc_merge_parameters();
+    else
+    {
+      N = get_N(); // 获得N
+      get_num_arry();
+    }
   }
 
   void Config::printConfigs() const
@@ -141,7 +155,48 @@ namespace ECProject
     std::cout << "  CoordinatorPort: " << CoordinatorPort << std::endl;
     std::cout << "  AppendMode: " << AppendMode << std::endl;
     std::cout << "  CodeType: " << CodeType << std::endl;
+    if (CodeType == "DdlRT_LRC")
+    {
+      std::cout << "  DdlRT_LRC merge rounds: " << N << std::endl;
+      std::cout << "  DdlRT_LRC S:";
+      for (int value : ddlrt_lrc_s) std::cout << " " << value;
+      std::cout << std::endl;
+    }
   }
+  int Config::get_ddlrt_lrc_racks(int level) const
+  {
+    if (level < 0 || k <= 0 || r < 0 || z <= 0 || k % z != 0) return ClusterNum + 1;
+    const long long stripes = 1LL << level;
+    const long long data_per_local_group = stripes * static_cast<long long>(k / z);
+    const long long data_racks_per_group =
+        (data_per_local_group + (r + 1) - 1) / (r + 1);
+    const long long racks = data_racks_per_group * z + 1;
+    return racks > std::numeric_limits<int>::max()
+               ? std::numeric_limits<int>::max()
+               : static_cast<int>(racks);
+  }
+
+  void Config::init_ddlrt_lrc_merge_parameters()
+  {
+    N = 0;
+    num_arry.clear();
+    ddlrt_lrc_s.clear();
+    if (k <= 0 || r < 1 || z < 1 || k % z != 0 || ClusterNum <= 0) return;
+
+    int previous_racks = get_ddlrt_lrc_racks(0);
+    for (int level = 1; level < 31; ++level)
+    {
+      const int current_racks = get_ddlrt_lrc_racks(level);
+      const int shared_racks = 2 * previous_racks - current_racks;
+      if (current_racks > ClusterNum ||
+          (shared_racks != 1 && shared_racks != 1 + z))
+        break;
+      ddlrt_lrc_s.push_back(shared_racks);
+      N = level;
+      previous_racks = current_racks;
+    }
+  }
+
   int Config::get_N()
   {
     // Find the maximum N such that ceil(((2^N * k) + r) / r) fits in ClusterNum.

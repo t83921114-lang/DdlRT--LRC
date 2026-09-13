@@ -39,6 +39,8 @@ namespace ECProject
     char block_type;
     int block_size;
     int map2group, map2stripe, map2cluster, map2node;
+    int logical_rack_col = -1;
+    int logical_node_col = -1;
     // belong to which client
     std::string map2key;
     Block(int block_id, const std::string block_key, char block_type, int block_size, int map2group,
@@ -86,6 +88,9 @@ namespace ECProject
     int oa1_row_idx = -1;
     std::vector<int> oa1_used_cols;
     int oa2_row_idx = -1;
+    int batch_id = -1;
+    int batch_pos = -1;
+    std::vector<int> ddlrt_lrc_s;
   } Stripe;
 
   typedef struct ObjectInfo

@@ -15,6 +15,8 @@ namespace ECProject
     Config(const std::string &configPath);
     int get_N();
     void get_num_arry();
+    int get_ddlrt_lrc_racks(int level) const;
+    void init_ddlrt_lrc_merge_parameters();
   public:
     static Config *getInstance(const std::string &configPath);
 
@@ -35,6 +37,7 @@ namespace ECProject
     int ClusterNum = 0;
     int N=0;
     std::vector<int> num_arry;
+    std::vector<int> ddlrt_lrc_s;
     std::string CoordinatorIP = "0.0.0.0";
     int CoordinatorPort = 55555;
     std::string AppendMode = "EQUIOX_MODE";

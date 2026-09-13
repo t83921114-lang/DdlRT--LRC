@@ -397,7 +397,23 @@ namespace ECProject
   std::vector<int> Client::get_data_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> data_block_num_per_group;
-    if (code_type == "AzureLRC")
+    if (code_type == "DdlRT_LRC")
+    {
+      int data_per_local_group = k / z;
+      int rack_capacity = r + 1;
+      for (int local_group = 0; local_group < z; ++local_group)
+      {
+        int remaining = data_per_local_group;
+        while (remaining > 0)
+        {
+          int load = std::min(remaining, rack_capacity);
+          data_block_num_per_group.push_back(load);
+          remaining -= load;
+        }
+      }
+      data_block_num_per_group.push_back(0);
+    }
+    else if (code_type == "AzureLRC")
     {
       for (int i = 0; i < z; i++)
       {
@@ -500,7 +516,14 @@ namespace ECProject
   std::vector<int> Client::get_global_parity_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> global_pairty_block_num_per_group;
-    if (code_type == "AzureLRC")
+    if (code_type == "DdlRT_LRC")
+    {
+      int groups = z * ((k / z + r) / (r + 1));
+      for (int i = 0; i < groups; ++i)
+        global_pairty_block_num_per_group.push_back(0);
+      global_pairty_block_num_per_group.push_back(r);
+    }
+    else if (code_type == "AzureLRC")
     {
       for (int i = 0; i < z; i++)
       {
@@ -582,7 +605,14 @@ namespace ECProject
   std::vector<int> Client::get_local_parity_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> local_parity_block_num_per_group;
-    if (code_type == "AzureLRC")
+    if (code_type == "DdlRT_LRC")
+    {
+      int groups = z * ((k / z + r) / (r + 1));
+      for (int i = 0; i < groups; ++i)
+        local_parity_block_num_per_group.push_back(0);
+      local_parity_block_num_per_group.push_back(z);
+    }
+    else if (code_type == "AzureLRC")
     {
       for (int i = 0; i < z; i++)
       {
@@ -752,7 +782,7 @@ namespace ECProject
       std::unique_ptr<bool[]> if_commit_arr(new bool[reply.append_keys_size()]);
       std::fill_n(if_commit_arr.get(), reply.append_keys_size(), false);
 
-      assert(m_sys_config->CodeType == "UniLRC" || m_sys_config->CodeType == "OptimalLRC" || m_sys_config->CodeType == "UniformLRC" || m_sys_config->CodeType == "AzureLRC" || m_sys_config->CodeType == "RS");
+      assert(m_sys_config->CodeType == "UniLRC" || m_sys_config->CodeType == "OptimalLRC" || m_sys_config->CodeType == "UniformLRC" || m_sys_config->CodeType == "AzureLRC" || m_sys_config->CodeType == "RS" || m_sys_config->CodeType == "DdlRT_LRC");
       std::vector<int> data_block_num_per_group;
       std::vector<int> global_parity_block_num_per_group;
       std::vector<int> local_parity_block_num_per_group;
@@ -788,9 +818,9 @@ namespace ECProject
         //ECProject::encode_uniform_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(global_parity_ptr_array.data()), reinterpret_cast<unsigned char **>(local_parity_ptr_array.data()), m_sys_config->BlockSize);
         ECProject::encode_uniform_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(parity_ptr_array.data()), m_sys_config->BlockSize);
       }
-      else if (m_sys_config->CodeType == "AzureLRC")
+      else if (m_sys_config->CodeType == "AzureLRC" ||
+               m_sys_config->CodeType == "DdlRT_LRC")
       {
-        //ECProject::encode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(global_parity_ptr_array.data()), reinterpret_cast<unsigned char **>(local_parity_ptr_array.data()), m_sys_config->BlockSize);
         ECProject::encode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(parity_ptr_array.data()), m_sys_config->BlockSize);
       }
       else if (m_sys_config->CodeType == "RS")
@@ -1431,6 +1461,10 @@ namespace ECProject
     else if(m_sys_config->CodeType == "RS")
     {
       parameters.push_back(4);
+    }
+    else if(m_sys_config->CodeType == "DdlRT_LRC")
+    {
+      parameters.push_back(5);
     }
     else
     {

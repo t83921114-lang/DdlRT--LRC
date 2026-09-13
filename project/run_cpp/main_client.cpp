@@ -62,6 +62,9 @@ int main(int argc, char **argv)
     else if(parameters[4] == 4){
         code_type = "RS";
     }
+    else if(parameters[4] == 5){
+        code_type = "DdlRT_LRC";
+    }
     else{
         std::cout << "Code type error" << std::endl;
         return -1;
@@ -71,7 +74,7 @@ int main(int argc, char **argv)
 
 
     
-    int stripe_num = 1; // stripe number
+    int stripe_num = 8; // stripe number
     size_t total_write_size = static_cast<size_t>(stripe_num * block_size * n); // MB, for calculating throughput
     std::cout << "Starting set stripe operation" << std::endl;
     std::chrono::high_resolution_clock::time_point set_start = std::chrono::high_resolution_clock::now();

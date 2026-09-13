@@ -189,6 +189,235 @@ grpc::Status CoordinatorImpl::uploadOriginKeyValue(
   return grpc::Status::OK;
 }
 
+void CoordinatorImpl::initialize_ddlrt_lrc_stripe_placement(Stripe *stripe) {
+  const int k = stripe->k;
+  const int r = stripe->r;
+  const int z = stripe->z;
+  const int merge_rounds = m_sys_config->N;
+  const int batch_size = 1 << merge_rounds;
+  const int batch_id = stripe->stripe_id / batch_size;
+  const int batch_pos = stripe->stripe_id % batch_size;
+  const int data_per_local_group = k / z;
+  const int rack_capacity = r + 1;
+  const int racks_per_local_group =
+      (data_per_local_group + rack_capacity - 1) / rack_capacity;
+  const int tail_load =
+      data_per_local_group - (racks_per_local_group - 1) * rack_capacity;
+
+  std::vector<std::vector<int>> oa_rack = Get_OA_Information("OA_1.txt");
+  std::vector<std::vector<int>> oa_node = Get_OA_Information("OA_2.txt");
+  auto validate_oa = [](const std::vector<std::vector<int>> &table,
+                        int width, const char *name) {
+    if (table.empty())
+      throw std::runtime_error(std::string(name) + " is empty");
+    for (size_t row_index = 0; row_index < table.size(); ++row_index) {
+      if (static_cast<int>(table[row_index].size()) < width)
+        throw std::runtime_error(std::string(name) + " row " +
+                                 std::to_string(row_index) + " has fewer than " +
+                                 std::to_string(width) + " columns");
+      std::vector<bool> seen(static_cast<size_t>(width + 1), false);
+      for (int col = 0; col < width; ++col) {
+        int value = table[row_index][col];
+        if (value < 1 || value > width || seen[value])
+          throw std::runtime_error(std::string(name) + " row " +
+                                   std::to_string(row_index) +
+                                   " is not a permutation of 1.." +
+                                   std::to_string(width));
+        seen[value] = true;
+      }
+    }
+  };
+  validate_oa(oa_rack, 17, "OA_1.txt");
+  validate_oa(oa_node, m_sys_config->DatanodeNumPerCluster, "OA_2.txt");
+
+  const long long oa_cycle =
+      static_cast<long long>(oa_rack.size()) * oa_node.size();
+  const long long cycle = batch_id % oa_cycle;
+  const int rack_row = static_cast<int>(cycle / oa_node.size());
+  const int node_row = static_cast<int>(cycle % oa_node.size());
+
+  // Union-find encodes which per-stripe local-group tail racks share a logical rack.
+  const int tail_count = batch_size * z;
+  std::vector<int> parent(static_cast<size_t>(tail_count));
+  std::iota(parent.begin(), parent.end(), 0);
+  auto find_root = [&parent](int value) {
+    int root = value;
+    while (parent[root] != root) root = parent[root];
+    while (parent[value] != value) {
+      int next = parent[value];
+      parent[value] = root;
+      value = next;
+    }
+    return root;
+  };
+  auto unite = [&parent, &find_root](int left, int right) {
+    left = find_root(left);
+    right = find_root(right);
+    if (left != right) parent[right] = left;
+  };
+
+  std::vector<std::vector<int>> super_tail(
+      static_cast<size_t>(batch_size), std::vector<int>(static_cast<size_t>(z)));
+  for (int pos = 0; pos < batch_size; ++pos)
+    for (int local_group = 0; local_group < z; ++local_group)
+      super_tail[pos][local_group] = pos * z + local_group;
+
+  int super_count = batch_size;
+  for (int level = 1; level <= merge_rounds; ++level) {
+    std::vector<std::vector<int>> next(
+        static_cast<size_t>(super_count / 2),
+        std::vector<int>(static_cast<size_t>(z)));
+    const bool share_tails =
+        m_sys_config->ddlrt_lrc_s.at(static_cast<size_t>(level - 1)) == 1 + z;
+    for (int pair = 0; pair < super_count / 2; ++pair) {
+      for (int local_group = 0; local_group < z; ++local_group) {
+        int left = super_tail[2 * pair][local_group];
+        int right = super_tail[2 * pair + 1][local_group];
+        if (share_tails) unite(left, right);
+        // The rightmost tail is the tail of the combined super-stripe.
+        next[pair][local_group] = right;
+      }
+    }
+    super_tail.swap(next);
+    super_count /= 2;
+  }
+
+  std::map<int, int> tail_root_to_col;
+  int next_logical_col = 2;
+  for (int pos = 0; pos < batch_size; ++pos) {
+    for (int local_group = 0; local_group < z; ++local_group) {
+      int root = find_root(pos * z + local_group);
+      if (!tail_root_to_col.count(root))
+        tail_root_to_col[root] = next_logical_col++;
+    }
+  }
+
+  std::vector<std::vector<std::vector<int>>> full_rack_cols(
+      static_cast<size_t>(batch_size),
+      std::vector<std::vector<int>>(static_cast<size_t>(z)));
+  for (int pos = 0; pos < batch_size; ++pos)
+    for (int local_group = 0; local_group < z; ++local_group)
+      for (int rack = 0; rack < racks_per_local_group - 1; ++rack)
+        full_rack_cols[pos][local_group].push_back(next_logical_col++);
+
+  const int logical_rack_count = next_logical_col - 1;
+  if (logical_rack_count > 17)
+    throw std::runtime_error("DdlRT_LRC logical layout needs " +
+                             std::to_string(logical_rack_count) +
+                             " racks, but only 17 are available");
+
+  stripe->batch_id = batch_id;
+  stripe->batch_pos = batch_pos;
+  stripe->N = merge_rounds;
+  stripe->ddlrt_lrc_s = m_sys_config->ddlrt_lrc_s;
+  stripe->oa1_row_idx = rack_row;
+  stripe->oa2_row_idx = node_row;
+  stripe->oa1_used_cols.clear();
+  stripe->group_to_blocks.clear();
+  stripe->blocks.clear();
+  stripe->place2clusters.clear();
+
+  auto physical_cluster = [&](int logical_rack_col) {
+    return oa_rack[rack_row][logical_rack_col - 1] - 1;
+  };
+  auto physical_node = [&](int cluster_id, int logical_node_col) {
+    int node_index = oa_node[node_row][logical_node_col - 1] - 1;
+    const std::vector<int> &nodes = m_cluster_table.at(cluster_id).nodes;
+    if (node_index < 0 || node_index >= static_cast<int>(nodes.size()))
+      throw std::runtime_error("OA_2 maps outside the configured cluster nodes");
+    return nodes[node_index];
+  };
+
+  Block *blocks_info = new Block[stripe->n];
+  int placement_group = 0;
+  int data_block_id = 0;
+  for (int local_group = 0; local_group < z; ++local_group) {
+    for (int rack = 0; rack < racks_per_local_group; ++rack) {
+      const bool is_tail = rack == racks_per_local_group - 1;
+      const int logical_rack_col = is_tail
+          ? tail_root_to_col.at(find_root(batch_pos * z + local_group))
+          : full_rack_cols[batch_pos][local_group][rack];
+      const int load = is_tail ? tail_load : rack_capacity;
+      int node_offset = 0;
+      if (is_tail) {
+        int root = find_root(batch_pos * z + local_group);
+        for (int previous_pos = 0; previous_pos < batch_pos; ++previous_pos)
+          if (find_root(previous_pos * z + local_group) == root)
+            node_offset += tail_load;
+      }
+      if (node_offset + load > rack_capacity)
+        throw std::runtime_error("DdlRT_LRC shared tail rack exceeds r+1 nodes");
+
+      const int cluster_id = physical_cluster(logical_rack_col);
+      stripe->oa1_used_cols.push_back(logical_rack_col - 1);
+      for (int index = 0; index < load; ++index) {
+        Block &block = blocks_info[data_block_id];
+        block.block_id = data_block_id;
+        block.block_key = std::to_string(stripe->stripe_id) +
+                          (data_block_id < 10 ? "_D0" : "_D") +
+                          std::to_string(data_block_id);
+        block.block_type = 'D';
+        block.block_size = m_sys_config->BlockSize;
+        block.map2group = placement_group;
+        block.map2stripe = stripe->stripe_id;
+        block.map2cluster = cluster_id;
+        block.logical_rack_col = logical_rack_col;
+        block.logical_node_col = node_offset + index + 1;
+        block.map2node = physical_node(cluster_id, block.logical_node_col);
+        block.map2key = stripe->object_keys[0];
+        update_stripe_info_in_node(block.map2node, stripe->stripe_id, block.block_id);
+        m_cluster_table[cluster_id].blocks.push_back(&block);
+        m_cluster_table[cluster_id].stripes.insert(stripe->stripe_id);
+        stripe->blocks.push_back(&block);
+        stripe->place2clusters.insert(cluster_id);
+        add_to_map(stripe->group_to_blocks, placement_group, block.block_id);
+        ++data_block_id;
+      }
+      ++placement_group;
+    }
+  }
+
+  const int parity_cluster = physical_cluster(1);
+  stripe->oa1_used_cols.push_back(0);
+  for (int parity_index = 0; parity_index < r + z; ++parity_index) {
+    const int block_id = k + parity_index;
+    Block &block = blocks_info[block_id];
+    const bool is_global = parity_index < r;
+    const int parity_id = is_global ? parity_index : parity_index - r;
+    block.block_id = block_id;
+    block.block_key = std::to_string(stripe->stripe_id) +
+                      (is_global ? (parity_id < 10 ? "_G0" : "_G")
+                                 : (parity_id < 10 ? "_L0" : "_L")) +
+                      std::to_string(parity_id);
+    block.block_type = is_global ? 'G' : 'L';
+    block.block_size = m_sys_config->BlockSize;
+    block.map2group = placement_group;
+    block.map2stripe = stripe->stripe_id;
+    block.map2cluster = parity_cluster;
+    block.logical_rack_col = 1;
+    block.logical_node_col = parity_index + 1;
+    block.map2node = physical_node(parity_cluster, block.logical_node_col);
+    block.map2key = stripe->object_keys[0];
+    update_stripe_info_in_node(block.map2node, stripe->stripe_id, block.block_id);
+    m_cluster_table[parity_cluster].blocks.push_back(&block);
+    m_cluster_table[parity_cluster].stripes.insert(stripe->stripe_id);
+    stripe->blocks.push_back(&block);
+    stripe->place2clusters.insert(parity_cluster);
+    add_to_map(stripe->group_to_blocks, placement_group, block.block_id);
+  }
+
+  std::sort(stripe->oa1_used_cols.begin(), stripe->oa1_used_cols.end());
+  stripe->oa1_used_cols.erase(
+      std::unique(stripe->oa1_used_cols.begin(), stripe->oa1_used_cols.end()),
+      stripe->oa1_used_cols.end());
+  stripe->num_groups = placement_group + 1;
+
+  std::cout << "[DdlRT_LRC] stripe=" << stripe->stripe_id
+            << " batch=" << batch_id << " pos=" << batch_pos
+            << " OA1_row=" << rack_row << " OA2_row=" << node_row
+            << " logical_racks=" << logical_rack_count << std::endl;
+}
+
 void CoordinatorImpl::initialize_optimal_lrc_stripe_placement(Stripe *stripe) {
   // range 0~k-1: data blocks
   // range k~k+r-1: global parity blocks
@@ -1321,10 +1550,10 @@ grpc::Status CoordinatorImpl::uploadSetValue(
   }
   if (code_type != "UniLRC" && code_type != "AzureLRC" &&
       code_type != "OptimalLRC" && code_type != "UniformLRC" &&
-      code_type != "RS") {
+      code_type != "RS" && code_type != "DdlRT_LRC") {
     return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
                         "code type must be UniLRC, AzureLRC, OptimalLRC, "
-                        "UniformLRC, or RS; got: " + code_type);
+                        "UniformLRC, RS, or DdlRT_LRC; got: " + code_type);
   }
 
   try {
@@ -1337,7 +1566,9 @@ grpc::Status CoordinatorImpl::uploadSetValue(
     t_stripe.N = m_sys_config->N;
     t_stripe.num_arry = m_sys_config->num_arry;
     t_stripe.object_keys.push_back(clientID);
-    if (code_type == "UniLRC" || code_type == "AzureLRC") {
+    if (code_type == "DdlRT_LRC") {
+      initialize_ddlrt_lrc_stripe_placement(&t_stripe);
+    } else if (code_type == "UniLRC" || code_type == "AzureLRC") {
       initialize_unilrc_and_azurelrc_stripe_placement(&t_stripe);
     } else if (code_type == "OptimalLRC") {
       initialize_optimal_lrc_stripe_placement(&t_stripe);
