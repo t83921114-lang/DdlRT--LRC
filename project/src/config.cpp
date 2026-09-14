@@ -18,7 +18,7 @@ namespace ECProject
   {
     assert(BlockSize % UnitSize == 0 && "Error: BlockSize must be divisible by UnitSize");
     assert((AppendMode == "REP_MODE" || AppendMode == "UNILRC_MODE" || AppendMode == "CACHED_MODE" || AppendMode == "EQUIOX_MODE") && "Error: AppendMode must be REP_MODE, UNILRC_MODE, or CACHED_MODE");
-    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS" || CodeType == "DdlRT_LRC") && "Error: unsupported CodeType");
+    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS" || CodeType == "DdlRT_LRC" || CodeType == "ClusterRT_LRC") && "Error: unsupported CodeType");
     assert(DatanodeNumPerCluster > 0 && "Error: DatanodeNumPerCluster must be greater than 0");
     assert(ClusterNum > 0 && "Error: ClusterNum must be greater than 0");
     if (CodeType == "UniLRC")
@@ -57,6 +57,15 @@ namespace ECProject
       assert(DatanodeNumPerCluster >= std::max(r + z, r + 1) && "Error: not enough datanodes for DdlRT_LRC rack capacity");
       assert(get_ddlrt_lrc_racks(0) <= ClusterNum && "Error: one DdlRT_LRC stripe does not fit in the configured clusters");
     }
+    if (CodeType == "ClusterRT_LRC")
+    {
+      assert(k > 0 && r >= 1 && z >= 1 && "Error: ClusterRT_LRC requires k > 0, r >= 1, and z >= 1");
+      assert(k % z == 0 && "Error: ClusterRT_LRC requires k to be divisible by z");
+      assert(DatanodeNumPerCluster >= std::max(r + z, r + 1) && "Error: not enough datanodes for ClusterRT_LRC placement");
+      const int data_groups = z * static_cast<int>(std::ceil(
+          static_cast<double>(k / z) / static_cast<double>(r + 1)));
+      assert(ClusterNum >= 1 + data_groups && "Error: not enough clusters for ClusterRT_LRC placement");
+    }
   }
 
   Config *Config::getInstance(const std::string &configPath)
@@ -92,6 +101,8 @@ namespace ECProject
       BlockSize = std::stoi(elem->GetText());
     if (auto elem = root->FirstChildElement("z"))
       z = std::stoi(elem->GetText());
+    if (auto elem = root->FirstChildElement("PlacementSeed"))
+      PlacementSeed = static_cast<unsigned int>(std::stoul(elem->GetText()));
     if (auto elem = root->FirstChildElement("CodeType"))
       CodeType = std::string(elem->GetText());
     if (CodeType == "UniLRC")
@@ -143,6 +154,7 @@ namespace ECProject
     std::cout << "  AlignedSize: " << AlignedSize << " bytes" << std::endl;
     std::cout << "  UnitSize: " << UnitSize << " bytes" << std::endl;
     std::cout << "  BlockSize: " << BlockSize << " bytes" << std::endl;
+    std::cout << "  PlacementSeed: " << PlacementSeed << std::endl;
     std::cout << "  alpha: " << (int)alpha << std::endl;
     std::cout << "  z: " << (int)z << std::endl;
     std::cout << "  n: " << n << std::endl;

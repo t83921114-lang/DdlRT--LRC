@@ -957,6 +957,117 @@ void CoordinatorImpl::initialize_equiox_stripe_placement(Stripe *stripe) {
   stripe->num_groups = stripe->group_to_blocks.size();
 }
 
+void CoordinatorImpl::initialize_cluster_rt_lrc_stripe_placement(Stripe *stripe) {
+  assert(m_sys_config->CodeType == "ClusterRT_LRC");
+  assert(stripe->z > 0 && stripe->k % stripe->z == 0);
+  assert(stripe->n == stripe->k + stripe->r + stripe->z);
+  assert(stripe->object_keys.size() == 1);
+
+  const int k = stripe->k;
+  const int r = stripe->r;
+  const int z = stripe->z;
+  const int data_per_local_group = k / z;
+  const int rack_capacity = r + 1;
+  const int racks_per_local_group =
+      (data_per_local_group + rack_capacity - 1) / rack_capacity;
+  const int data_group_count = z * racks_per_local_group;
+  const int parity_cluster = stripe->stripe_id % m_sys_config->ClusterNum;
+
+  std::vector<int> data_clusters;
+  data_clusters.reserve(static_cast<size_t>(m_sys_config->ClusterNum - 1));
+  for (int cluster_id = 0; cluster_id < m_sys_config->ClusterNum; ++cluster_id) {
+    if (cluster_id != parity_cluster) data_clusters.push_back(cluster_id);
+  }
+  if (static_cast<int>(data_clusters.size()) < data_group_count)
+    throw std::runtime_error("ClusterRT_LRC does not have enough distinct data racks");
+
+  std::seed_seq seed{
+      m_sys_config->PlacementSeed,
+      static_cast<unsigned int>(stripe->stripe_id),
+      static_cast<unsigned int>(k),
+      static_cast<unsigned int>(r),
+      static_cast<unsigned int>(z),
+      static_cast<unsigned int>(m_sys_config->ClusterNum),
+      static_cast<unsigned int>(m_sys_config->DatanodeNumPerCluster)};
+  std::mt19937 rng(seed);
+  std::shuffle(data_clusters.begin(), data_clusters.end(), rng);
+  data_clusters.resize(static_cast<size_t>(data_group_count));
+
+  stripe->group_to_blocks.clear();
+  stripe->blocks.clear();
+  stripe->place2clusters.clear();
+  Block *blocks_info = new Block[stripe->n];
+
+  auto shuffled_nodes = [&](int cluster_id, int required) {
+    std::vector<int> nodes = m_cluster_table.at(cluster_id).nodes;
+    if (static_cast<int>(nodes.size()) < required)
+      throw std::runtime_error("ClusterRT_LRC rack does not have enough distinct nodes");
+    std::shuffle(nodes.begin(), nodes.end(), rng);
+    nodes.resize(static_cast<size_t>(required));
+    return nodes;
+  };
+  auto place_block = [&](int block_id, char block_type, int group_id,
+                         int local_group, int cluster_id, int node_id,
+                         int type_index) {
+    Block &block = blocks_info[block_id];
+    block.block_id = block_id;
+    const char *prefix = block_type == 'D' ? "_D" : (block_type == 'G' ? "_G" : "_L");
+    block.block_key = std::to_string(stripe->stripe_id) + prefix +
+                      (type_index < 10 ? "0" : "") + std::to_string(type_index);
+    block.block_type = block_type;
+    block.block_size = m_sys_config->BlockSize;
+    block.map2group = group_id;
+    block.map2stripe = stripe->stripe_id;
+    block.map2cluster = cluster_id;
+    block.map2node = node_id;
+    block.local_group = local_group;
+    block.source_stripe = stripe->stripe_id;
+    block.map2key = stripe->object_keys[0];
+    update_stripe_info_in_node(node_id, stripe->stripe_id, block_id);
+    m_cluster_table[cluster_id].blocks.push_back(&block);
+    m_cluster_table[cluster_id].stripes.insert(stripe->stripe_id);
+    stripe->blocks.push_back(&block);
+    stripe->place2clusters.insert(cluster_id);
+    add_to_map(stripe->group_to_blocks, group_id, block_id);
+  };
+
+  int group_id = 0;
+  for (int local_group = 0; local_group < z; ++local_group) {
+    int next_data_id = local_group * data_per_local_group;
+    int remaining = data_per_local_group;
+    for (int rack = 0; rack < racks_per_local_group; ++rack) {
+      const int load = std::min(remaining, rack_capacity);
+      const int cluster_id = data_clusters.at(static_cast<size_t>(group_id));
+      std::vector<int> nodes = shuffled_nodes(cluster_id, load);
+      for (int index = 0; index < load; ++index) {
+        const int data_id = next_data_id++;
+        place_block(data_id, 'D', group_id, local_group, cluster_id,
+                    nodes[static_cast<size_t>(index)], data_id);
+      }
+      remaining -= load;
+      ++group_id;
+    }
+  }
+
+  const int parity_group = group_id;
+  std::vector<int> parity_nodes = shuffled_nodes(parity_cluster, r + z);
+  for (int parity_index = 0; parity_index < r; ++parity_index) {
+    place_block(k + parity_index, 'G', parity_group, -1, parity_cluster,
+                parity_nodes[static_cast<size_t>(parity_index)], parity_index);
+  }
+  for (int local_parity = 0; local_parity < z; ++local_parity) {
+    place_block(k + r + local_parity, 'L', parity_group, local_parity,
+                parity_cluster, parity_nodes[static_cast<size_t>(r + local_parity)],
+                local_parity);
+  }
+  stripe->num_groups = data_group_count + 1;
+
+  std::cout << "[ClusterRT_LRC] stripe=" << stripe->stripe_id
+            << " parity_rack=" << parity_cluster
+            << " data_racks=" << data_group_count
+            << " seed=" << m_sys_config->PlacementSeed << std::endl;
+}
+
 void CoordinatorImpl::initialize_cluster_rt_stripe_placement(Stripe *stripe) {
   // Cluster RT (RS encoding only):
   // - parity blocks (k..k+r-1) all live in a single parity_cluster and are placed
@@ -1554,10 +1665,11 @@ grpc::Status CoordinatorImpl::uploadSetValue(
   }
   if (code_type != "UniLRC" && code_type != "AzureLRC" &&
       code_type != "OptimalLRC" && code_type != "UniformLRC" &&
-      code_type != "RS" && code_type != "DdlRT_LRC") {
+      code_type != "RS" && code_type != "DdlRT_LRC" &&
+      code_type != "ClusterRT_LRC") {
     return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
                         "code type must be UniLRC, AzureLRC, OptimalLRC, "
-                        "UniformLRC, RS, or DdlRT_LRC; got: " + code_type);
+                        "UniformLRC, RS, DdlRT_LRC, or ClusterRT_LRC; got: " + code_type);
   }
 
   try {
@@ -1572,6 +1684,8 @@ grpc::Status CoordinatorImpl::uploadSetValue(
     t_stripe.object_keys.push_back(clientID);
     if (code_type == "DdlRT_LRC") {
       initialize_ddlrt_lrc_stripe_placement(&t_stripe);
+    } else if (code_type == "ClusterRT_LRC") {
+      initialize_cluster_rt_lrc_stripe_placement(&t_stripe);
     } else if (code_type == "UniLRC" || code_type == "AzureLRC") {
       initialize_unilrc_and_azurelrc_stripe_placement(&t_stripe);
     } else if (code_type == "OptimalLRC") {
@@ -5784,6 +5898,11 @@ grpc::Status CoordinatorImpl::mergeStripes(
     coordinator_proto::MergeReply *reply) {
   if (m_sys_config->CodeType == "DdlRT_LRC")
     return mergeStripesDdlrtLrc(context, request, reply);
+  if (m_sys_config->CodeType == "ClusterRT_LRC") {
+    reply->set_success(false);
+    return grpc::Status(grpc::StatusCode::UNIMPLEMENTED,
+                        "ClusterRT_LRC merge is not implemented");
+  }
   (void)context;
 
   int stripe_id_a = request->stripe_id_a();
