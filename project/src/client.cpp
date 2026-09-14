@@ -1550,6 +1550,10 @@ namespace ECProject
     }
 
     // Merge consecutive pairs in bounded batches so network transfers can overlap.
+    if (m_sys_config->CodeType == "DdlRT_LRC" && stripe_ids.size() % 2 != 0) {
+      std::cout << "[Client] DdlRT_LRC merge requires an even number of stripes" << std::endl;
+      return;
+    }
     int pairs = stripe_ids.size() / 2;
     // Be conservative by default. Higher merge concurrency can overload the
     // proxy/datanode socket pipeline and lead to "Socket closed" during relocation.
@@ -1559,7 +1563,7 @@ namespace ECProject
       merge_concurrency = std::max(1, std::atoi(env_concurrency));
     }
     merge_concurrency = std::min(merge_concurrency, pairs);
-    std::cout << "[Client] will merge " << pairs << " pairs (round " << merge_round
+    std::cout << "[Client] will merge " << pairs << " pairs (round " << merge_round_input
               << ", concurrency " << merge_concurrency << ")" << std::endl;
     // Total merge time (reported below) is overlap-aware: each pair contributes
     // max(migration, parity) from MergeReply (coordinator runs those in parallel);
@@ -1570,6 +1574,7 @@ namespace ECProject
     double sum_parity_update_seconds = 0.0;
     std::mutex merge_stats_mutex;
     bool merge_failed = false;
+    const auto merge_e2e_start = std::chrono::steady_clock::now();
     for (int batch_start = 0; batch_start < pairs; batch_start += merge_concurrency) {
       if (merge_failed) {
         break;
@@ -1582,10 +1587,11 @@ namespace ECProject
       for (int p = batch_start; p < batch_end; p++) {
         int sid_a = stripe_ids[2 * p];
         int sid_b = stripe_ids[2 * p + 1];
+        const int target_sid = m_sys_config->CodeType == "DdlRT_LRC" ? sid_a : p;
         std::cout << "[Client] queue merge stripe " << sid_a << " + " << sid_b
-                  << " as new stripe " << p << std::endl;
+                  << " as new stripe " << target_sid << std::endl;
 
-        merge_threads.emplace_back([this, sid_a, sid_b, merge_round, p,
+        merge_threads.emplace_back([this, sid_a, sid_b, merge_round_input, p,
                                     &sum_data_migration_seconds, &sum_parity_update_seconds,
                                     &batch_max_pair_critical_seconds,
                                     &merge_stats_mutex, &merge_failed]() {
@@ -1594,8 +1600,8 @@ namespace ECProject
           coordinator_proto::MergeReply rep;
           req.set_stripe_id_a(sid_a);
           req.set_stripe_id_b(sid_b);
-          req.set_merge_round(merge_round);
-          req.set_new_stripe_id(p);
+          req.set_merge_round(merge_round_input);
+          req.set_new_stripe_id(m_sys_config->CodeType == "DdlRT_LRC" ? sid_a : p);
 
           grpc::Status st = m_coordinator_ptr->mergeStripes(&ctx, req, &rep);
 
@@ -1632,15 +1638,21 @@ namespace ECProject
       }
       merge_total_overlap_aware_seconds += batch_max_pair_critical_seconds;
     }
+    const double merge_end_to_end_seconds = std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - merge_e2e_start).count();
     if (merge_failed) {
       std::cout << "[Client] merge stopped early because at least one pair failed."
                 << " You can retry from the current stripe set after checking logs."
                 << std::endl;
     }
-    std::cout << "[merge" << merge_round
-              << "time] total spend time: " << merge_total_overlap_aware_seconds<<'\n'   
-              << " coordinator data migration: " << sum_data_migration_seconds << " s"<<'\n'
-              << " coordinator parity update: " << sum_parity_update_seconds << " s"
+    std::cout << "[merge" << merge_round_input
+              << "time] end-to-end time: " << merge_end_to_end_seconds << " s" << '\n'
+              << " estimated parallel critical path: "
+              << merge_total_overlap_aware_seconds << " s" << '\n'
+              << " coordinator data migration sum: "
+              << sum_data_migration_seconds << " s" << '\n'
+              << " coordinator parity update sum: "
+              << sum_parity_update_seconds << " s"
               << std::endl;
   }
   void Client::get_block_each_stripe_position(int stripe_cnt,const std::vector<int>& pos_list)

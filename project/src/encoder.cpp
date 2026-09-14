@@ -36,6 +36,29 @@ int ECProject::xor_avx(int vects, int len, void **array)
 #endif
 }
 
+void ECProject::multiply_block_gf(int block_size, const unsigned char *input,
+                                  unsigned char coeff, unsigned char *output) {
+  if (block_size <= 0 || input == nullptr || output == nullptr) return;
+  if (coeff == 0) {
+    std::memset(output, 0, static_cast<size_t>(block_size));
+    return;
+  }
+  if (coeff == 1) {
+    std::memcpy(output, input, static_cast<size_t>(block_size));
+    return;
+  }
+#ifdef ENABLE_AVX2_ASM
+  if (block_size >= 32) {
+    unsigned char g_tbls[32];
+    gf_vect_mul_init(coeff, g_tbls);
+    unsigned char *srcs[1] = {const_cast<unsigned char *>(input)};
+    gf_vect_dot_prod_avx2(block_size, 1, g_tbls, srcs, output);
+    return;
+  }
+#endif
+  for (int i = 0; i < block_size; ++i) output[i] = gf_mul(coeff, input[i]);
+}
+
 void ECProject::merge_stripe_parity_gf_xor(int block_size, unsigned char *buf_a,
                                            unsigned char *buf_b,
                                            unsigned char coeff,
@@ -67,9 +90,8 @@ void ECProject::merge_stripe_parity_gf_xor(int block_size, unsigned char *buf_a,
     return;
   }
 #endif
-  for (int i = 0; i < block_size; i++) {
-    buf_out[i] = static_cast<unsigned char>(buf_a[i] ^ gf_mul(coeff, buf_b[i]));
-  }
+  multiply_block_gf(block_size, buf_b, coeff, buf_out);
+  for (int i = 0; i < block_size; ++i) buf_out[i] ^= buf_a[i];
 }
 
 unsigned char

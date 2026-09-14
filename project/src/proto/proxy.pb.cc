@@ -117,6 +117,7 @@ PROTOBUF_CONSTEXPR blockRelocPlan::blockRelocPlan(
   , /*decltype(_impl_.todatanodeport_)*/{}
   , /*decltype(_impl_._todatanodeport_cached_byte_size_)*/{0}
   , /*decltype(_impl_.block_size_)*/0
+  , /*decltype(_impl_.keep_source_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct blockRelocPlanDefaultTypeInternal {
   PROTOBUF_CONSTEXPR blockRelocPlanDefaultTypeInternal()
@@ -468,8 +469,106 @@ struct StripeAndBlockIDsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 StripeAndBlockIDsDefaultTypeInternal _StripeAndBlockIDs_default_instance_;
+PROTOBUF_CONSTEXPR DdlrtParityBlock::DdlrtParityBlock(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.block_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.datanode_ip_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.datanode_port_)*/0
+  , /*decltype(_impl_.block_id_)*/0
+  , /*decltype(_impl_.gf_coeff_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DdlrtParityBlockDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DdlrtParityBlockDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DdlrtParityBlockDefaultTypeInternal() {}
+  union {
+    DdlrtParityBlock _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DdlrtParityBlockDefaultTypeInternal _DdlrtParityBlock_default_instance_;
+PROTOBUF_CONSTEXPR DdlrtParityLeftPlan::DdlrtParityLeftPlan(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.left_blocks_)*/{}
+  , /*decltype(_impl_.target_keys_)*/{}
+  , /*decltype(_impl_.task_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.block_size_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DdlrtParityLeftPlanDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DdlrtParityLeftPlanDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DdlrtParityLeftPlanDefaultTypeInternal() {}
+  union {
+    DdlrtParityLeftPlan _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DdlrtParityLeftPlanDefaultTypeInternal _DdlrtParityLeftPlan_default_instance_;
+PROTOBUF_CONSTEXPR DdlrtParityRightPlan::DdlrtParityRightPlan(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.right_blocks_)*/{}
+  , /*decltype(_impl_.left_proxy_ip_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.task_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.block_size_)*/0
+  , /*decltype(_impl_.left_proxy_data_port_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DdlrtParityRightPlanDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DdlrtParityRightPlanDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DdlrtParityRightPlanDefaultTypeInternal() {}
+  union {
+    DdlrtParityRightPlan _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DdlrtParityRightPlanDefaultTypeInternal _DdlrtParityRightPlan_default_instance_;
+PROTOBUF_CONSTEXPR DdlrtParityLocalPlan::DdlrtParityLocalPlan(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.left_blocks_)*/{}
+  , /*decltype(_impl_.right_blocks_)*/{}
+  , /*decltype(_impl_.target_keys_)*/{}
+  , /*decltype(_impl_.task_id_)*/uint64_t{0u}
+  , /*decltype(_impl_.block_size_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DdlrtParityLocalPlanDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DdlrtParityLocalPlanDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DdlrtParityLocalPlanDefaultTypeInternal() {}
+  union {
+    DdlrtParityLocalPlan _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DdlrtParityLocalPlanDefaultTypeInternal _DdlrtParityLocalPlan_default_instance_;
+PROTOBUF_CONSTEXPR DdlrtParityReply::DdlrtParityReply(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.error_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.execution_seconds_)*/0
+  , /*decltype(_impl_.success_)*/false
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct DdlrtParityReplyDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR DdlrtParityReplyDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~DdlrtParityReplyDefaultTypeInternal() {}
+  union {
+    DdlrtParityReply _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DdlrtParityReplyDefaultTypeInternal _DdlrtParityReply_default_instance_;
+PROTOBUF_CONSTEXPR CleanupBlocksPlan::CleanupBlocksPlan(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.block_keys_)*/{}
+  , /*decltype(_impl_.datanode_ips_)*/{}
+  , /*decltype(_impl_.datanode_ports_)*/{}
+  , /*decltype(_impl_._datanode_ports_cached_byte_size_)*/{0}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CleanupBlocksPlanDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CleanupBlocksPlanDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CleanupBlocksPlanDefaultTypeInternal() {}
+  union {
+    CleanupBlocksPlan _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CleanupBlocksPlanDefaultTypeInternal _CleanupBlocksPlan_default_instance_;
 }  // namespace proxy_proto
-static ::_pb::Metadata file_level_metadata_proxy_2eproto[23];
+static ::_pb::Metadata file_level_metadata_proxy_2eproto[29];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_proxy_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_proxy_2eproto = nullptr;
 
@@ -537,6 +636,7 @@ const uint32_t TableStruct_proxy_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::blockRelocPlan, _impl_.keep_source_),
   PROTOBUF_FIELD_OFFSET(::proxy_proto::blockRelocPlan, _impl_.blocktomove_),
   PROTOBUF_FIELD_OFFSET(::proxy_proto::blockRelocPlan, _impl_.fromdatanodeip_),
   PROTOBUF_FIELD_OFFSET(::proxy_proto::blockRelocPlan, _impl_.fromdatanodeport_),
@@ -758,6 +858,67 @@ const uint32_t TableStruct_proxy_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::proxy_proto::StripeAndBlockIDs, _impl_.block_keys_),
   PROTOBUF_FIELD_OFFSET(::proxy_proto::StripeAndBlockIDs, _impl_.datanodeips_),
   PROTOBUF_FIELD_OFFSET(::proxy_proto::StripeAndBlockIDs, _impl_.datanodeports_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _impl_.block_key_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _impl_.datanode_ip_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _impl_.datanode_port_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _impl_.block_id_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityBlock, _impl_.gf_coeff_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLeftPlan, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLeftPlan, _impl_.task_id_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLeftPlan, _impl_.block_size_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLeftPlan, _impl_.left_blocks_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLeftPlan, _impl_.target_keys_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _impl_.task_id_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _impl_.block_size_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _impl_.left_proxy_ip_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _impl_.left_proxy_data_port_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityRightPlan, _impl_.right_blocks_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _impl_.task_id_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _impl_.block_size_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _impl_.left_blocks_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _impl_.right_blocks_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityLocalPlan, _impl_.target_keys_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityReply, _impl_.success_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityReply, _impl_.error_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::DdlrtParityReply, _impl_.execution_seconds_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::CleanupBlocksPlan, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::CleanupBlocksPlan, _impl_.block_keys_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::CleanupBlocksPlan, _impl_.datanode_ips_),
+  PROTOBUF_FIELD_OFFSET(::proxy_proto::CleanupBlocksPlan, _impl_.datanode_ports_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::proxy_proto::locationInfo)},
@@ -765,24 +926,30 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 32, -1, -1, sizeof(::proxy_proto::RecalReply)},
   { 39, -1, -1, sizeof(::proxy_proto::helpRecalPlan)},
   { 57, -1, -1, sizeof(::proxy_proto::blockRelocPlan)},
-  { 69, -1, -1, sizeof(::proxy_proto::blockRelocReply)},
-  { 76, -1, -1, sizeof(::proxy_proto::AskIfSuccess)},
-  { 83, -1, -1, sizeof(::proxy_proto::RepIfSuccess)},
-  { 90, -1, -1, sizeof(::proxy_proto::NodeAndBlock)},
-  { 101, -1, -1, sizeof(::proxy_proto::DelReply)},
-  { 108, -1, -1, sizeof(::proxy_proto::CheckaliveCMD)},
-  { 115, -1, -1, sizeof(::proxy_proto::RequestResult)},
-  { 122, -1, -1, sizeof(::proxy_proto::ObjectAndPlacement)},
-  { 142, -1, -1, sizeof(::proxy_proto::DegradedReadRequest)},
-  { 157, -1, -1, sizeof(::proxy_proto::PartialDecodingRequest)},
-  { 171, -1, -1, sizeof(::proxy_proto::DegradedReadReply)},
-  { 188, -1, -1, sizeof(::proxy_proto::RecoveryRequest)},
-  { 207, -1, -1, sizeof(::proxy_proto::MultipleRecoveryRequest)},
-  { 218, -1, -1, sizeof(::proxy_proto::RecoveryReply)},
-  { 237, -1, -1, sizeof(::proxy_proto::AppendStripeDataPlacement)},
-  { 256, -1, -1, sizeof(::proxy_proto::SetReply)},
-  { 263, -1, -1, sizeof(::proxy_proto::GetReply)},
-  { 270, -1, -1, sizeof(::proxy_proto::StripeAndBlockIDs)},
+  { 70, -1, -1, sizeof(::proxy_proto::blockRelocReply)},
+  { 77, -1, -1, sizeof(::proxy_proto::AskIfSuccess)},
+  { 84, -1, -1, sizeof(::proxy_proto::RepIfSuccess)},
+  { 91, -1, -1, sizeof(::proxy_proto::NodeAndBlock)},
+  { 102, -1, -1, sizeof(::proxy_proto::DelReply)},
+  { 109, -1, -1, sizeof(::proxy_proto::CheckaliveCMD)},
+  { 116, -1, -1, sizeof(::proxy_proto::RequestResult)},
+  { 123, -1, -1, sizeof(::proxy_proto::ObjectAndPlacement)},
+  { 143, -1, -1, sizeof(::proxy_proto::DegradedReadRequest)},
+  { 158, -1, -1, sizeof(::proxy_proto::PartialDecodingRequest)},
+  { 172, -1, -1, sizeof(::proxy_proto::DegradedReadReply)},
+  { 189, -1, -1, sizeof(::proxy_proto::RecoveryRequest)},
+  { 208, -1, -1, sizeof(::proxy_proto::MultipleRecoveryRequest)},
+  { 219, -1, -1, sizeof(::proxy_proto::RecoveryReply)},
+  { 238, -1, -1, sizeof(::proxy_proto::AppendStripeDataPlacement)},
+  { 257, -1, -1, sizeof(::proxy_proto::SetReply)},
+  { 264, -1, -1, sizeof(::proxy_proto::GetReply)},
+  { 271, -1, -1, sizeof(::proxy_proto::StripeAndBlockIDs)},
+  { 285, -1, -1, sizeof(::proxy_proto::DdlrtParityBlock)},
+  { 296, -1, -1, sizeof(::proxy_proto::DdlrtParityLeftPlan)},
+  { 306, -1, -1, sizeof(::proxy_proto::DdlrtParityRightPlan)},
+  { 317, -1, -1, sizeof(::proxy_proto::DdlrtParityLocalPlan)},
+  { 328, -1, -1, sizeof(::proxy_proto::DdlrtParityReply)},
+  { 337, -1, -1, sizeof(::proxy_proto::CleanupBlocksPlan)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -809,6 +976,12 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::proxy_proto::_SetReply_default_instance_._instance,
   &::proxy_proto::_GetReply_default_instance_._instance,
   &::proxy_proto::_StripeAndBlockIDs_default_instance_._instance,
+  &::proxy_proto::_DdlrtParityBlock_default_instance_._instance,
+  &::proxy_proto::_DdlrtParityLeftPlan_default_instance_._instance,
+  &::proxy_proto::_DdlrtParityRightPlan_default_instance_._instance,
+  &::proxy_proto::_DdlrtParityLocalPlan_default_instance_._instance,
+  &::proxy_proto::_DdlrtParityReply_default_instance_._instance,
+  &::proxy_proto::_CleanupBlocksPlan_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_proxy_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -830,119 +1003,147 @@ const char descriptor_table_protodef_proxy_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "\022\022\n\ndatanodeip\030\005 \003(\t\022\024\n\014datanodeport\030\006 \003"
   "(\005\022\021\n\tblockkeys\030\007 \003(\t\022\022\n\nblock_size\030\010 \001("
   "\005\022\020\n\010blockids\030\t \003(\005\022\022\n\nparity_num\030\n \001(\005\022"
-  "\t\n\001k\030\013 \001(\005\022\022\n\nencodetype\030\014 \001(\005\"\231\001\n\016block"
-  "RelocPlan\022\023\n\013blocktomove\030\001 \003(\t\022\026\n\016fromda"
-  "tanodeip\030\002 \003(\t\022\030\n\020fromdatanodeport\030\003 \003(\005"
-  "\022\024\n\014todatanodeip\030\004 \003(\t\022\026\n\016todatanodeport"
-  "\030\005 \003(\005\022\022\n\nblock_size\030\006 \001(\005\"!\n\017blockReloc"
-  "Reply\022\016\n\006result\030\001 \001(\t\"\034\n\014AskIfSuccess\022\014\n"
-  "\004step\030\001 \001(\005\"!\n\014RepIfSuccess\022\021\n\tifsuccess"
-  "\030\001 \001(\010\"k\n\014NodeAndBlock\022\021\n\tblockkeys\030\001 \003("
-  "\t\022\022\n\ndatanodeip\030\002 \003(\t\022\024\n\014datanodeport\030\003 "
-  "\003(\005\022\021\n\tstripe_id\030\004 \001(\005\022\013\n\003key\030\005 \001(\t\"\034\n\010D"
-  "elReply\022\020\n\010ifcommit\030\001 \001(\010\"\035\n\rCheckaliveC"
-  "MD\022\014\n\004name\030\001 \001(\t\" \n\rRequestResult\022\017\n\007mes"
-  "sage\030\001 \001(\010\"\214\002\n\022ObjectAndPlacement\022\013\n\003key"
-  "\030\001 \001(\t\022\025\n\rvaluesizebyte\030\002 \001(\005\022\t\n\001k\030\003 \001(\005"
-  "\022\t\n\001l\030\004 \001(\005\022\013\n\003g_m\030\005 \001(\005\022\021\n\tstripe_id\030\006 "
-  "\001(\005\022\022\n\ndatanodeip\030\007 \003(\t\022\024\n\014datanodeport\030"
-  "\010 \003(\005\022\021\n\tblockkeys\030\t \003(\t\022\020\n\010blockids\030\n \003"
-  "(\005\022\022\n\nblock_size\030\013 \001(\005\022\023\n\013encode_type\030\014 "
-  "\001(\005\022\020\n\010clientip\030\r \001(\t\022\022\n\nclientport\030\016 \001("
-  "\005\"\335\001\n\023DegradedReadRequest\022\020\n\010clientip\030\001 "
-  "\001(\t\022\022\n\nclientport\030\002 \001(\005\022\027\n\017failed_block_"
-  "id\030\003 \001(\005\022\036\n\026failed_block_stripe_id\030\004 \001(\005"
-  "\022\030\n\020failed_block_key\030\005 \001(\t\022\022\n\ndatanodeip"
-  "\030\006 \003(\t\022\024\n\014datanodeport\030\007 \003(\005\022\021\n\tblockkey"
-  "s\030\010 \003(\t\022\020\n\010blockids\030\t \003(\005\"\331\001\n\026PartialDec"
-  "odingRequest\022\017\n\007dest_ip\030\001 \001(\t\022\021\n\tdest_po"
-  "rt\030\002 \001(\005\022\030\n\020source_block_ids\030\003 \003(\005\022\031\n\021so"
-  "urce_block_keys\030\004 \003(\t\022\033\n\023source_datanode"
-  "_ips\030\005 \003(\t\022\035\n\025source_datanode_ports\030\006 \003("
-  "\005\022\022\n\ndecode_num\030\007 \001(\005\022\026\n\016decode_factors\030"
-  "\010 \003(\005\"\311\002\n\021DegradedReadReply\022\032\n\022disk_io_s"
-  "tart_time\030\001 \001(\001\022\030\n\020disk_io_end_time\030\002 \001("
-  "\001\022\032\n\022network_start_time\030\003 \001(\001\022\030\n\020network"
-  "_end_time\030\004 \001(\001\022\031\n\021decode_start_time\030\005 \001"
-  "(\001\022\027\n\017decode_end_time\030\006 \001(\001\022\027\n\017cross_rac"
-  "k_time\030\007 \001(\001\022\033\n\023cross_rack_xor_time\030\010 \001("
-  "\001\022\027\n\017grpc_start_time\030\t \001(\001\022\"\n\032data_node_"
-  "grpc_notify_time\030\n \001(\001\022!\n\031data_node_grpc"
-  "_start_time\030\013 \001(\001\"\274\002\n\017RecoveryRequest\022\030\n"
-  "\020replaced_node_ip\030\001 \001(\t\022\032\n\022replaced_node"
-  "_port\030\002 \001(\005\022\027\n\017failed_block_id\030\003 \001(\005\022\030\n\020"
-  "failed_block_key\030\004 \001(\t\022\026\n\016cross_rack_num"
-  "\030\005 \001(\005\022\022\n\ndatanodeip\030\006 \003(\t\022\024\n\014datanodepo"
-  "rt\030\007 \003(\005\022\021\n\tblockkeys\030\010 \003(\t\022\020\n\010blockids\030"
-  "\t \003(\005\022\017\n\007proxyip\030\n \003(\t\022\021\n\tproxyport\030\013 \003("
-  "\005\022\033\n\023is_to_send_block_id\030\014 \001(\010\022\030\n\020block_"
-  "id_to_send\030\r \001(\005\"\236\001\n\027MultipleRecoveryReq"
-  "uest\022\031\n\021replacing_node_ip\030\001 \001(\t\022\033\n\023repla"
-  "cing_node_port\030\002 \001(\005\022\030\n\020failed_block_ids"
-  "\030\003 \003(\005\022\031\n\021failed_block_keys\030\004 \003(\t\022\026\n\016cro"
-  "ss_rack_num\030\005 \001(\005\"\217\003\n\rRecoveryReply\022\032\n\022d"
-  "isk_io_start_time\030\001 \001(\001\022\030\n\020disk_io_end_t"
-  "ime\030\002 \001(\001\022\032\n\022network_start_time\030\003 \001(\001\022\030\n"
-  "\020network_end_time\030\004 \001(\001\022\031\n\021decode_start_"
-  "time\030\005 \001(\001\022\027\n\017decode_end_time\030\006 \001(\001\022\027\n\017c"
-  "ross_rack_time\030\007 \001(\001\022\033\n\023cross_rack_xor_t"
-  "ime\030\010 \001(\001\022\027\n\017grpc_start_time\030\t \001(\001\022\"\n\032da"
-  "ta_node_grpc_notify_time\030\n \001(\001\022!\n\031data_n"
-  "ode_grpc_start_time\030\013 \001(\001\022#\n\033dest_data_n"
-  "ode_network_time\030\014 \001(\001\022#\n\033dest_data_node"
-  "_disk_io_time\030\r \001(\001\"\230\002\n\031AppendStripeData"
-  "Placement\022\013\n\003key\030\001 \001(\t\022\022\n\ncluster_id\030\002 \001"
-  "(\005\022\021\n\tstripe_id\030\003 \001(\005\022\023\n\013append_size\030\004 \001"
-  "(\004\022\022\n\ndatanodeip\030\005 \003(\t\022\024\n\014datanodeport\030\006"
-  " \003(\005\022\021\n\tblockkeys\030\007 \003(\t\022\020\n\010blockids\030\010 \003("
-  "\005\022\017\n\007offsets\030\t \003(\004\022\r\n\005sizes\030\n \003(\004\022\027\n\017is_"
-  "merge_parity\030\013 \001(\010\022\023\n\013append_mode\030\014 \001(\t\022"
-  "\025\n\ris_serialized\030\r \001(\010\"\034\n\010SetReply\022\020\n\010if"
-  "commit\030\001 \001(\010\"\036\n\010GetReply\022\022\n\ngetsuccess\030\001"
-  " \001(\010\"\261\001\n\021StripeAndBlockIDs\022\021\n\tstripe_id\030"
-  "\001 \001(\005\022\020\n\010group_id\030\002 \001(\005\022\020\n\010clientip\030\003 \001("
-  "\t\022\022\n\nclientport\030\004 \001(\005\022\021\n\tblock_ids\030\005 \003(\005"
-  "\022\022\n\nblock_keys\030\006 \003(\t\022\023\n\013datanodeips\030\007 \003("
-  "\t\022\025\n\rdatanodeports\030\010 \003(\0052\223\n\n\014proxyServic"
-  "e\022D\n\ncheckalive\022\032.proxy_proto.Checkalive"
-  "CMD\032\032.proxy_proto.RequestResult\022L\n\022encod"
-  "eAndSetObject\022\037.proxy_proto.ObjectAndPla"
-  "cement\032\025.proxy_proto.SetReply\022L\n\022decodeA"
-  "ndGetObject\022\037.proxy_proto.ObjectAndPlace"
-  "ment\032\025.proxy_proto.GetReply\022P\n\014degradedR"
-  "ead\022 .proxy_proto.DegradedReadRequest\032\036."
-  "proxy_proto.DegradedReadReply\022S\n\023degrade"
-  "dRead2Client\022\034.proxy_proto.RecoveryReque"
-  "st\032\036.proxy_proto.DegradedReadReply\022Y\n\025de"
-  "gradedReadBreakdown\022 .proxy_proto.Degrad"
-  "edReadRequest\032\036.proxy_proto.DegradedRead"
-  "Reply\022\\\n\034degradedRead2ClientBreakdown\022\034."
-  "proxy_proto.RecoveryRequest\032\036.proxy_prot"
-  "o.DegradedReadReply\022X\n\035degradedReadWithB"
-  "lockStripeID\022 .proxy_proto.DegradedReadR"
-  "equest\032\025.proxy_proto.GetReply\022V\n\017partial"
-  "Decoding\022#.proxy_proto.PartialDecodingRe"
-  "quest\032\036.proxy_proto.DegradedReadReply\022D\n"
-  "\010recovery\022\034.proxy_proto.RecoveryRequest\032"
-  "\032.proxy_proto.RecoveryReply\022M\n\021recoveryB"
-  "reakdown\022\034.proxy_proto.RecoveryRequest\032\032"
-  ".proxy_proto.RecoveryReply\022O\n\020multipleRe"
-  "covery\022$.proxy_proto.MultipleRecoveryReq"
-  "uest\032\025.proxy_proto.GetReply\022\?\n\013deleteBlo"
-  "ck\022\031.proxy_proto.NodeAndBlock\032\025.proxy_pr"
-  "oto.DelReply\022X\n\027scheduleAppend2Datanode\022"
-  "&.proxy_proto.AppendStripeDataPlacement\032"
-  "\025.proxy_proto.SetReply\022J\n\rrelocateBlock\022"
-  "\033.proxy_proto.blockRelocPlan\032\034.proxy_pro"
-  "to.blockRelocReply\022B\n\tgetBlocks\022\036.proxy_"
-  "proto.StripeAndBlockIDs\032\025.proxy_proto.Ge"
-  "tReplyb\006proto3"
+  "\t\n\001k\030\013 \001(\005\022\022\n\nencodetype\030\014 \001(\005\"\256\001\n\016block"
+  "RelocPlan\022\023\n\013keep_source\030\007 \001(\010\022\023\n\013blockt"
+  "omove\030\001 \003(\t\022\026\n\016fromdatanodeip\030\002 \003(\t\022\030\n\020f"
+  "romdatanodeport\030\003 \003(\005\022\024\n\014todatanodeip\030\004 "
+  "\003(\t\022\026\n\016todatanodeport\030\005 \003(\005\022\022\n\nblock_siz"
+  "e\030\006 \001(\005\"!\n\017blockRelocReply\022\016\n\006result\030\001 \001"
+  "(\t\"\034\n\014AskIfSuccess\022\014\n\004step\030\001 \001(\005\"!\n\014RepI"
+  "fSuccess\022\021\n\tifsuccess\030\001 \001(\010\"k\n\014NodeAndBl"
+  "ock\022\021\n\tblockkeys\030\001 \003(\t\022\022\n\ndatanodeip\030\002 \003"
+  "(\t\022\024\n\014datanodeport\030\003 \003(\005\022\021\n\tstripe_id\030\004 "
+  "\001(\005\022\013\n\003key\030\005 \001(\t\"\034\n\010DelReply\022\020\n\010ifcommit"
+  "\030\001 \001(\010\"\035\n\rCheckaliveCMD\022\014\n\004name\030\001 \001(\t\" \n"
+  "\rRequestResult\022\017\n\007message\030\001 \001(\010\"\214\002\n\022Obje"
+  "ctAndPlacement\022\013\n\003key\030\001 \001(\t\022\025\n\rvaluesize"
+  "byte\030\002 \001(\005\022\t\n\001k\030\003 \001(\005\022\t\n\001l\030\004 \001(\005\022\013\n\003g_m\030"
+  "\005 \001(\005\022\021\n\tstripe_id\030\006 \001(\005\022\022\n\ndatanodeip\030\007"
+  " \003(\t\022\024\n\014datanodeport\030\010 \003(\005\022\021\n\tblockkeys\030"
+  "\t \003(\t\022\020\n\010blockids\030\n \003(\005\022\022\n\nblock_size\030\013 "
+  "\001(\005\022\023\n\013encode_type\030\014 \001(\005\022\020\n\010clientip\030\r \001"
+  "(\t\022\022\n\nclientport\030\016 \001(\005\"\335\001\n\023DegradedReadR"
+  "equest\022\020\n\010clientip\030\001 \001(\t\022\022\n\nclientport\030\002"
+  " \001(\005\022\027\n\017failed_block_id\030\003 \001(\005\022\036\n\026failed_"
+  "block_stripe_id\030\004 \001(\005\022\030\n\020failed_block_ke"
+  "y\030\005 \001(\t\022\022\n\ndatanodeip\030\006 \003(\t\022\024\n\014datanodep"
+  "ort\030\007 \003(\005\022\021\n\tblockkeys\030\010 \003(\t\022\020\n\010blockids"
+  "\030\t \003(\005\"\331\001\n\026PartialDecodingRequest\022\017\n\007des"
+  "t_ip\030\001 \001(\t\022\021\n\tdest_port\030\002 \001(\005\022\030\n\020source_"
+  "block_ids\030\003 \003(\005\022\031\n\021source_block_keys\030\004 \003"
+  "(\t\022\033\n\023source_datanode_ips\030\005 \003(\t\022\035\n\025sourc"
+  "e_datanode_ports\030\006 \003(\005\022\022\n\ndecode_num\030\007 \001"
+  "(\005\022\026\n\016decode_factors\030\010 \003(\005\"\311\002\n\021DegradedR"
+  "eadReply\022\032\n\022disk_io_start_time\030\001 \001(\001\022\030\n\020"
+  "disk_io_end_time\030\002 \001(\001\022\032\n\022network_start_"
+  "time\030\003 \001(\001\022\030\n\020network_end_time\030\004 \001(\001\022\031\n\021"
+  "decode_start_time\030\005 \001(\001\022\027\n\017decode_end_ti"
+  "me\030\006 \001(\001\022\027\n\017cross_rack_time\030\007 \001(\001\022\033\n\023cro"
+  "ss_rack_xor_time\030\010 \001(\001\022\027\n\017grpc_start_tim"
+  "e\030\t \001(\001\022\"\n\032data_node_grpc_notify_time\030\n "
+  "\001(\001\022!\n\031data_node_grpc_start_time\030\013 \001(\001\"\274"
+  "\002\n\017RecoveryRequest\022\030\n\020replaced_node_ip\030\001"
+  " \001(\t\022\032\n\022replaced_node_port\030\002 \001(\005\022\027\n\017fail"
+  "ed_block_id\030\003 \001(\005\022\030\n\020failed_block_key\030\004 "
+  "\001(\t\022\026\n\016cross_rack_num\030\005 \001(\005\022\022\n\ndatanodei"
+  "p\030\006 \003(\t\022\024\n\014datanodeport\030\007 \003(\005\022\021\n\tblockke"
+  "ys\030\010 \003(\t\022\020\n\010blockids\030\t \003(\005\022\017\n\007proxyip\030\n "
+  "\003(\t\022\021\n\tproxyport\030\013 \003(\005\022\033\n\023is_to_send_blo"
+  "ck_id\030\014 \001(\010\022\030\n\020block_id_to_send\030\r \001(\005\"\236\001"
+  "\n\027MultipleRecoveryRequest\022\031\n\021replacing_n"
+  "ode_ip\030\001 \001(\t\022\033\n\023replacing_node_port\030\002 \001("
+  "\005\022\030\n\020failed_block_ids\030\003 \003(\005\022\031\n\021failed_bl"
+  "ock_keys\030\004 \003(\t\022\026\n\016cross_rack_num\030\005 \001(\005\"\217"
+  "\003\n\rRecoveryReply\022\032\n\022disk_io_start_time\030\001"
+  " \001(\001\022\030\n\020disk_io_end_time\030\002 \001(\001\022\032\n\022networ"
+  "k_start_time\030\003 \001(\001\022\030\n\020network_end_time\030\004"
+  " \001(\001\022\031\n\021decode_start_time\030\005 \001(\001\022\027\n\017decod"
+  "e_end_time\030\006 \001(\001\022\027\n\017cross_rack_time\030\007 \001("
+  "\001\022\033\n\023cross_rack_xor_time\030\010 \001(\001\022\027\n\017grpc_s"
+  "tart_time\030\t \001(\001\022\"\n\032data_node_grpc_notify"
+  "_time\030\n \001(\001\022!\n\031data_node_grpc_start_time"
+  "\030\013 \001(\001\022#\n\033dest_data_node_network_time\030\014 "
+  "\001(\001\022#\n\033dest_data_node_disk_io_time\030\r \001(\001"
+  "\"\230\002\n\031AppendStripeDataPlacement\022\013\n\003key\030\001 "
+  "\001(\t\022\022\n\ncluster_id\030\002 \001(\005\022\021\n\tstripe_id\030\003 \001"
+  "(\005\022\023\n\013append_size\030\004 \001(\004\022\022\n\ndatanodeip\030\005 "
+  "\003(\t\022\024\n\014datanodeport\030\006 \003(\005\022\021\n\tblockkeys\030\007"
+  " \003(\t\022\020\n\010blockids\030\010 \003(\005\022\017\n\007offsets\030\t \003(\004\022"
+  "\r\n\005sizes\030\n \003(\004\022\027\n\017is_merge_parity\030\013 \001(\010\022"
+  "\023\n\013append_mode\030\014 \001(\t\022\025\n\ris_serialized\030\r "
+  "\001(\010\"\034\n\010SetReply\022\020\n\010ifcommit\030\001 \001(\010\"\036\n\010Get"
+  "Reply\022\022\n\ngetsuccess\030\001 \001(\010\"\261\001\n\021StripeAndB"
+  "lockIDs\022\021\n\tstripe_id\030\001 \001(\005\022\020\n\010group_id\030\002"
+  " \001(\005\022\020\n\010clientip\030\003 \001(\t\022\022\n\nclientport\030\004 \001"
+  "(\005\022\021\n\tblock_ids\030\005 \003(\005\022\022\n\nblock_keys\030\006 \003("
+  "\t\022\023\n\013datanodeips\030\007 \003(\t\022\025\n\rdatanodeports\030"
+  "\010 \003(\005\"u\n\020DdlrtParityBlock\022\021\n\tblock_key\030\001"
+  " \001(\t\022\023\n\013datanode_ip\030\002 \001(\t\022\025\n\rdatanode_po"
+  "rt\030\003 \001(\005\022\020\n\010block_id\030\004 \001(\005\022\020\n\010gf_coeff\030\005"
+  " \001(\005\"\203\001\n\023DdlrtParityLeftPlan\022\017\n\007task_id\030"
+  "\001 \001(\004\022\022\n\nblock_size\030\002 \001(\005\0222\n\013left_blocks"
+  "\030\003 \003(\0132\035.proxy_proto.DdlrtParityBlock\022\023\n"
+  "\013target_keys\030\004 \003(\t\"\245\001\n\024DdlrtParityRightP"
+  "lan\022\017\n\007task_id\030\001 \001(\004\022\022\n\nblock_size\030\002 \001(\005"
+  "\022\025\n\rleft_proxy_ip\030\003 \001(\t\022\034\n\024left_proxy_da"
+  "ta_port\030\004 \001(\005\0223\n\014right_blocks\030\005 \003(\0132\035.pr"
+  "oxy_proto.DdlrtParityBlock\"\271\001\n\024DdlrtPari"
+  "tyLocalPlan\022\017\n\007task_id\030\001 \001(\004\022\022\n\nblock_si"
+  "ze\030\002 \001(\005\0222\n\013left_blocks\030\003 \003(\0132\035.proxy_pr"
+  "oto.DdlrtParityBlock\0223\n\014right_blocks\030\004 \003"
+  "(\0132\035.proxy_proto.DdlrtParityBlock\022\023\n\013tar"
+  "get_keys\030\005 \003(\t\"M\n\020DdlrtParityReply\022\017\n\007su"
+  "ccess\030\001 \001(\010\022\r\n\005error\030\002 \001(\t\022\031\n\021execution_"
+  "seconds\030\003 \001(\001\"U\n\021CleanupBlocksPlan\022\022\n\nbl"
+  "ock_keys\030\001 \003(\t\022\024\n\014datanode_ips\030\002 \003(\t\022\026\n\016"
+  "datanode_ports\030\003 \003(\0052\342\014\n\014proxyService\022D\n"
+  "\ncheckalive\022\032.proxy_proto.CheckaliveCMD\032"
+  "\032.proxy_proto.RequestResult\022L\n\022encodeAnd"
+  "SetObject\022\037.proxy_proto.ObjectAndPlaceme"
+  "nt\032\025.proxy_proto.SetReply\022L\n\022decodeAndGe"
+  "tObject\022\037.proxy_proto.ObjectAndPlacement"
+  "\032\025.proxy_proto.GetReply\022P\n\014degradedRead\022"
+  " .proxy_proto.DegradedReadRequest\032\036.prox"
+  "y_proto.DegradedReadReply\022S\n\023degradedRea"
+  "d2Client\022\034.proxy_proto.RecoveryRequest\032\036"
+  ".proxy_proto.DegradedReadReply\022Y\n\025degrad"
+  "edReadBreakdown\022 .proxy_proto.DegradedRe"
+  "adRequest\032\036.proxy_proto.DegradedReadRepl"
+  "y\022\\\n\034degradedRead2ClientBreakdown\022\034.prox"
+  "y_proto.RecoveryRequest\032\036.proxy_proto.De"
+  "gradedReadReply\022X\n\035degradedReadWithBlock"
+  "StripeID\022 .proxy_proto.DegradedReadReque"
+  "st\032\025.proxy_proto.GetReply\022V\n\017partialDeco"
+  "ding\022#.proxy_proto.PartialDecodingReques"
+  "t\032\036.proxy_proto.DegradedReadReply\022D\n\010rec"
+  "overy\022\034.proxy_proto.RecoveryRequest\032\032.pr"
+  "oxy_proto.RecoveryReply\022M\n\021recoveryBreak"
+  "down\022\034.proxy_proto.RecoveryRequest\032\032.pro"
+  "xy_proto.RecoveryReply\022O\n\020multipleRecove"
+  "ry\022$.proxy_proto.MultipleRecoveryRequest"
+  "\032\025.proxy_proto.GetReply\022\?\n\013deleteBlock\022\031"
+  ".proxy_proto.NodeAndBlock\032\025.proxy_proto."
+  "DelReply\022X\n\027scheduleAppend2Datanode\022&.pr"
+  "oxy_proto.AppendStripeDataPlacement\032\025.pr"
+  "oxy_proto.SetReply\022J\n\rrelocateBlock\022\033.pr"
+  "oxy_proto.blockRelocPlan\032\034.proxy_proto.b"
+  "lockRelocReply\022B\n\tgetBlocks\022\036.proxy_prot"
+  "o.StripeAndBlockIDs\032\025.proxy_proto.GetRep"
+  "ly\022R\n\017ddlrtParityLeft\022 .proxy_proto.Ddlr"
+  "tParityLeftPlan\032\035.proxy_proto.DdlrtParit"
+  "yReply\022T\n\020ddlrtParityRight\022!.proxy_proto"
+  ".DdlrtParityRightPlan\032\035.proxy_proto.Ddlr"
+  "tParityReply\022T\n\020ddlrtParityLocal\022!.proxy"
+  "_proto.DdlrtParityLocalPlan\032\035.proxy_prot"
+  "o.DdlrtParityReply\022M\n\rcleanupBlocks\022\036.pr"
+  "oxy_proto.CleanupBlocksPlan\032\034.proxy_prot"
+  "o.blockRelocReplyb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_proxy_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_proxy_2eproto = {
-    false, false, 4974, descriptor_table_protodef_proxy_2eproto,
+    false, false, 6105, descriptor_table_protodef_proxy_2eproto,
     "proxy.proto",
-    &descriptor_table_proxy_2eproto_once, nullptr, 0, 23,
+    &descriptor_table_proxy_2eproto_once, nullptr, 0, 29,
     schemas, file_default_instances, TableStruct_proxy_2eproto::offsets,
     file_level_metadata_proxy_2eproto, file_level_enum_descriptors_proxy_2eproto,
     file_level_service_descriptors_proxy_2eproto,
@@ -988,7 +1189,7 @@ locationInfo::locationInfo(const locationInfo& from)
     _impl_.proxy_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_proxy_ip().empty()) {
-    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(), 
+    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.cluster_id_, &from._impl_.cluster_id_,
@@ -1938,7 +2139,7 @@ RecalReply::RecalReply(const RecalReply& from)
     _impl_.result_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_result().empty()) {
-    _this->_impl_.result_.Set(from._internal_result(), 
+    _this->_impl_.result_.Set(from._internal_result(),
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:proxy_proto.RecalReply)
@@ -2154,7 +2355,7 @@ helpRecalPlan::helpRecalPlan(const helpRecalPlan& from)
     _impl_.mainproxyip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_mainproxyip().empty()) {
-    _this->_impl_.mainproxyip_.Set(from._internal_mainproxyip(), 
+    _this->_impl_.mainproxyip_.Set(from._internal_mainproxyip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.type_, &from._impl_.type_,
@@ -2685,10 +2886,13 @@ blockRelocPlan::blockRelocPlan(const blockRelocPlan& from)
     , decltype(_impl_.todatanodeport_){from._impl_.todatanodeport_}
     , /*decltype(_impl_._todatanodeport_cached_byte_size_)*/{0}
     , decltype(_impl_.block_size_){}
+    , decltype(_impl_.keep_source_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _this->_impl_.block_size_ = from._impl_.block_size_;
+  ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.keep_source_) -
+    reinterpret_cast<char*>(&_impl_.block_size_)) + sizeof(_impl_.keep_source_));
   // @@protoc_insertion_point(copy_constructor:proxy_proto.blockRelocPlan)
 }
 
@@ -2705,6 +2909,7 @@ inline void blockRelocPlan::SharedCtor(
     , decltype(_impl_.todatanodeport_){arena}
     , /*decltype(_impl_._todatanodeport_cached_byte_size_)*/{0}
     , decltype(_impl_.block_size_){0}
+    , decltype(_impl_.keep_source_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2742,7 +2947,9 @@ void blockRelocPlan::Clear() {
   _impl_.fromdatanodeport_.Clear();
   _impl_.todatanodeip_.Clear();
   _impl_.todatanodeport_.Clear();
-  _impl_.block_size_ = 0;
+  ::memset(&_impl_.block_size_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.keep_source_) -
+      reinterpret_cast<char*>(&_impl_.block_size_)) + sizeof(_impl_.keep_source_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2823,6 +3030,14 @@ const char* blockRelocPlan::_InternalParse(const char* ptr, ::_pbi::ParseContext
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _impl_.block_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool keep_source = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _impl_.keep_source_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2910,6 +3125,12 @@ uint8_t* blockRelocPlan::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_block_size(), target);
   }
 
+  // bool keep_source = 7;
+  if (this->_internal_keep_source() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(7, this->_internal_keep_source(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2983,6 +3204,11 @@ size_t blockRelocPlan::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_size());
   }
 
+  // bool keep_source = 7;
+  if (this->_internal_keep_source() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -3009,6 +3235,9 @@ void blockRelocPlan::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   if (from._internal_block_size() != 0) {
     _this->_internal_set_block_size(from._internal_block_size());
   }
+  if (from._internal_keep_source() != 0) {
+    _this->_internal_set_keep_source(from._internal_keep_source());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -3031,7 +3260,12 @@ void blockRelocPlan::InternalSwap(blockRelocPlan* other) {
   _impl_.fromdatanodeport_.InternalSwap(&other->_impl_.fromdatanodeport_);
   _impl_.todatanodeip_.InternalSwap(&other->_impl_.todatanodeip_);
   _impl_.todatanodeport_.InternalSwap(&other->_impl_.todatanodeport_);
-  swap(_impl_.block_size_, other->_impl_.block_size_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(blockRelocPlan, _impl_.keep_source_)
+      + sizeof(blockRelocPlan::_impl_.keep_source_)
+      - PROTOBUF_FIELD_OFFSET(blockRelocPlan, _impl_.block_size_)>(
+          reinterpret_cast<char*>(&_impl_.block_size_),
+          reinterpret_cast<char*>(&other->_impl_.block_size_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata blockRelocPlan::GetMetadata() const {
@@ -3065,7 +3299,7 @@ blockRelocReply::blockRelocReply(const blockRelocReply& from)
     _impl_.result_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_result().empty()) {
-    _this->_impl_.result_.Set(from._internal_result(), 
+    _this->_impl_.result_.Set(from._internal_result(),
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:proxy_proto.blockRelocReply)
@@ -3629,7 +3863,7 @@ NodeAndBlock::NodeAndBlock(const NodeAndBlock& from)
     _impl_.key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_key().empty()) {
-    _this->_impl_.key_.Set(from._internal_key(), 
+    _this->_impl_.key_.Set(from._internal_key(),
       _this->GetArenaForAllocation());
   }
   _this->_impl_.stripe_id_ = from._impl_.stripe_id_;
@@ -4152,7 +4386,7 @@ CheckaliveCMD::CheckaliveCMD(const CheckaliveCMD& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_name().empty()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
+    _this->_impl_.name_.Set(from._internal_name(),
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:proxy_proto.CheckaliveCMD)
@@ -4548,7 +4782,7 @@ ObjectAndPlacement::ObjectAndPlacement(const ObjectAndPlacement& from)
     _impl_.key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_key().empty()) {
-    _this->_impl_.key_.Set(from._internal_key(), 
+    _this->_impl_.key_.Set(from._internal_key(),
       _this->GetArenaForAllocation());
   }
   _impl_.clientip_.InitDefault();
@@ -4556,7 +4790,7 @@ ObjectAndPlacement::ObjectAndPlacement(const ObjectAndPlacement& from)
     _impl_.clientip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_clientip().empty()) {
-    _this->_impl_.clientip_.Set(from._internal_clientip(), 
+    _this->_impl_.clientip_.Set(from._internal_clientip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.valuesizebyte_, &from._impl_.valuesizebyte_,
@@ -5162,7 +5396,7 @@ DegradedReadRequest::DegradedReadRequest(const DegradedReadRequest& from)
     _impl_.clientip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_clientip().empty()) {
-    _this->_impl_.clientip_.Set(from._internal_clientip(), 
+    _this->_impl_.clientip_.Set(from._internal_clientip(),
       _this->GetArenaForAllocation());
   }
   _impl_.failed_block_key_.InitDefault();
@@ -5170,7 +5404,7 @@ DegradedReadRequest::DegradedReadRequest(const DegradedReadRequest& from)
     _impl_.failed_block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_failed_block_key().empty()) {
-    _this->_impl_.failed_block_key_.Set(from._internal_failed_block_key(), 
+    _this->_impl_.failed_block_key_.Set(from._internal_failed_block_key(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.clientport_, &from._impl_.clientport_,
@@ -5661,7 +5895,7 @@ PartialDecodingRequest::PartialDecodingRequest(const PartialDecodingRequest& fro
     _impl_.dest_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_dest_ip().empty()) {
-    _this->_impl_.dest_ip_.Set(from._internal_dest_ip(), 
+    _this->_impl_.dest_ip_.Set(from._internal_dest_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.dest_port_, &from._impl_.dest_port_,
@@ -6692,7 +6926,7 @@ RecoveryRequest::RecoveryRequest(const RecoveryRequest& from)
     _impl_.replaced_node_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_replaced_node_ip().empty()) {
-    _this->_impl_.replaced_node_ip_.Set(from._internal_replaced_node_ip(), 
+    _this->_impl_.replaced_node_ip_.Set(from._internal_replaced_node_ip(),
       _this->GetArenaForAllocation());
   }
   _impl_.failed_block_key_.InitDefault();
@@ -6700,7 +6934,7 @@ RecoveryRequest::RecoveryRequest(const RecoveryRequest& from)
     _impl_.failed_block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_failed_block_key().empty()) {
-    _this->_impl_.failed_block_key_.Set(from._internal_failed_block_key(), 
+    _this->_impl_.failed_block_key_.Set(from._internal_failed_block_key(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.replaced_node_port_, &from._impl_.replaced_node_port_,
@@ -7310,7 +7544,7 @@ MultipleRecoveryRequest::MultipleRecoveryRequest(const MultipleRecoveryRequest& 
     _impl_.replacing_node_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_replacing_node_ip().empty()) {
-    _this->_impl_.replacing_node_ip_.Set(from._internal_replacing_node_ip(), 
+    _this->_impl_.replacing_node_ip_.Set(from._internal_replacing_node_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.replacing_node_port_, &from._impl_.replacing_node_port_,
@@ -8296,7 +8530,7 @@ AppendStripeDataPlacement::AppendStripeDataPlacement(const AppendStripeDataPlace
     _impl_.key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_key().empty()) {
-    _this->_impl_.key_.Set(from._internal_key(), 
+    _this->_impl_.key_.Set(from._internal_key(),
       _this->GetArenaForAllocation());
   }
   _impl_.append_mode_.InitDefault();
@@ -8304,7 +8538,7 @@ AppendStripeDataPlacement::AppendStripeDataPlacement(const AppendStripeDataPlace
     _impl_.append_mode_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_append_mode().empty()) {
-    _this->_impl_.append_mode_.Set(from._internal_append_mode(), 
+    _this->_impl_.append_mode_.Set(from._internal_append_mode(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.cluster_id_, &from._impl_.cluster_id_,
@@ -9276,7 +9510,7 @@ StripeAndBlockIDs::StripeAndBlockIDs(const StripeAndBlockIDs& from)
     _impl_.clientip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_clientip().empty()) {
-    _this->_impl_.clientip_.Set(from._internal_clientip(), 
+    _this->_impl_.clientip_.Set(from._internal_clientip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.stripe_id_, &from._impl_.stripe_id_,
@@ -9691,6 +9925,1812 @@ void StripeAndBlockIDs::InternalSwap(StripeAndBlockIDs* other) {
       file_level_metadata_proxy_2eproto[22]);
 }
 
+// ===================================================================
+
+class DdlrtParityBlock::_Internal {
+ public:
+};
+
+DdlrtParityBlock::DdlrtParityBlock(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.DdlrtParityBlock)
+}
+DdlrtParityBlock::DdlrtParityBlock(const DdlrtParityBlock& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DdlrtParityBlock* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_key_){}
+    , decltype(_impl_.datanode_ip_){}
+    , decltype(_impl_.datanode_port_){}
+    , decltype(_impl_.block_id_){}
+    , decltype(_impl_.gf_coeff_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.block_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.block_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_block_key().empty()) {
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
+      _this->GetArenaForAllocation());
+  }
+  _impl_.datanode_ip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.datanode_ip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_datanode_ip().empty()) {
+    _this->_impl_.datanode_ip_.Set(from._internal_datanode_ip(),
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.datanode_port_, &from._impl_.datanode_port_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.gf_coeff_) -
+    reinterpret_cast<char*>(&_impl_.datanode_port_)) + sizeof(_impl_.gf_coeff_));
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.DdlrtParityBlock)
+}
+
+inline void DdlrtParityBlock::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_key_){}
+    , decltype(_impl_.datanode_ip_){}
+    , decltype(_impl_.datanode_port_){0}
+    , decltype(_impl_.block_id_){0}
+    , decltype(_impl_.gf_coeff_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.block_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.block_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.datanode_ip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.datanode_ip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+DdlrtParityBlock::~DdlrtParityBlock() {
+  // @@protoc_insertion_point(destructor:proxy_proto.DdlrtParityBlock)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DdlrtParityBlock::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.block_key_.Destroy();
+  _impl_.datanode_ip_.Destroy();
+}
+
+void DdlrtParityBlock::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DdlrtParityBlock::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.DdlrtParityBlock)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.block_key_.ClearToEmpty();
+  _impl_.datanode_ip_.ClearToEmpty();
+  ::memset(&_impl_.datanode_port_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.gf_coeff_) -
+      reinterpret_cast<char*>(&_impl_.datanode_port_)) + sizeof(_impl_.gf_coeff_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DdlrtParityBlock::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string block_key = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_block_key();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityBlock.block_key"));
+        } else
+          goto handle_unusual;
+        continue;
+      // string datanode_ip = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_datanode_ip();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityBlock.datanode_ip"));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 datanode_port = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.datanode_port_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 block_id = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.block_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 gf_coeff = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _impl_.gf_coeff_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DdlrtParityBlock::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.DdlrtParityBlock)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string block_key = 1;
+  if (!this->_internal_block_key().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_block_key().data(), static_cast<int>(this->_internal_block_key().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityBlock.block_key");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_block_key(), target);
+  }
+
+  // string datanode_ip = 2;
+  if (!this->_internal_datanode_ip().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_datanode_ip().data(), static_cast<int>(this->_internal_datanode_ip().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityBlock.datanode_ip");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_datanode_ip(), target);
+  }
+
+  // int32 datanode_port = 3;
+  if (this->_internal_datanode_port() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_datanode_port(), target);
+  }
+
+  // int32 block_id = 4;
+  if (this->_internal_block_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_block_id(), target);
+  }
+
+  // int32 gf_coeff = 5;
+  if (this->_internal_gf_coeff() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_gf_coeff(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.DdlrtParityBlock)
+  return target;
+}
+
+size_t DdlrtParityBlock::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.DdlrtParityBlock)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string block_key = 1;
+  if (!this->_internal_block_key().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_block_key());
+  }
+
+  // string datanode_ip = 2;
+  if (!this->_internal_datanode_ip().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_datanode_ip());
+  }
+
+  // int32 datanode_port = 3;
+  if (this->_internal_datanode_port() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_datanode_port());
+  }
+
+  // int32 block_id = 4;
+  if (this->_internal_block_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_id());
+  }
+
+  // int32 gf_coeff = 5;
+  if (this->_internal_gf_coeff() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_gf_coeff());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DdlrtParityBlock::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DdlrtParityBlock::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DdlrtParityBlock::GetClassData() const { return &_class_data_; }
+
+
+void DdlrtParityBlock::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DdlrtParityBlock*>(&to_msg);
+  auto& from = static_cast<const DdlrtParityBlock&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.DdlrtParityBlock)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_block_key().empty()) {
+    _this->_internal_set_block_key(from._internal_block_key());
+  }
+  if (!from._internal_datanode_ip().empty()) {
+    _this->_internal_set_datanode_ip(from._internal_datanode_ip());
+  }
+  if (from._internal_datanode_port() != 0) {
+    _this->_internal_set_datanode_port(from._internal_datanode_port());
+  }
+  if (from._internal_block_id() != 0) {
+    _this->_internal_set_block_id(from._internal_block_id());
+  }
+  if (from._internal_gf_coeff() != 0) {
+    _this->_internal_set_gf_coeff(from._internal_gf_coeff());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DdlrtParityBlock::CopyFrom(const DdlrtParityBlock& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.DdlrtParityBlock)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DdlrtParityBlock::IsInitialized() const {
+  return true;
+}
+
+void DdlrtParityBlock::InternalSwap(DdlrtParityBlock* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.block_key_, lhs_arena,
+      &other->_impl_.block_key_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.datanode_ip_, lhs_arena,
+      &other->_impl_.datanode_ip_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DdlrtParityBlock, _impl_.gf_coeff_)
+      + sizeof(DdlrtParityBlock::_impl_.gf_coeff_)
+      - PROTOBUF_FIELD_OFFSET(DdlrtParityBlock, _impl_.datanode_port_)>(
+          reinterpret_cast<char*>(&_impl_.datanode_port_),
+          reinterpret_cast<char*>(&other->_impl_.datanode_port_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DdlrtParityBlock::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[23]);
+}
+
+// ===================================================================
+
+class DdlrtParityLeftPlan::_Internal {
+ public:
+};
+
+DdlrtParityLeftPlan::DdlrtParityLeftPlan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.DdlrtParityLeftPlan)
+}
+DdlrtParityLeftPlan::DdlrtParityLeftPlan(const DdlrtParityLeftPlan& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DdlrtParityLeftPlan* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.left_blocks_){from._impl_.left_blocks_}
+    , decltype(_impl_.target_keys_){from._impl_.target_keys_}
+    , decltype(_impl_.task_id_){}
+    , decltype(_impl_.block_size_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.task_id_, &from._impl_.task_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.block_size_) -
+    reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.block_size_));
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.DdlrtParityLeftPlan)
+}
+
+inline void DdlrtParityLeftPlan::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.left_blocks_){arena}
+    , decltype(_impl_.target_keys_){arena}
+    , decltype(_impl_.task_id_){uint64_t{0u}}
+    , decltype(_impl_.block_size_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+DdlrtParityLeftPlan::~DdlrtParityLeftPlan() {
+  // @@protoc_insertion_point(destructor:proxy_proto.DdlrtParityLeftPlan)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DdlrtParityLeftPlan::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.left_blocks_.~RepeatedPtrField();
+  _impl_.target_keys_.~RepeatedPtrField();
+}
+
+void DdlrtParityLeftPlan::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DdlrtParityLeftPlan::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.DdlrtParityLeftPlan)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.left_blocks_.Clear();
+  _impl_.target_keys_.Clear();
+  ::memset(&_impl_.task_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.block_size_) -
+      reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.block_size_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DdlrtParityLeftPlan::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 task_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.task_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 block_size = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.block_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_left_blocks(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string target_keys = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_target_keys();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityLeftPlan.target_keys"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DdlrtParityLeftPlan::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.DdlrtParityLeftPlan)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_task_id(), target);
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_block_size(), target);
+  }
+
+  // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_left_blocks_size()); i < n; i++) {
+    const auto& repfield = this->_internal_left_blocks(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated string target_keys = 4;
+  for (int i = 0, n = this->_internal_target_keys_size(); i < n; i++) {
+    const auto& s = this->_internal_target_keys(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityLeftPlan.target_keys");
+    target = stream->WriteString(4, s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.DdlrtParityLeftPlan)
+  return target;
+}
+
+size_t DdlrtParityLeftPlan::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.DdlrtParityLeftPlan)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+  total_size += 1UL * this->_internal_left_blocks_size();
+  for (const auto& msg : this->_impl_.left_blocks_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated string target_keys = 4;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.target_keys_.size());
+  for (int i = 0, n = _impl_.target_keys_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.target_keys_.Get(i));
+  }
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_task_id());
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_size());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DdlrtParityLeftPlan::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DdlrtParityLeftPlan::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DdlrtParityLeftPlan::GetClassData() const { return &_class_data_; }
+
+
+void DdlrtParityLeftPlan::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DdlrtParityLeftPlan*>(&to_msg);
+  auto& from = static_cast<const DdlrtParityLeftPlan&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.DdlrtParityLeftPlan)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.left_blocks_.MergeFrom(from._impl_.left_blocks_);
+  _this->_impl_.target_keys_.MergeFrom(from._impl_.target_keys_);
+  if (from._internal_task_id() != 0) {
+    _this->_internal_set_task_id(from._internal_task_id());
+  }
+  if (from._internal_block_size() != 0) {
+    _this->_internal_set_block_size(from._internal_block_size());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DdlrtParityLeftPlan::CopyFrom(const DdlrtParityLeftPlan& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.DdlrtParityLeftPlan)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DdlrtParityLeftPlan::IsInitialized() const {
+  return true;
+}
+
+void DdlrtParityLeftPlan::InternalSwap(DdlrtParityLeftPlan* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.left_blocks_.InternalSwap(&other->_impl_.left_blocks_);
+  _impl_.target_keys_.InternalSwap(&other->_impl_.target_keys_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DdlrtParityLeftPlan, _impl_.block_size_)
+      + sizeof(DdlrtParityLeftPlan::_impl_.block_size_)
+      - PROTOBUF_FIELD_OFFSET(DdlrtParityLeftPlan, _impl_.task_id_)>(
+          reinterpret_cast<char*>(&_impl_.task_id_),
+          reinterpret_cast<char*>(&other->_impl_.task_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DdlrtParityLeftPlan::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[24]);
+}
+
+// ===================================================================
+
+class DdlrtParityRightPlan::_Internal {
+ public:
+};
+
+DdlrtParityRightPlan::DdlrtParityRightPlan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.DdlrtParityRightPlan)
+}
+DdlrtParityRightPlan::DdlrtParityRightPlan(const DdlrtParityRightPlan& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DdlrtParityRightPlan* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.right_blocks_){from._impl_.right_blocks_}
+    , decltype(_impl_.left_proxy_ip_){}
+    , decltype(_impl_.task_id_){}
+    , decltype(_impl_.block_size_){}
+    , decltype(_impl_.left_proxy_data_port_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.left_proxy_ip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.left_proxy_ip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_left_proxy_ip().empty()) {
+    _this->_impl_.left_proxy_ip_.Set(from._internal_left_proxy_ip(),
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.task_id_, &from._impl_.task_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.left_proxy_data_port_) -
+    reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.left_proxy_data_port_));
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.DdlrtParityRightPlan)
+}
+
+inline void DdlrtParityRightPlan::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.right_blocks_){arena}
+    , decltype(_impl_.left_proxy_ip_){}
+    , decltype(_impl_.task_id_){uint64_t{0u}}
+    , decltype(_impl_.block_size_){0}
+    , decltype(_impl_.left_proxy_data_port_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.left_proxy_ip_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.left_proxy_ip_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+DdlrtParityRightPlan::~DdlrtParityRightPlan() {
+  // @@protoc_insertion_point(destructor:proxy_proto.DdlrtParityRightPlan)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DdlrtParityRightPlan::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.right_blocks_.~RepeatedPtrField();
+  _impl_.left_proxy_ip_.Destroy();
+}
+
+void DdlrtParityRightPlan::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DdlrtParityRightPlan::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.DdlrtParityRightPlan)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.right_blocks_.Clear();
+  _impl_.left_proxy_ip_.ClearToEmpty();
+  ::memset(&_impl_.task_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.left_proxy_data_port_) -
+      reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.left_proxy_data_port_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DdlrtParityRightPlan::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 task_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.task_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 block_size = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.block_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string left_proxy_ip = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_left_proxy_ip();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityRightPlan.left_proxy_ip"));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 left_proxy_data_port = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.left_proxy_data_port_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .proxy_proto.DdlrtParityBlock right_blocks = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_right_blocks(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DdlrtParityRightPlan::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.DdlrtParityRightPlan)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_task_id(), target);
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_block_size(), target);
+  }
+
+  // string left_proxy_ip = 3;
+  if (!this->_internal_left_proxy_ip().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_left_proxy_ip().data(), static_cast<int>(this->_internal_left_proxy_ip().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityRightPlan.left_proxy_ip");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_left_proxy_ip(), target);
+  }
+
+  // int32 left_proxy_data_port = 4;
+  if (this->_internal_left_proxy_data_port() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_left_proxy_data_port(), target);
+  }
+
+  // repeated .proxy_proto.DdlrtParityBlock right_blocks = 5;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_right_blocks_size()); i < n; i++) {
+    const auto& repfield = this->_internal_right_blocks(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(5, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.DdlrtParityRightPlan)
+  return target;
+}
+
+size_t DdlrtParityRightPlan::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.DdlrtParityRightPlan)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .proxy_proto.DdlrtParityBlock right_blocks = 5;
+  total_size += 1UL * this->_internal_right_blocks_size();
+  for (const auto& msg : this->_impl_.right_blocks_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string left_proxy_ip = 3;
+  if (!this->_internal_left_proxy_ip().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_left_proxy_ip());
+  }
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_task_id());
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_size());
+  }
+
+  // int32 left_proxy_data_port = 4;
+  if (this->_internal_left_proxy_data_port() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_left_proxy_data_port());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DdlrtParityRightPlan::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DdlrtParityRightPlan::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DdlrtParityRightPlan::GetClassData() const { return &_class_data_; }
+
+
+void DdlrtParityRightPlan::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DdlrtParityRightPlan*>(&to_msg);
+  auto& from = static_cast<const DdlrtParityRightPlan&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.DdlrtParityRightPlan)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.right_blocks_.MergeFrom(from._impl_.right_blocks_);
+  if (!from._internal_left_proxy_ip().empty()) {
+    _this->_internal_set_left_proxy_ip(from._internal_left_proxy_ip());
+  }
+  if (from._internal_task_id() != 0) {
+    _this->_internal_set_task_id(from._internal_task_id());
+  }
+  if (from._internal_block_size() != 0) {
+    _this->_internal_set_block_size(from._internal_block_size());
+  }
+  if (from._internal_left_proxy_data_port() != 0) {
+    _this->_internal_set_left_proxy_data_port(from._internal_left_proxy_data_port());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DdlrtParityRightPlan::CopyFrom(const DdlrtParityRightPlan& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.DdlrtParityRightPlan)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DdlrtParityRightPlan::IsInitialized() const {
+  return true;
+}
+
+void DdlrtParityRightPlan::InternalSwap(DdlrtParityRightPlan* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.right_blocks_.InternalSwap(&other->_impl_.right_blocks_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.left_proxy_ip_, lhs_arena,
+      &other->_impl_.left_proxy_ip_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DdlrtParityRightPlan, _impl_.left_proxy_data_port_)
+      + sizeof(DdlrtParityRightPlan::_impl_.left_proxy_data_port_)
+      - PROTOBUF_FIELD_OFFSET(DdlrtParityRightPlan, _impl_.task_id_)>(
+          reinterpret_cast<char*>(&_impl_.task_id_),
+          reinterpret_cast<char*>(&other->_impl_.task_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DdlrtParityRightPlan::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[25]);
+}
+
+// ===================================================================
+
+class DdlrtParityLocalPlan::_Internal {
+ public:
+};
+
+DdlrtParityLocalPlan::DdlrtParityLocalPlan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.DdlrtParityLocalPlan)
+}
+DdlrtParityLocalPlan::DdlrtParityLocalPlan(const DdlrtParityLocalPlan& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DdlrtParityLocalPlan* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.left_blocks_){from._impl_.left_blocks_}
+    , decltype(_impl_.right_blocks_){from._impl_.right_blocks_}
+    , decltype(_impl_.target_keys_){from._impl_.target_keys_}
+    , decltype(_impl_.task_id_){}
+    , decltype(_impl_.block_size_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.task_id_, &from._impl_.task_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.block_size_) -
+    reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.block_size_));
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.DdlrtParityLocalPlan)
+}
+
+inline void DdlrtParityLocalPlan::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.left_blocks_){arena}
+    , decltype(_impl_.right_blocks_){arena}
+    , decltype(_impl_.target_keys_){arena}
+    , decltype(_impl_.task_id_){uint64_t{0u}}
+    , decltype(_impl_.block_size_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+DdlrtParityLocalPlan::~DdlrtParityLocalPlan() {
+  // @@protoc_insertion_point(destructor:proxy_proto.DdlrtParityLocalPlan)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DdlrtParityLocalPlan::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.left_blocks_.~RepeatedPtrField();
+  _impl_.right_blocks_.~RepeatedPtrField();
+  _impl_.target_keys_.~RepeatedPtrField();
+}
+
+void DdlrtParityLocalPlan::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DdlrtParityLocalPlan::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.DdlrtParityLocalPlan)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.left_blocks_.Clear();
+  _impl_.right_blocks_.Clear();
+  _impl_.target_keys_.Clear();
+  ::memset(&_impl_.task_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.block_size_) -
+      reinterpret_cast<char*>(&_impl_.task_id_)) + sizeof(_impl_.block_size_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DdlrtParityLocalPlan::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 task_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.task_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 block_size = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.block_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_left_blocks(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .proxy_proto.DdlrtParityBlock right_blocks = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_right_blocks(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string target_keys = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_target_keys();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityLocalPlan.target_keys"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DdlrtParityLocalPlan::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.DdlrtParityLocalPlan)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_task_id(), target);
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_block_size(), target);
+  }
+
+  // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_left_blocks_size()); i < n; i++) {
+    const auto& repfield = this->_internal_left_blocks(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated .proxy_proto.DdlrtParityBlock right_blocks = 4;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_right_blocks_size()); i < n; i++) {
+    const auto& repfield = this->_internal_right_blocks(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(4, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated string target_keys = 5;
+  for (int i = 0, n = this->_internal_target_keys_size(); i < n; i++) {
+    const auto& s = this->_internal_target_keys(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityLocalPlan.target_keys");
+    target = stream->WriteString(5, s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.DdlrtParityLocalPlan)
+  return target;
+}
+
+size_t DdlrtParityLocalPlan::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.DdlrtParityLocalPlan)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .proxy_proto.DdlrtParityBlock left_blocks = 3;
+  total_size += 1UL * this->_internal_left_blocks_size();
+  for (const auto& msg : this->_impl_.left_blocks_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .proxy_proto.DdlrtParityBlock right_blocks = 4;
+  total_size += 1UL * this->_internal_right_blocks_size();
+  for (const auto& msg : this->_impl_.right_blocks_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated string target_keys = 5;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.target_keys_.size());
+  for (int i = 0, n = _impl_.target_keys_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.target_keys_.Get(i));
+  }
+
+  // uint64 task_id = 1;
+  if (this->_internal_task_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_task_id());
+  }
+
+  // int32 block_size = 2;
+  if (this->_internal_block_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_size());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DdlrtParityLocalPlan::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DdlrtParityLocalPlan::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DdlrtParityLocalPlan::GetClassData() const { return &_class_data_; }
+
+
+void DdlrtParityLocalPlan::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DdlrtParityLocalPlan*>(&to_msg);
+  auto& from = static_cast<const DdlrtParityLocalPlan&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.DdlrtParityLocalPlan)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.left_blocks_.MergeFrom(from._impl_.left_blocks_);
+  _this->_impl_.right_blocks_.MergeFrom(from._impl_.right_blocks_);
+  _this->_impl_.target_keys_.MergeFrom(from._impl_.target_keys_);
+  if (from._internal_task_id() != 0) {
+    _this->_internal_set_task_id(from._internal_task_id());
+  }
+  if (from._internal_block_size() != 0) {
+    _this->_internal_set_block_size(from._internal_block_size());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DdlrtParityLocalPlan::CopyFrom(const DdlrtParityLocalPlan& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.DdlrtParityLocalPlan)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DdlrtParityLocalPlan::IsInitialized() const {
+  return true;
+}
+
+void DdlrtParityLocalPlan::InternalSwap(DdlrtParityLocalPlan* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.left_blocks_.InternalSwap(&other->_impl_.left_blocks_);
+  _impl_.right_blocks_.InternalSwap(&other->_impl_.right_blocks_);
+  _impl_.target_keys_.InternalSwap(&other->_impl_.target_keys_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DdlrtParityLocalPlan, _impl_.block_size_)
+      + sizeof(DdlrtParityLocalPlan::_impl_.block_size_)
+      - PROTOBUF_FIELD_OFFSET(DdlrtParityLocalPlan, _impl_.task_id_)>(
+          reinterpret_cast<char*>(&_impl_.task_id_),
+          reinterpret_cast<char*>(&other->_impl_.task_id_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DdlrtParityLocalPlan::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[26]);
+}
+
+// ===================================================================
+
+class DdlrtParityReply::_Internal {
+ public:
+};
+
+DdlrtParityReply::DdlrtParityReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.DdlrtParityReply)
+}
+DdlrtParityReply::DdlrtParityReply(const DdlrtParityReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  DdlrtParityReply* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.error_){}
+    , decltype(_impl_.execution_seconds_){}
+    , decltype(_impl_.success_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.error_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.error_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_error().empty()) {
+    _this->_impl_.error_.Set(from._internal_error(),
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.execution_seconds_, &from._impl_.execution_seconds_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.success_) -
+    reinterpret_cast<char*>(&_impl_.execution_seconds_)) + sizeof(_impl_.success_));
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.DdlrtParityReply)
+}
+
+inline void DdlrtParityReply::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.error_){}
+    , decltype(_impl_.execution_seconds_){0}
+    , decltype(_impl_.success_){false}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.error_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.error_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+DdlrtParityReply::~DdlrtParityReply() {
+  // @@protoc_insertion_point(destructor:proxy_proto.DdlrtParityReply)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void DdlrtParityReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.error_.Destroy();
+}
+
+void DdlrtParityReply::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void DdlrtParityReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.DdlrtParityReply)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.error_.ClearToEmpty();
+  ::memset(&_impl_.execution_seconds_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.success_) -
+      reinterpret_cast<char*>(&_impl_.execution_seconds_)) + sizeof(_impl_.success_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DdlrtParityReply::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // bool success = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string error = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_error();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.DdlrtParityReply.error"));
+        } else
+          goto handle_unusual;
+        continue;
+      // double execution_seconds = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 25)) {
+          _impl_.execution_seconds_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* DdlrtParityReply::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.DdlrtParityReply)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
+  }
+
+  // string error = 2;
+  if (!this->_internal_error().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_error().data(), static_cast<int>(this->_internal_error().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.DdlrtParityReply.error");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_error(), target);
+  }
+
+  // double execution_seconds = 3;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_execution_seconds = this->_internal_execution_seconds();
+  uint64_t raw_execution_seconds;
+  memcpy(&raw_execution_seconds, &tmp_execution_seconds, sizeof(tmp_execution_seconds));
+  if (raw_execution_seconds != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteDoubleToArray(3, this->_internal_execution_seconds(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.DdlrtParityReply)
+  return target;
+}
+
+size_t DdlrtParityReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.DdlrtParityReply)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string error = 2;
+  if (!this->_internal_error().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_error());
+  }
+
+  // double execution_seconds = 3;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_execution_seconds = this->_internal_execution_seconds();
+  uint64_t raw_execution_seconds;
+  memcpy(&raw_execution_seconds, &tmp_execution_seconds, sizeof(tmp_execution_seconds));
+  if (raw_execution_seconds != 0) {
+    total_size += 1 + 8;
+  }
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DdlrtParityReply::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    DdlrtParityReply::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DdlrtParityReply::GetClassData() const { return &_class_data_; }
+
+
+void DdlrtParityReply::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<DdlrtParityReply*>(&to_msg);
+  auto& from = static_cast<const DdlrtParityReply&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.DdlrtParityReply)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_error().empty()) {
+    _this->_internal_set_error(from._internal_error());
+  }
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_execution_seconds = from._internal_execution_seconds();
+  uint64_t raw_execution_seconds;
+  memcpy(&raw_execution_seconds, &tmp_execution_seconds, sizeof(tmp_execution_seconds));
+  if (raw_execution_seconds != 0) {
+    _this->_internal_set_execution_seconds(from._internal_execution_seconds());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void DdlrtParityReply::CopyFrom(const DdlrtParityReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.DdlrtParityReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DdlrtParityReply::IsInitialized() const {
+  return true;
+}
+
+void DdlrtParityReply::InternalSwap(DdlrtParityReply* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.error_, lhs_arena,
+      &other->_impl_.error_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DdlrtParityReply, _impl_.success_)
+      + sizeof(DdlrtParityReply::_impl_.success_)
+      - PROTOBUF_FIELD_OFFSET(DdlrtParityReply, _impl_.execution_seconds_)>(
+          reinterpret_cast<char*>(&_impl_.execution_seconds_),
+          reinterpret_cast<char*>(&other->_impl_.execution_seconds_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DdlrtParityReply::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[27]);
+}
+
+// ===================================================================
+
+class CleanupBlocksPlan::_Internal {
+ public:
+};
+
+CleanupBlocksPlan::CleanupBlocksPlan(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:proxy_proto.CleanupBlocksPlan)
+}
+CleanupBlocksPlan::CleanupBlocksPlan(const CleanupBlocksPlan& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CleanupBlocksPlan* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_keys_){from._impl_.block_keys_}
+    , decltype(_impl_.datanode_ips_){from._impl_.datanode_ips_}
+    , decltype(_impl_.datanode_ports_){from._impl_.datanode_ports_}
+    , /*decltype(_impl_._datanode_ports_cached_byte_size_)*/{0}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:proxy_proto.CleanupBlocksPlan)
+}
+
+inline void CleanupBlocksPlan::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_keys_){arena}
+    , decltype(_impl_.datanode_ips_){arena}
+    , decltype(_impl_.datanode_ports_){arena}
+    , /*decltype(_impl_._datanode_ports_cached_byte_size_)*/{0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+CleanupBlocksPlan::~CleanupBlocksPlan() {
+  // @@protoc_insertion_point(destructor:proxy_proto.CleanupBlocksPlan)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CleanupBlocksPlan::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.block_keys_.~RepeatedPtrField();
+  _impl_.datanode_ips_.~RepeatedPtrField();
+  _impl_.datanode_ports_.~RepeatedField();
+}
+
+void CleanupBlocksPlan::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CleanupBlocksPlan::Clear() {
+// @@protoc_insertion_point(message_clear_start:proxy_proto.CleanupBlocksPlan)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.block_keys_.Clear();
+  _impl_.datanode_ips_.Clear();
+  _impl_.datanode_ports_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CleanupBlocksPlan::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated string block_keys = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_block_keys();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.CleanupBlocksPlan.block_keys"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string datanode_ips = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_datanode_ips();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "proxy_proto.CleanupBlocksPlan.datanode_ips"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 datanode_ports = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_datanode_ports(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 24) {
+          _internal_add_datanode_ports(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CleanupBlocksPlan::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:proxy_proto.CleanupBlocksPlan)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated string block_keys = 1;
+  for (int i = 0, n = this->_internal_block_keys_size(); i < n; i++) {
+    const auto& s = this->_internal_block_keys(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.CleanupBlocksPlan.block_keys");
+    target = stream->WriteString(1, s, target);
+  }
+
+  // repeated string datanode_ips = 2;
+  for (int i = 0, n = this->_internal_datanode_ips_size(); i < n; i++) {
+    const auto& s = this->_internal_datanode_ips(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "proxy_proto.CleanupBlocksPlan.datanode_ips");
+    target = stream->WriteString(2, s, target);
+  }
+
+  // repeated int32 datanode_ports = 3;
+  {
+    int byte_size = _impl_._datanode_ports_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          3, _internal_datanode_ports(), byte_size, target);
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:proxy_proto.CleanupBlocksPlan)
+  return target;
+}
+
+size_t CleanupBlocksPlan::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:proxy_proto.CleanupBlocksPlan)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string block_keys = 1;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.block_keys_.size());
+  for (int i = 0, n = _impl_.block_keys_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.block_keys_.Get(i));
+  }
+
+  // repeated string datanode_ips = 2;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.datanode_ips_.size());
+  for (int i = 0, n = _impl_.datanode_ips_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.datanode_ips_.Get(i));
+  }
+
+  // repeated int32 datanode_ports = 3;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.datanode_ports_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._datanode_ports_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CleanupBlocksPlan::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CleanupBlocksPlan::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CleanupBlocksPlan::GetClassData() const { return &_class_data_; }
+
+
+void CleanupBlocksPlan::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CleanupBlocksPlan*>(&to_msg);
+  auto& from = static_cast<const CleanupBlocksPlan&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:proxy_proto.CleanupBlocksPlan)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.block_keys_.MergeFrom(from._impl_.block_keys_);
+  _this->_impl_.datanode_ips_.MergeFrom(from._impl_.datanode_ips_);
+  _this->_impl_.datanode_ports_.MergeFrom(from._impl_.datanode_ports_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CleanupBlocksPlan::CopyFrom(const CleanupBlocksPlan& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:proxy_proto.CleanupBlocksPlan)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CleanupBlocksPlan::IsInitialized() const {
+  return true;
+}
+
+void CleanupBlocksPlan::InternalSwap(CleanupBlocksPlan* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.block_keys_.InternalSwap(&other->_impl_.block_keys_);
+  _impl_.datanode_ips_.InternalSwap(&other->_impl_.datanode_ips_);
+  _impl_.datanode_ports_.InternalSwap(&other->_impl_.datanode_ports_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CleanupBlocksPlan::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_proxy_2eproto_getter, &descriptor_table_proxy_2eproto_once,
+      file_level_metadata_proxy_2eproto[28]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace proxy_proto
 PROTOBUF_NAMESPACE_OPEN
@@ -9785,6 +11825,30 @@ Arena::CreateMaybeMessage< ::proxy_proto::GetReply >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::proxy_proto::StripeAndBlockIDs*
 Arena::CreateMaybeMessage< ::proxy_proto::StripeAndBlockIDs >(Arena* arena) {
   return Arena::CreateMessageInternal< ::proxy_proto::StripeAndBlockIDs >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::DdlrtParityBlock*
+Arena::CreateMaybeMessage< ::proxy_proto::DdlrtParityBlock >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::DdlrtParityBlock >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::DdlrtParityLeftPlan*
+Arena::CreateMaybeMessage< ::proxy_proto::DdlrtParityLeftPlan >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::DdlrtParityLeftPlan >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::DdlrtParityRightPlan*
+Arena::CreateMaybeMessage< ::proxy_proto::DdlrtParityRightPlan >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::DdlrtParityRightPlan >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::DdlrtParityLocalPlan*
+Arena::CreateMaybeMessage< ::proxy_proto::DdlrtParityLocalPlan >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::DdlrtParityLocalPlan >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::DdlrtParityReply*
+Arena::CreateMaybeMessage< ::proxy_proto::DdlrtParityReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::DdlrtParityReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::proxy_proto::CleanupBlocksPlan*
+Arena::CreateMaybeMessage< ::proxy_proto::CleanupBlocksPlan >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::proxy_proto::CleanupBlocksPlan >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

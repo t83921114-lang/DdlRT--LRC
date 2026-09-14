@@ -97,6 +97,9 @@ namespace ECProject
                                     unsigned char *buf_b, unsigned char coeff,
                                     unsigned char *buf_out);
 
+    void multiply_block_gf(int block_size, const unsigned char *input,
+                           unsigned char coeff, unsigned char *output);
+
     unsigned char
     gf_inv(unsigned char a);
 

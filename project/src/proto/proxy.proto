@@ -44,6 +44,11 @@ service proxyService {
   rpc relocateBlock(blockRelocPlan) returns (blockRelocReply);
   // get stripe
   rpc getBlocks(StripeAndBlockIDs) returns (GetReply);
+  // DdlRT_LRC parity merge: Coordinator schedules both roles.
+  rpc ddlrtParityLeft(DdlrtParityLeftPlan) returns (DdlrtParityReply);
+  rpc ddlrtParityRight(DdlrtParityRightPlan) returns (DdlrtParityReply);
+  rpc ddlrtParityLocal(DdlrtParityLocalPlan) returns (DdlrtParityReply);
+  rpc cleanupBlocks(CleanupBlocksPlan) returns (blockRelocReply);
 }
 
 // parity block recalculation
@@ -94,6 +99,7 @@ message helpRecalPlan {
 
 // block relocation
 message blockRelocPlan {
+  bool keep_source = 7;
   repeated string blocktomove = 1;
   repeated string fromdatanodeip = 2;
   repeated int32 fromdatanodeport = 3;
@@ -269,4 +275,47 @@ message StripeAndBlockIDs{
   repeated string block_keys = 6;
   repeated string datanodeips = 7;
   repeated int32 datanodeports = 8;
+}
+
+message DdlrtParityBlock {
+  string block_key = 1;
+  string datanode_ip = 2;
+  int32 datanode_port = 3;
+  int32 block_id = 4;
+  int32 gf_coeff = 5;
+}
+
+message DdlrtParityLeftPlan {
+  uint64 task_id = 1;
+  int32 block_size = 2;
+  repeated DdlrtParityBlock left_blocks = 3;
+  repeated string target_keys = 4;
+}
+
+message DdlrtParityRightPlan {
+  uint64 task_id = 1;
+  int32 block_size = 2;
+  string left_proxy_ip = 3;
+  int32 left_proxy_data_port = 4;
+  repeated DdlrtParityBlock right_blocks = 5;
+}
+
+message DdlrtParityLocalPlan {
+  uint64 task_id = 1;
+  int32 block_size = 2;
+  repeated DdlrtParityBlock left_blocks = 3;
+  repeated DdlrtParityBlock right_blocks = 4;
+  repeated string target_keys = 5;
+}
+
+message DdlrtParityReply {
+  bool success = 1;
+  string error = 2;
+  double execution_seconds = 3;
+}
+
+message CleanupBlocksPlan {
+  repeated string block_keys = 1;
+  repeated string datanode_ips = 2;
+  repeated int32 datanode_ports = 3;
 }

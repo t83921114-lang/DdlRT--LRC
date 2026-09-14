@@ -107,6 +107,18 @@ namespace ECProject
         grpc::ServerContext *context,
         const proxy_proto::StripeAndBlockIDs *request,
         proxy_proto::GetReply *response) override;
+    grpc::Status ddlrtParityLeft(
+        grpc::ServerContext *context, const proxy_proto::DdlrtParityLeftPlan *plan,
+        proxy_proto::DdlrtParityReply *response) override;
+    grpc::Status ddlrtParityRight(
+        grpc::ServerContext *context, const proxy_proto::DdlrtParityRightPlan *plan,
+        proxy_proto::DdlrtParityReply *response) override;
+    grpc::Status ddlrtParityLocal(
+        grpc::ServerContext *context, const proxy_proto::DdlrtParityLocalPlan *plan,
+        proxy_proto::DdlrtParityReply *response) override;
+    grpc::Status cleanupBlocks(
+        grpc::ServerContext *context, const proxy_proto::CleanupBlocksPlan *plan,
+        proxy_proto::blockRelocReply *response) override;
 
     bool SetToDatanode(const char *key, size_t key_length, const char *value, size_t value_length, const char *ip, int port, int offset);
     bool GetFromDatanode(const char *key, size_t key_length, char *value, size_t value_length, const char *ip, int port, int offset);
@@ -130,6 +142,8 @@ namespace ECProject
 
   private:
     std::mutex m_mutex;
+    std::mutex m_ddlrt_parity_mutex;
+    std::mutex m_data_accept_mutex;
     std::condition_variable cv;
     bool init_coordinator();
     bool init_datanodes(std::string datanodeinfo_path);

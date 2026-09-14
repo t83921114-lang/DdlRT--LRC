@@ -38,6 +38,10 @@ static const char* proxyService_method_names[] = {
   "/proxy_proto.proxyService/scheduleAppend2Datanode",
   "/proxy_proto.proxyService/relocateBlock",
   "/proxy_proto.proxyService/getBlocks",
+  "/proxy_proto.proxyService/ddlrtParityLeft",
+  "/proxy_proto.proxyService/ddlrtParityRight",
+  "/proxy_proto.proxyService/ddlrtParityLocal",
+  "/proxy_proto.proxyService/cleanupBlocks",
 };
 
 std::unique_ptr< proxyService::Stub> proxyService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -63,6 +67,10 @@ proxyService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chann
   , rpcmethod_scheduleAppend2Datanode_(proxyService_method_names[13], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_relocateBlock_(proxyService_method_names[14], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_getBlocks_(proxyService_method_names[15], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_ddlrtParityLeft_(proxyService_method_names[16], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_ddlrtParityRight_(proxyService_method_names[17], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_ddlrtParityLocal_(proxyService_method_names[18], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_cleanupBlocks_(proxyService_method_names[19], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status proxyService::Stub::checkalive(::grpc::ClientContext* context, const ::proxy_proto::CheckaliveCMD& request, ::proxy_proto::RequestResult* response) {
@@ -433,6 +441,98 @@ void proxyService::Stub::async::getBlocks(::grpc::ClientContext* context, const 
   return result;
 }
 
+::grpc::Status proxyService::Stub::ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::proxy_proto::DdlrtParityReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_ddlrtParityLeft_, context, request, response);
+}
+
+void proxyService::Stub::async::ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityLeft_, context, request, response, std::move(f));
+}
+
+void proxyService::Stub::async::ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityLeft_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::PrepareAsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::proxy_proto::DdlrtParityReply, ::proxy_proto::DdlrtParityLeftPlan, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_ddlrtParityLeft_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::AsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncddlrtParityLeftRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status proxyService::Stub::ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::proxy_proto::DdlrtParityReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_ddlrtParityRight_, context, request, response);
+}
+
+void proxyService::Stub::async::ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityRight_, context, request, response, std::move(f));
+}
+
+void proxyService::Stub::async::ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityRight_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::PrepareAsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::proxy_proto::DdlrtParityReply, ::proxy_proto::DdlrtParityRightPlan, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_ddlrtParityRight_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::AsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncddlrtParityRightRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status proxyService::Stub::ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::proxy_proto::DdlrtParityReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_ddlrtParityLocal_, context, request, response);
+}
+
+void proxyService::Stub::async::ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityLocal_, context, request, response, std::move(f));
+}
+
+void proxyService::Stub::async::ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_ddlrtParityLocal_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::PrepareAsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::proxy_proto::DdlrtParityReply, ::proxy_proto::DdlrtParityLocalPlan, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_ddlrtParityLocal_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* proxyService::Stub::AsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncddlrtParityLocalRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status proxyService::Stub::cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::proxy_proto::blockRelocReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_cleanupBlocks_, context, request, response);
+}
+
+void proxyService::Stub::async::cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_cleanupBlocks_, context, request, response, std::move(f));
+}
+
+void proxyService::Stub::async::cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_cleanupBlocks_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>* proxyService::Stub::PrepareAsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::proxy_proto::blockRelocReply, ::proxy_proto::CleanupBlocksPlan, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_cleanupBlocks_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>* proxyService::Stub::AsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsynccleanupBlocksRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 proxyService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       proxyService_method_names[0],
@@ -594,6 +694,46 @@ proxyService::Service::Service() {
              ::proxy_proto::GetReply* resp) {
                return service->getBlocks(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      proxyService_method_names[16],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< proxyService::Service, ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](proxyService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::proxy_proto::DdlrtParityLeftPlan* req,
+             ::proxy_proto::DdlrtParityReply* resp) {
+               return service->ddlrtParityLeft(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      proxyService_method_names[17],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< proxyService::Service, ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](proxyService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::proxy_proto::DdlrtParityRightPlan* req,
+             ::proxy_proto::DdlrtParityReply* resp) {
+               return service->ddlrtParityRight(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      proxyService_method_names[18],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< proxyService::Service, ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](proxyService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::proxy_proto::DdlrtParityLocalPlan* req,
+             ::proxy_proto::DdlrtParityReply* resp) {
+               return service->ddlrtParityLocal(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      proxyService_method_names[19],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< proxyService::Service, ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](proxyService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::proxy_proto::CleanupBlocksPlan* req,
+             ::proxy_proto::blockRelocReply* resp) {
+               return service->cleanupBlocks(ctx, req, resp);
+             }, this)));
 }
 
 proxyService::Service::~Service() {
@@ -705,6 +845,34 @@ proxyService::Service::~Service() {
 }
 
 ::grpc::Status proxyService::Service::getBlocks(::grpc::ServerContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status proxyService::Service::ddlrtParityLeft(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status proxyService::Service::ddlrtParityRight(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status proxyService::Service::ddlrtParityLocal(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status proxyService::Service::cleanupBlocks(::grpc::ServerContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response) {
   (void) context;
   (void) request;
   (void) response;

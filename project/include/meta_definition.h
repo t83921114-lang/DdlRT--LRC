@@ -41,6 +41,8 @@ namespace ECProject
     int map2group, map2stripe, map2cluster, map2node;
     int logical_rack_col = -1;
     int logical_node_col = -1;
+    int local_group = -1;
+    int source_stripe = -1;
     // belong to which client
     std::string map2key;
     Block(int block_id, const std::string block_key, char block_type, int block_size, int map2group,

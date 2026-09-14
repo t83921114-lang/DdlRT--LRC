@@ -172,6 +172,35 @@ class proxyService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::GetReply>> PrepareAsyncgetBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::GetReply>>(PrepareAsyncgetBlocksRaw(context, request, cq));
     }
+    // DdlRT_LRC parity merge: Coordinator schedules both roles.
+    virtual ::grpc::Status ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::proxy_proto::DdlrtParityReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityLeftRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityLeftRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::proxy_proto::DdlrtParityReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityRightRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityRightRaw(context, request, cq));
+    }
+    virtual ::grpc::Status ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::proxy_proto::DdlrtParityReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityLocalRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityLocalRaw(context, request, cq));
+    }
+    virtual ::grpc::Status cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::proxy_proto::blockRelocReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>> AsynccleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>>(AsynccleanupBlocksRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>> PrepareAsynccleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>>(PrepareAsynccleanupBlocksRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
@@ -216,6 +245,15 @@ class proxyService final {
       // get stripe
       virtual void getBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response, std::function<void(::grpc::Status)>) = 0;
       virtual void getBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // DdlRT_LRC parity merge: Coordinator schedules both roles.
+      virtual void ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -253,6 +291,14 @@ class proxyService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>* PrepareAsyncrelocateBlockRaw(::grpc::ClientContext* context, const ::proxy_proto::blockRelocPlan& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::GetReply>* AsyncgetBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::GetReply>* PrepareAsyncgetBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>* AsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::proxy_proto::blockRelocReply>* PrepareAsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -369,6 +415,34 @@ class proxyService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::GetReply>> PrepareAsyncgetBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::GetReply>>(PrepareAsyncgetBlocksRaw(context, request, cq));
     }
+    ::grpc::Status ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::proxy_proto::DdlrtParityReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityLeftRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityLeftRaw(context, request, cq));
+    }
+    ::grpc::Status ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::proxy_proto::DdlrtParityReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityRightRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityRightRaw(context, request, cq));
+    }
+    ::grpc::Status ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::proxy_proto::DdlrtParityReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> AsyncddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(AsyncddlrtParityLocalRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>> PrepareAsyncddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>>(PrepareAsyncddlrtParityLocalRaw(context, request, cq));
+    }
+    ::grpc::Status cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::proxy_proto::blockRelocReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>> AsynccleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>>(AsynccleanupBlocksRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>> PrepareAsynccleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>>(PrepareAsynccleanupBlocksRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
@@ -404,6 +478,14 @@ class proxyService final {
       void relocateBlock(::grpc::ClientContext* context, const ::proxy_proto::blockRelocPlan* request, ::proxy_proto::blockRelocReply* response, ::grpc::ClientUnaryReactor* reactor) override;
       void getBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response, std::function<void(::grpc::Status)>) override;
       void getBlocks(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) override;
+      void ddlrtParityLeft(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) override;
+      void ddlrtParityRight(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, std::function<void(::grpc::Status)>) override;
+      void ddlrtParityLocal(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, std::function<void(::grpc::Status)>) override;
+      void cleanupBlocks(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -447,6 +529,14 @@ class proxyService final {
     ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>* PrepareAsyncrelocateBlockRaw(::grpc::ClientContext* context, const ::proxy_proto::blockRelocPlan& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::proxy_proto::GetReply>* AsyncgetBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::proxy_proto::GetReply>* PrepareAsyncgetBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::StripeAndBlockIDs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityLeftRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLeftPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityRightRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityRightPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* AsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::DdlrtParityReply>* PrepareAsyncddlrtParityLocalRaw(::grpc::ClientContext* context, const ::proxy_proto::DdlrtParityLocalPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>* AsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::proxy_proto::blockRelocReply>* PrepareAsynccleanupBlocksRaw(::grpc::ClientContext* context, const ::proxy_proto::CleanupBlocksPlan& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_checkalive_;
     const ::grpc::internal::RpcMethod rpcmethod_encodeAndSetObject_;
     const ::grpc::internal::RpcMethod rpcmethod_decodeAndGetObject_;
@@ -463,6 +553,10 @@ class proxyService final {
     const ::grpc::internal::RpcMethod rpcmethod_scheduleAppend2Datanode_;
     const ::grpc::internal::RpcMethod rpcmethod_relocateBlock_;
     const ::grpc::internal::RpcMethod rpcmethod_getBlocks_;
+    const ::grpc::internal::RpcMethod rpcmethod_ddlrtParityLeft_;
+    const ::grpc::internal::RpcMethod rpcmethod_ddlrtParityRight_;
+    const ::grpc::internal::RpcMethod rpcmethod_ddlrtParityLocal_;
+    const ::grpc::internal::RpcMethod rpcmethod_cleanupBlocks_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -495,6 +589,11 @@ class proxyService final {
     virtual ::grpc::Status relocateBlock(::grpc::ServerContext* context, const ::proxy_proto::blockRelocPlan* request, ::proxy_proto::blockRelocReply* response);
     // get stripe
     virtual ::grpc::Status getBlocks(::grpc::ServerContext* context, const ::proxy_proto::StripeAndBlockIDs* request, ::proxy_proto::GetReply* response);
+    // DdlRT_LRC parity merge: Coordinator schedules both roles.
+    virtual ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response);
+    virtual ::grpc::Status ddlrtParityRight(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response);
+    virtual ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response);
+    virtual ::grpc::Status cleanupBlocks(::grpc::ServerContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_checkalive : public BaseClass {
@@ -816,7 +915,87 @@ class proxyService final {
       ::grpc::Service::RequestAsyncUnary(15, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_checkalive<WithAsyncMethod_encodeAndSetObject<WithAsyncMethod_decodeAndGetObject<WithAsyncMethod_degradedRead<WithAsyncMethod_degradedRead2Client<WithAsyncMethod_degradedReadBreakdown<WithAsyncMethod_degradedRead2ClientBreakdown<WithAsyncMethod_degradedReadWithBlockStripeID<WithAsyncMethod_partialDecoding<WithAsyncMethod_recovery<WithAsyncMethod_recoveryBreakdown<WithAsyncMethod_multipleRecovery<WithAsyncMethod_deleteBlock<WithAsyncMethod_scheduleAppend2Datanode<WithAsyncMethod_relocateBlock<WithAsyncMethod_getBlocks<Service > > > > > > > > > > > > > > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodAsync(16);
+    }
+    ~WithAsyncMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityLeft(::grpc::ServerContext* context, ::proxy_proto::DdlrtParityLeftPlan* request, ::grpc::ServerAsyncResponseWriter< ::proxy_proto::DdlrtParityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(16, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodAsync(17);
+    }
+    ~WithAsyncMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityRight(::grpc::ServerContext* context, ::proxy_proto::DdlrtParityRightPlan* request, ::grpc::ServerAsyncResponseWriter< ::proxy_proto::DdlrtParityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(17, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodAsync(18);
+    }
+    ~WithAsyncMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityLocal(::grpc::ServerContext* context, ::proxy_proto::DdlrtParityLocalPlan* request, ::grpc::ServerAsyncResponseWriter< ::proxy_proto::DdlrtParityReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(18, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodAsync(19);
+    }
+    ~WithAsyncMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestcleanupBlocks(::grpc::ServerContext* context, ::proxy_proto::CleanupBlocksPlan* request, ::grpc::ServerAsyncResponseWriter< ::proxy_proto::blockRelocReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(19, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_checkalive<WithAsyncMethod_encodeAndSetObject<WithAsyncMethod_decodeAndGetObject<WithAsyncMethod_degradedRead<WithAsyncMethod_degradedRead2Client<WithAsyncMethod_degradedReadBreakdown<WithAsyncMethod_degradedRead2ClientBreakdown<WithAsyncMethod_degradedReadWithBlockStripeID<WithAsyncMethod_partialDecoding<WithAsyncMethod_recovery<WithAsyncMethod_recoveryBreakdown<WithAsyncMethod_multipleRecovery<WithAsyncMethod_deleteBlock<WithAsyncMethod_scheduleAppend2Datanode<WithAsyncMethod_relocateBlock<WithAsyncMethod_getBlocks<WithAsyncMethod_ddlrtParityLeft<WithAsyncMethod_ddlrtParityRight<WithAsyncMethod_ddlrtParityLocal<WithAsyncMethod_cleanupBlocks<Service > > > > > > > > > > > > > > > > > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_checkalive : public BaseClass {
    private:
@@ -1249,7 +1428,115 @@ class proxyService final {
     virtual ::grpc::ServerUnaryReactor* getBlocks(
       ::grpc::CallbackServerContext* /*context*/, const ::proxy_proto::StripeAndBlockIDs* /*request*/, ::proxy_proto::GetReply* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_checkalive<WithCallbackMethod_encodeAndSetObject<WithCallbackMethod_decodeAndGetObject<WithCallbackMethod_degradedRead<WithCallbackMethod_degradedRead2Client<WithCallbackMethod_degradedReadBreakdown<WithCallbackMethod_degradedRead2ClientBreakdown<WithCallbackMethod_degradedReadWithBlockStripeID<WithCallbackMethod_partialDecoding<WithCallbackMethod_recovery<WithCallbackMethod_recoveryBreakdown<WithCallbackMethod_multipleRecovery<WithCallbackMethod_deleteBlock<WithCallbackMethod_scheduleAppend2Datanode<WithCallbackMethod_relocateBlock<WithCallbackMethod_getBlocks<Service > > > > > > > > > > > > > > > > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodCallback(16,
+          new ::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::proxy_proto::DdlrtParityLeftPlan* request, ::proxy_proto::DdlrtParityReply* response) { return this->ddlrtParityLeft(context, request, response); }));}
+    void SetMessageAllocatorFor_ddlrtParityLeft(
+        ::grpc::MessageAllocator< ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(16);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityLeft(
+      ::grpc::CallbackServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodCallback(17,
+          new ::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::proxy_proto::DdlrtParityRightPlan* request, ::proxy_proto::DdlrtParityReply* response) { return this->ddlrtParityRight(context, request, response); }));}
+    void SetMessageAllocatorFor_ddlrtParityRight(
+        ::grpc::MessageAllocator< ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(17);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityRight(
+      ::grpc::CallbackServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodCallback(18,
+          new ::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::proxy_proto::DdlrtParityLocalPlan* request, ::proxy_proto::DdlrtParityReply* response) { return this->ddlrtParityLocal(context, request, response); }));}
+    void SetMessageAllocatorFor_ddlrtParityLocal(
+        ::grpc::MessageAllocator< ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(18);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityLocal(
+      ::grpc::CallbackServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodCallback(19,
+          new ::grpc::internal::CallbackUnaryHandler< ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::proxy_proto::CleanupBlocksPlan* request, ::proxy_proto::blockRelocReply* response) { return this->cleanupBlocks(context, request, response); }));}
+    void SetMessageAllocatorFor_cleanupBlocks(
+        ::grpc::MessageAllocator< ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(19);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* cleanupBlocks(
+      ::grpc::CallbackServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_checkalive<WithCallbackMethod_encodeAndSetObject<WithCallbackMethod_decodeAndGetObject<WithCallbackMethod_degradedRead<WithCallbackMethod_degradedRead2Client<WithCallbackMethod_degradedReadBreakdown<WithCallbackMethod_degradedRead2ClientBreakdown<WithCallbackMethod_degradedReadWithBlockStripeID<WithCallbackMethod_partialDecoding<WithCallbackMethod_recovery<WithCallbackMethod_recoveryBreakdown<WithCallbackMethod_multipleRecovery<WithCallbackMethod_deleteBlock<WithCallbackMethod_scheduleAppend2Datanode<WithCallbackMethod_relocateBlock<WithCallbackMethod_getBlocks<WithCallbackMethod_ddlrtParityLeft<WithCallbackMethod_ddlrtParityRight<WithCallbackMethod_ddlrtParityLocal<WithCallbackMethod_cleanupBlocks<Service > > > > > > > > > > > > > > > > > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_checkalive : public BaseClass {
@@ -1519,6 +1806,74 @@ class proxyService final {
     }
     // disable synchronous version of this method
     ::grpc::Status getBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::StripeAndBlockIDs* /*request*/, ::proxy_proto::GetReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodGeneric(16);
+    }
+    ~WithGenericMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodGeneric(17);
+    }
+    ~WithGenericMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodGeneric(18);
+    }
+    ~WithGenericMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodGeneric(19);
+    }
+    ~WithGenericMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -1841,6 +2196,86 @@ class proxyService final {
     }
     void RequestgetBlocks(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(15, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodRaw(16);
+    }
+    ~WithRawMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityLeft(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(16, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodRaw(17);
+    }
+    ~WithRawMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityRight(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(17, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodRaw(18);
+    }
+    ~WithRawMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestddlrtParityLocal(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(18, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodRaw(19);
+    }
+    ~WithRawMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestcleanupBlocks(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(19, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -2193,6 +2628,94 @@ class proxyService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* getBlocks(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodRawCallback(16,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ddlrtParityLeft(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityLeft(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodRawCallback(17,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ddlrtParityRight(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityRight(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodRawCallback(18,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->ddlrtParityLocal(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* ddlrtParityLocal(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodRawCallback(19,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->cleanupBlocks(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* cleanupBlocks(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -2627,9 +3150,117 @@ class proxyService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedgetBlocks(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::proxy_proto::StripeAndBlockIDs,::proxy_proto::GetReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_checkalive<WithStreamedUnaryMethod_encodeAndSetObject<WithStreamedUnaryMethod_decodeAndGetObject<WithStreamedUnaryMethod_degradedRead<WithStreamedUnaryMethod_degradedRead2Client<WithStreamedUnaryMethod_degradedReadBreakdown<WithStreamedUnaryMethod_degradedRead2ClientBreakdown<WithStreamedUnaryMethod_degradedReadWithBlockStripeID<WithStreamedUnaryMethod_partialDecoding<WithStreamedUnaryMethod_recovery<WithStreamedUnaryMethod_recoveryBreakdown<WithStreamedUnaryMethod_multipleRecovery<WithStreamedUnaryMethod_deleteBlock<WithStreamedUnaryMethod_scheduleAppend2Datanode<WithStreamedUnaryMethod_relocateBlock<WithStreamedUnaryMethod_getBlocks<Service > > > > > > > > > > > > > > > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ddlrtParityLeft : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ddlrtParityLeft() {
+      ::grpc::Service::MarkMethodStreamed(16,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::proxy_proto::DdlrtParityLeftPlan, ::proxy_proto::DdlrtParityReply>* streamer) {
+                       return this->StreamedddlrtParityLeft(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ddlrtParityLeft() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ddlrtParityLeft(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLeftPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedddlrtParityLeft(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::proxy_proto::DdlrtParityLeftPlan,::proxy_proto::DdlrtParityReply>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ddlrtParityRight : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ddlrtParityRight() {
+      ::grpc::Service::MarkMethodStreamed(17,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::proxy_proto::DdlrtParityRightPlan, ::proxy_proto::DdlrtParityReply>* streamer) {
+                       return this->StreamedddlrtParityRight(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ddlrtParityRight() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ddlrtParityRight(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityRightPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedddlrtParityRight(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::proxy_proto::DdlrtParityRightPlan,::proxy_proto::DdlrtParityReply>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_ddlrtParityLocal : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_ddlrtParityLocal() {
+      ::grpc::Service::MarkMethodStreamed(18,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::proxy_proto::DdlrtParityLocalPlan, ::proxy_proto::DdlrtParityReply>* streamer) {
+                       return this->StreamedddlrtParityLocal(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_ddlrtParityLocal() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status ddlrtParityLocal(::grpc::ServerContext* /*context*/, const ::proxy_proto::DdlrtParityLocalPlan* /*request*/, ::proxy_proto::DdlrtParityReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedddlrtParityLocal(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::proxy_proto::DdlrtParityLocalPlan,::proxy_proto::DdlrtParityReply>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_cleanupBlocks : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_cleanupBlocks() {
+      ::grpc::Service::MarkMethodStreamed(19,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::proxy_proto::CleanupBlocksPlan, ::proxy_proto::blockRelocReply>* streamer) {
+                       return this->StreamedcleanupBlocks(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_cleanupBlocks() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status cleanupBlocks(::grpc::ServerContext* /*context*/, const ::proxy_proto::CleanupBlocksPlan* /*request*/, ::proxy_proto::blockRelocReply* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedcleanupBlocks(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::proxy_proto::CleanupBlocksPlan,::proxy_proto::blockRelocReply>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_checkalive<WithStreamedUnaryMethod_encodeAndSetObject<WithStreamedUnaryMethod_decodeAndGetObject<WithStreamedUnaryMethod_degradedRead<WithStreamedUnaryMethod_degradedRead2Client<WithStreamedUnaryMethod_degradedReadBreakdown<WithStreamedUnaryMethod_degradedRead2ClientBreakdown<WithStreamedUnaryMethod_degradedReadWithBlockStripeID<WithStreamedUnaryMethod_partialDecoding<WithStreamedUnaryMethod_recovery<WithStreamedUnaryMethod_recoveryBreakdown<WithStreamedUnaryMethod_multipleRecovery<WithStreamedUnaryMethod_deleteBlock<WithStreamedUnaryMethod_scheduleAppend2Datanode<WithStreamedUnaryMethod_relocateBlock<WithStreamedUnaryMethod_getBlocks<WithStreamedUnaryMethod_ddlrtParityLeft<WithStreamedUnaryMethod_ddlrtParityRight<WithStreamedUnaryMethod_ddlrtParityLocal<WithStreamedUnaryMethod_cleanupBlocks<Service > > > > > > > > > > > > > > > > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_checkalive<WithStreamedUnaryMethod_encodeAndSetObject<WithStreamedUnaryMethod_decodeAndGetObject<WithStreamedUnaryMethod_degradedRead<WithStreamedUnaryMethod_degradedRead2Client<WithStreamedUnaryMethod_degradedReadBreakdown<WithStreamedUnaryMethod_degradedRead2ClientBreakdown<WithStreamedUnaryMethod_degradedReadWithBlockStripeID<WithStreamedUnaryMethod_partialDecoding<WithStreamedUnaryMethod_recovery<WithStreamedUnaryMethod_recoveryBreakdown<WithStreamedUnaryMethod_multipleRecovery<WithStreamedUnaryMethod_deleteBlock<WithStreamedUnaryMethod_scheduleAppend2Datanode<WithStreamedUnaryMethod_relocateBlock<WithStreamedUnaryMethod_getBlocks<Service > > > > > > > > > > > > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_checkalive<WithStreamedUnaryMethod_encodeAndSetObject<WithStreamedUnaryMethod_decodeAndGetObject<WithStreamedUnaryMethod_degradedRead<WithStreamedUnaryMethod_degradedRead2Client<WithStreamedUnaryMethod_degradedReadBreakdown<WithStreamedUnaryMethod_degradedRead2ClientBreakdown<WithStreamedUnaryMethod_degradedReadWithBlockStripeID<WithStreamedUnaryMethod_partialDecoding<WithStreamedUnaryMethod_recovery<WithStreamedUnaryMethod_recoveryBreakdown<WithStreamedUnaryMethod_multipleRecovery<WithStreamedUnaryMethod_deleteBlock<WithStreamedUnaryMethod_scheduleAppend2Datanode<WithStreamedUnaryMethod_relocateBlock<WithStreamedUnaryMethod_getBlocks<WithStreamedUnaryMethod_ddlrtParityLeft<WithStreamedUnaryMethod_ddlrtParityRight<WithStreamedUnaryMethod_ddlrtParityLocal<WithStreamedUnaryMethod_cleanupBlocks<Service > > > > > > > > > > > > > > > > > > > > StreamedService;
 };
 
 }  // namespace proxy_proto

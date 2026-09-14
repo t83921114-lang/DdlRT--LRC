@@ -289,7 +289,10 @@ namespace ECProject
       set_info.set_proxy_port(m_port + offset);
       set_info.set_ispull(false);
       std::string node_ip_port = std::string(ip) + ":" + std::to_string(port);
-      grpc::Status stat = m_datanode_ptrs[node_ip_port]->handleSet(&context, set_info, &result);
+      auto stub = m_datanode_ptrs.find(node_ip_port);
+      if (stub == m_datanode_ptrs.end()) return false;
+      grpc::Status stat = stub->second->handleSet(&context, set_info, &result);
+      if (!stat.ok()) return false;
 
       asio::error_code error;
       asio::io_context io_context;
@@ -297,12 +300,14 @@ namespace ECProject
       asio::ip::tcp::resolver resolver(io_context);
       asio::error_code con_error;
       asio::connect(socket, resolver.resolve({std::string(ip), std::to_string(port + ECProject::DATANODE_PORT_SHIFT)}), con_error);
-      if (!con_error && IF_DEBUG)
+      if (con_error) return false;
+      if (IF_DEBUG)
       {
         std::cout << "Connect to " << ip << ":" << port + ECProject::DATANODE_PORT_SHIFT << " success!" << std::endl;
       }
 
       asio::write(socket, asio::buffer(value, value_length), error);
+      if (error) return false;
 
       asio::error_code ignore_ec;
       socket.shutdown(asio::ip::tcp::socket::shutdown_both, ignore_ec);
@@ -316,6 +321,7 @@ namespace ECProject
     catch (const std::exception &e)
     {
       std::cerr << e.what() << '\n';
+      return false;
     }
 
     return true;
@@ -364,6 +370,7 @@ namespace ECProject
       asio::connect(socket, resolver.resolve({std::string(ip), std::to_string(port + ECProject::DATANODE_PORT_SHIFT)}));
       asio::error_code ec;
       asio::read(socket, asio::buffer(value, value_length), ec);
+      if (ec) return false;
       asio::error_code ignore_ec;
       socket.shutdown(asio::ip::tcp::socket::shutdown_both, ignore_ec);
       socket.close(ignore_ec);
@@ -454,17 +461,14 @@ namespace ECProject
       get_info.set_proxy_ip(m_ip);
       get_info.set_proxy_port(m_port);
       std::string node_ip_port = std::string(ip) + ":" + std::to_string(port);
-      grpc::Status stat = m_datanode_ptrs[node_ip_port]->handleGet(&context, get_info, &result);
-      if (stat.ok() && IF_DEBUG)
+      auto stub = m_datanode_ptrs.find(node_ip_port);
+      if (stub == m_datanode_ptrs.end()) return false;
+      grpc::Status stat = stub->second->handleGet(&context, get_info, &result);
+      if (!stat.ok()) return false;
+      if (IF_DEBUG)
       {
         std::cout << "[Proxy" << m_self_cluster_id << "][GET]"
                   << " Call datanode to handle get " << key << std::endl;
-      }
-      else if (IF_DEBUG)
-      {
-        std::cout << "[Proxy" << m_self_cluster_id << "][GET]"
-                  << " Call datanode to handle get " << key << " failed!" << std::endl;
-        return false;
       }
 
       asio::io_context io_context;
@@ -473,6 +477,7 @@ namespace ECProject
       asio::connect(socket, resolver.resolve({std::string(ip), std::to_string(port + ECProject::DATANODE_PORT_SHIFT)}));
       asio::error_code ec;
       asio::read(socket, asio::buffer(value, value_length), ec);
+      if (ec) return false;
       asio::error_code ignore_ec;
       socket.shutdown(asio::ip::tcp::socket::shutdown_both, ignore_ec);
       socket.close(ignore_ec);
@@ -487,6 +492,7 @@ namespace ECProject
     catch (const std::exception &e)
     {
       std::cerr << e.what() << '\n';
+      return false;
     }
 
     return true;
@@ -569,7 +575,7 @@ namespace ECProject
       try
       {
         asio::ip::tcp::socket socket_data(io_context);
-        acceptor.accept(socket_data);
+        { std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex); acceptor.accept(socket_data); }
         asio::error_code error;
 
         // assert(m_pre_allocated_buffer_queue.size() > 0 && "Pre-allocated buffer queue is empty");
@@ -715,7 +721,7 @@ namespace ECProject
         // read the key and value in the socket sent by client
         // initialize the socket of reading key and value
         asio::ip::tcp::socket socket_data(io_context);
-        acceptor.accept(socket_data);
+        { std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex); acceptor.accept(socket_data); }
         asio::error_code error;
 
         int extend_value_size_byte = block_size * k;
@@ -1222,7 +1228,7 @@ namespace ECProject
         //asio::io_context io_context;
         asio::ip::tcp::socket socket_data(io_context);
         asio::connect(socket_data, endpoints);
-        //acceptor.accept(socket_data);
+        //{ std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex); acceptor.accept(socket_data); }
         if (error)
         {
           std::cout << "error in connect" << std::endl;
@@ -1661,7 +1667,7 @@ namespace ECProject
             //asio::io_context io_context;
             asio::ip::tcp::socket socket(this->io_context);
             //asio::ip::tcp::resolver resolver(io_context);
-            this->acceptor.accept(socket);
+            { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
             std::cout << "connected to porxy" << std::endl;
             asio::error_code error;
             size_t len = asio::read(socket, asio::buffer(cross_rack_bufs[i], this->m_sys_config->BlockSize), error);
@@ -1860,7 +1866,7 @@ namespace ECProject
             //asio::io_context io_context;
             asio::ip::tcp::socket socket(this->io_context);
             //asio::ip::tcp::resolver resolver(io_context);
-            this->acceptor.accept(socket);
+            { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
             std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
             accept_start_time[i] = std::chrono::duration_cast<std::chrono::duration<double>>(start.time_since_epoch()).count();
             std::cout << "connected to porxy" << std::endl;
@@ -2053,7 +2059,7 @@ namespace ECProject
             get_from_proxies_threads.push_back(std::thread([i, this, &cross_rack_bufs]()mutable{
               asio::ip::tcp::socket socket(this->io_context);
               std::cout << "connecting to proxy" << std::endl;
-              this->acceptor.accept(socket);
+              { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
               std::cout << "connected to porxy" << std::endl;
               asio::error_code error;
               asio::read(socket, asio::buffer(cross_rack_bufs[i], this->m_sys_config->BlockSize), error);
@@ -2239,7 +2245,7 @@ namespace ECProject
               asio::ip::tcp::socket socket(this->io_context);
               //asio::ip::tcp::resolver resolver(io_context);
               std::cout << "connecting to proxy" << std::endl;
-              this->acceptor.accept(socket);
+              { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
               std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
               accept_start_time[i] = std::chrono::duration_cast<std::chrono::duration<double>>(start.time_since_epoch()).count();
               std::cout << "connected to porxy" << std::endl;
@@ -2426,7 +2432,7 @@ namespace ECProject
         try
         {
           asio::ip::tcp::socket socket(this->io_context);
-          this->acceptor.accept(socket);
+          { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
           asio::error_code ec;
           size_t read_bytes = 0;
           while (read_bytes < per_proxy_len)
@@ -2552,7 +2558,9 @@ namespace ECProject
         continue;
       }
 
-      DelInDatanode(block_key, from_ip + ":" + std::to_string(from_port));
+      if (!plan->keep_source()) {
+        DelInDatanode(block_key, from_ip + ":" + std::to_string(from_port));
+      }
 
       std::cout << "[Proxy" << m_self_cluster_id << "][Relocate] moved " << block_key
                 << " from " << from_ip << ":" << from_port
@@ -2634,6 +2642,188 @@ namespace ECProject
       std::cout << e.what() << std::endl;
     }
 
+    return grpc::Status::OK;
+  }
+
+
+  grpc::Status ProxyImpl::ddlrtParityLeft(
+      grpc::ServerContext *context, const proxy_proto::DdlrtParityLeftPlan *plan,
+      proxy_proto::DdlrtParityReply *response) {
+    const auto started = std::chrono::steady_clock::now();
+    std::lock_guard<std::mutex> task_lock(m_ddlrt_parity_mutex);
+    try {
+      const int count = plan->left_blocks_size();
+      const int block_size = plan->block_size();
+      if (count <= 0 || plan->target_keys_size() != count || block_size <= 0)
+        throw std::runtime_error("invalid DdlRT left parity plan");
+      std::vector<std::vector<unsigned char>> left(
+          count, std::vector<unsigned char>(static_cast<size_t>(block_size)));
+      for (int i = 0; i < count; ++i) {
+        const auto &b = plan->left_blocks(i);
+        if (!GetFromDatanode(b.block_key(), reinterpret_cast<char *>(left[i].data()),
+                             block_size, b.datanode_ip().c_str(), b.datanode_port()))
+          throw std::runtime_error("failed to read left parity " + b.block_key());
+      }
+
+      asio::ip::tcp::socket socket(io_context);
+      {
+        std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex);
+        asio::error_code accept_error;
+        acceptor.non_blocking(true, accept_error);
+        if (accept_error) throw std::runtime_error("failed to configure parity acceptor");
+        while (true) {
+          acceptor.accept(socket, accept_error);
+          if (!accept_error) break;
+          if (accept_error != asio::error::would_block &&
+              accept_error != asio::error::try_again) {
+            acceptor.non_blocking(false);
+            throw std::runtime_error("failed to accept DdlRT parity connection");
+          }
+          if (context->IsCancelled()) {
+            acceptor.non_blocking(false);
+            throw std::runtime_error("DdlRT parity receive cancelled");
+          }
+          std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        acceptor.non_blocking(false);
+      }
+      uint32_t magic = 0, version = 0, wire_count = 0, wire_size = 0;
+      uint64_t task_id = 0;
+      asio::read(socket, asio::buffer(&magic, sizeof(magic)));
+      asio::read(socket, asio::buffer(&version, sizeof(version)));
+      asio::read(socket, asio::buffer(&task_id, sizeof(task_id)));
+      asio::read(socket, asio::buffer(&wire_count, sizeof(wire_count)));
+      asio::read(socket, asio::buffer(&wire_size, sizeof(wire_size)));
+      if (magic != 0x44524c43U || version != 1U || task_id != plan->task_id() ||
+          wire_count != static_cast<uint32_t>(count) ||
+          wire_size != static_cast<uint32_t>(block_size))
+        throw std::runtime_error("invalid DdlRT parity TCP frame header");
+
+      std::vector<unsigned char> right(static_cast<size_t>(block_size));
+      std::vector<unsigned char> output(static_cast<size_t>(block_size));
+      for (int item = 0; item < count; ++item) {
+        uint32_t index = 0, length = 0;
+        asio::read(socket, asio::buffer(&index, sizeof(index)));
+        asio::read(socket, asio::buffer(&length, sizeof(length)));
+        if (index >= static_cast<uint32_t>(count) ||
+            length != static_cast<uint32_t>(block_size))
+          throw std::runtime_error("invalid DdlRT parity TCP frame item");
+        asio::read(socket, asio::buffer(right.data(), right.size()));
+        void *buffers[3] = {left[index].data(), right.data(), output.data()};
+        xor_avx(3, block_size, buffers);
+        const auto &target = plan->left_blocks(static_cast<int>(index));
+        const std::string &key = plan->target_keys(static_cast<int>(index));
+        if (!SetToDatanode(key.c_str(), key.size(),
+                           reinterpret_cast<const char *>(output.data()), block_size,
+                           target.datanode_ip().c_str(), target.datanode_port(), 0))
+          throw std::runtime_error("failed to write merged parity " + key);
+      }
+      response->set_success(true);
+    } catch (const std::exception &e) {
+      response->set_success(false);
+      response->set_error(e.what());
+    }
+    response->set_execution_seconds(std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - started).count());
+    return grpc::Status::OK;
+  }
+
+  grpc::Status ProxyImpl::ddlrtParityRight(
+      grpc::ServerContext *, const proxy_proto::DdlrtParityRightPlan *plan,
+      proxy_proto::DdlrtParityReply *response) {
+    const auto started = std::chrono::steady_clock::now();
+    try {
+      const int count = plan->right_blocks_size();
+      const int block_size = plan->block_size();
+      if (count <= 0 || block_size <= 0) throw std::runtime_error("invalid DdlRT right parity plan");
+      asio::io_context local_io;
+      asio::ip::tcp::socket socket(local_io);
+      asio::ip::tcp::resolver resolver(local_io);
+      asio::connect(socket, resolver.resolve(plan->left_proxy_ip(),
+                                             std::to_string(plan->left_proxy_data_port())));
+      const uint32_t magic = 0x44524c43U, version = 1U;
+      const uint64_t task_id = plan->task_id();
+      const uint32_t wire_count = static_cast<uint32_t>(count);
+      const uint32_t wire_size = static_cast<uint32_t>(block_size);
+      asio::write(socket, asio::buffer(&magic, sizeof(magic)));
+      asio::write(socket, asio::buffer(&version, sizeof(version)));
+      asio::write(socket, asio::buffer(&task_id, sizeof(task_id)));
+      asio::write(socket, asio::buffer(&wire_count, sizeof(wire_count)));
+      asio::write(socket, asio::buffer(&wire_size, sizeof(wire_size)));
+      std::vector<unsigned char> input(static_cast<size_t>(block_size));
+      std::vector<unsigned char> contribution(static_cast<size_t>(block_size));
+      for (int i = 0; i < count; ++i) {
+        const auto &b = plan->right_blocks(i);
+        if (!GetFromDatanode(b.block_key(), reinterpret_cast<char *>(input.data()),
+                             block_size, b.datanode_ip().c_str(), b.datanode_port()))
+          throw std::runtime_error("failed to read right parity " + b.block_key());
+        multiply_block_gf(block_size, input.data(),
+                          static_cast<unsigned char>(b.gf_coeff()), contribution.data());
+        const uint32_t index = static_cast<uint32_t>(i);
+        const uint32_t length = static_cast<uint32_t>(block_size);
+        asio::write(socket, asio::buffer(&index, sizeof(index)));
+        asio::write(socket, asio::buffer(&length, sizeof(length)));
+        asio::write(socket, asio::buffer(contribution.data(), contribution.size()));
+      }
+      response->set_success(true);
+    } catch (const std::exception &e) {
+      response->set_success(false);
+      response->set_error(e.what());
+    }
+    response->set_execution_seconds(std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - started).count());
+    return grpc::Status::OK;
+  }
+
+  grpc::Status ProxyImpl::ddlrtParityLocal(
+      grpc::ServerContext *, const proxy_proto::DdlrtParityLocalPlan *plan,
+      proxy_proto::DdlrtParityReply *response) {
+    const auto started = std::chrono::steady_clock::now();
+    std::lock_guard<std::mutex> task_lock(m_ddlrt_parity_mutex);
+    try {
+      const int count = plan->left_blocks_size();
+      const int block_size = plan->block_size();
+      if (count <= 0 || plan->right_blocks_size() != count ||
+          plan->target_keys_size() != count || block_size <= 0)
+        throw std::runtime_error("invalid DdlRT local parity plan");
+      std::vector<unsigned char> left(static_cast<size_t>(block_size));
+      std::vector<unsigned char> right(static_cast<size_t>(block_size));
+      std::vector<unsigned char> output(static_cast<size_t>(block_size));
+      for (int i = 0; i < count; ++i) {
+        const auto &a = plan->left_blocks(i);
+        const auto &b = plan->right_blocks(i);
+        if (!GetFromDatanode(a.block_key(), reinterpret_cast<char *>(left.data()), block_size,
+                             a.datanode_ip().c_str(), a.datanode_port()) ||
+            !GetFromDatanode(b.block_key(), reinterpret_cast<char *>(right.data()), block_size,
+                             b.datanode_ip().c_str(), b.datanode_port()))
+          throw std::runtime_error("failed to read colocated parity inputs");
+        merge_stripe_parity_gf_xor(block_size, left.data(), right.data(),
+                                    static_cast<unsigned char>(b.gf_coeff()), output.data());
+        const std::string &key = plan->target_keys(i);
+        if (!SetToDatanode(key.c_str(), key.size(), reinterpret_cast<const char *>(output.data()),
+                           block_size, a.datanode_ip().c_str(), a.datanode_port(), 0))
+          throw std::runtime_error("failed to write colocated merged parity " + key);
+      }
+      response->set_success(true);
+    } catch (const std::exception &e) {
+      response->set_success(false);
+      response->set_error(e.what());
+    }
+    response->set_execution_seconds(std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - started).count());
+    return grpc::Status::OK;
+  }
+
+  grpc::Status ProxyImpl::cleanupBlocks(
+      grpc::ServerContext *, const proxy_proto::CleanupBlocksPlan *plan,
+      proxy_proto::blockRelocReply *response) {
+    bool ok = plan->block_keys_size() == plan->datanode_ips_size() &&
+              plan->block_keys_size() == plan->datanode_ports_size();
+    for (int i = 0; ok && i < plan->block_keys_size(); ++i) {
+      ok = DelInDatanode(plan->block_keys(i), plan->datanode_ips(i) + ":" +
+                         std::to_string(plan->datanode_ports(i))) && ok;
+    }
+    response->set_result(ok ? "ok" : "partial_failure");
     return grpc::Status::OK;
   }
 
