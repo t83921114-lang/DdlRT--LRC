@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 
 
     
-    int stripe_num = 2000; // stripe number
+    int stripe_num = 1000; // stripe number
     size_t total_write_size = static_cast<size_t>(stripe_num * block_size * n); // MB, for calculating throughput
     std::cout << "Starting set stripe operation" << std::endl;
     std::chrono::high_resolution_clock::time_point set_start = std::chrono::high_resolution_clock::now();

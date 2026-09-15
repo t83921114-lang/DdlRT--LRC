@@ -5617,64 +5617,58 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
 
   std::thread parity_thread([&]() {
     const auto start = std::chrono::steady_clock::now();
-    const int left_cluster = parity.front().left->map2cluster;
-    const int right_cluster = parity.front().right->map2cluster;
-    const Cluster &lc = m_cluster_table.at(left_cluster);
-    const Cluster &rc = m_cluster_table.at(right_cluster);
-    const std::string left_addr = lc.proxy_ip + ":" + std::to_string(lc.proxy_port);
-    const std::string right_addr = rc.proxy_ip + ":" + std::to_string(rc.proxy_port);
-    auto lp = m_proxy_ptrs.find(left_addr), rp = m_proxy_ptrs.find(right_addr);
-    if (lp == m_proxy_ptrs.end() || rp == m_proxy_ptrs.end()) { parity_ok = false; return; }
-    if (left_addr == right_addr) {
-      proxy_proto::DdlrtParityLocalPlan plan;
-      plan.set_task_id(task_id); plan.set_block_size(block_size);
-      for (const auto &t : parity) {
-        const Node &ln = m_node_table.at(t.left->map2node);
-        const Node &rn = m_node_table.at(t.right->map2node);
-        auto *lb = plan.add_left_blocks();
-        lb->set_block_key(t.left->block_key); lb->set_datanode_ip(ln.node_ip); lb->set_datanode_port(ln.node_port);
-        auto *rb = plan.add_right_blocks();
-        rb->set_block_key(t.right->block_key); rb->set_datanode_ip(rn.node_ip); rb->set_datanode_port(rn.node_port);
-        rb->set_gf_coeff(t.coeff); plan.add_target_keys(t.target_key);
-      }
-      proxy_proto::DdlrtParityReply result; grpc::ClientContext ctx;
-      auto st = lp->second->ddlrtParityLocal(&ctx, plan, &result);
-      parity_ok = st.ok() && result.success();
-    } else {
-      proxy_proto::DdlrtParityLeftPlan left_plan;
-      proxy_proto::DdlrtParityRightPlan right_plan;
-      left_plan.set_task_id(task_id); left_plan.set_block_size(block_size);
-      right_plan.set_task_id(task_id); right_plan.set_block_size(block_size);
-      right_plan.set_left_proxy_ip(lc.proxy_ip);
-      right_plan.set_left_proxy_data_port(lc.proxy_port + ECProject::PROXY_PORT_SHIFT);
-      for (const auto &t : parity) {
-        const Node &ln = m_node_table.at(t.left->map2node);
-        const Node &rn = m_node_table.at(t.right->map2node);
-        auto *lb = left_plan.add_left_blocks();
-        lb->set_block_key(t.left->block_key); lb->set_datanode_ip(ln.node_ip); lb->set_datanode_port(ln.node_port);
-        left_plan.add_target_keys(t.target_key);
-        auto *rb = right_plan.add_right_blocks();
-        rb->set_block_key(t.right->block_key); rb->set_datanode_ip(rn.node_ip); rb->set_datanode_port(rn.node_port);
-        rb->set_gf_coeff(t.coeff);
-      }
-      proxy_proto::DdlrtParityReply left_result, right_result;
-      grpc::Status left_status;
-      std::thread left_call([&]() {
+    std::vector<std::thread> workers;
+    workers.reserve(parity.size());
+    for (const ParityTask &task : parity) {
+      workers.emplace_back([&, task]() {
+        const Node &left_node = m_node_table.at(task.left->map2node);
+        const Node &right_node = m_node_table.at(task.right->map2node);
+        const std::string target =
+            left_node.node_ip + ":" + std::to_string(left_node.node_port);
+
+        std::shared_ptr<datanode_proto::datanodeService::Stub> stub;
+        {
+          std::lock_guard<std::mutex> lk(m_datanode_stub_mutex);
+          auto it = m_datanode_stubs.find(target);
+          if (it == m_datanode_stubs.end()) {
+            auto channel = grpc::CreateChannel(
+                target, grpc::InsecureChannelCredentials());
+            auto new_stub = datanode_proto::datanodeService::NewStub(channel);
+            stub = std::shared_ptr<datanode_proto::datanodeService::Stub>(
+                std::move(new_stub));
+            m_datanode_stubs.emplace(target, stub);
+          } else {
+            stub = it->second;
+          }
+        }
+
         grpc::ClientContext ctx;
         ctx.set_deadline(std::chrono::system_clock::now() +
                          std::chrono::seconds(MERGE_GRPC_TCP_TIMEOUT_SEC * 3));
-        left_status = lp->second->ddlrtParityLeft(&ctx, left_plan, &left_result);
+        datanode_proto::StripeMergeParityInfo info;
+        datanode_proto::RequestResult result;
+        info.set_parity_key_a(task.left->block_key);
+        info.set_parity_key_b(task.right->block_key);
+        info.set_new_parity_key(task.target_key);
+        info.set_block_size(block_size);
+        info.set_gf_coeff(static_cast<int>(task.coeff));
+        info.set_parity_b_datanode_ip(right_node.node_ip);
+        info.set_parity_b_datanode_port(right_node.node_port);
+
+        grpc::Status status = stub->handleStripeMergeParity(&ctx, info, &result);
+        if (!status.ok() || !result.message()) {
+          parity_ok = false;
+          std::cerr << "[DdlRT_LRC][Merge] pair=" << sid_a << "+" << sid_b
+                    << " datanode parity merge failed on " << target
+                    << " block=" << task.target_key
+                    << " grpc=" << status.error_message() << std::endl;
+        }
       });
-      // The listener exists for the proxy lifetime; the left RPC establishes task validation before reading.
-      std::this_thread::sleep_for(std::chrono::milliseconds(5));
-      grpc::ClientContext right_ctx;
-      right_ctx.set_deadline(std::chrono::system_clock::now() +
-                             std::chrono::seconds(MERGE_GRPC_TCP_TIMEOUT_SEC * 3));
-      grpc::Status right_status = rp->second->ddlrtParityRight(&right_ctx, right_plan, &right_result);
-      left_call.join();
-      parity_ok = left_status.ok() && right_status.ok() && left_result.success() && right_result.success();
     }
-    parity_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    for (auto &worker : workers)
+      worker.join();
+    parity_seconds = std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - start).count();
   });
   migration_thread.join();
   parity_thread.join();
