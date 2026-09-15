@@ -1528,10 +1528,14 @@ namespace ECProject
       coordinator_proto::ClusterRTLrcRoundRequest request;
       coordinator_proto::ClusterRTLrcRoundReply reply;
       request.set_merge_round(merge_round);
+      const auto e2e_start = std::chrono::steady_clock::now();
       grpc::Status status = m_coordinator_ptr->mergeClusterRTLrcRound(
           &context, request, &reply);
+      const double end_to_end_seconds = std::chrono::duration<double>(
+          std::chrono::steady_clock::now() - e2e_start).count();
       if (!status.ok()) {
-        std::cout << "[Client] ClusterRT_LRC round RPC failed: "
+        std::cout << "[Client] ClusterRT_LRC round RPC failed after "
+                  << end_to_end_seconds << " s: "
                   << status.error_message() << std::endl;
         return false;
       }
@@ -1540,6 +1544,7 @@ namespace ECProject
                 << " migration_sum=" << reply.data_migration_seconds() << " s"
                 << " parity_sum=" << reply.parity_update_seconds() << " s"
                 << " critical_path=" << reply.critical_path_seconds() << " s"
+                << " end_to_end=" << end_to_end_seconds << " s"
                 << std::endl;
       if (!reply.success()) {
         std::cout << "[Client] ClusterRT_LRC round failed: "

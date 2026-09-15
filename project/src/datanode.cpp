@@ -846,38 +846,56 @@ namespace ECProject
         const datanode_proto::StripeMergeParityInfo *info,
         datanode_proto::RequestResult *response)
     {
-        std::string parity_key_a = info->parity_key_a();
-        std::string parity_key_b = info->parity_key_b();
-        std::string new_parity_key = info->new_parity_key();
-        int block_size = info->block_size();
-        unsigned char coeff = static_cast<unsigned char>(info->gf_coeff());
-        std::string parity_b_ip = info->parity_b_datanode_ip();
-        int parity_b_port = info->parity_b_datanode_port();
+        const auto started = std::chrono::steady_clock::now();
+        const std::string parity_key_a = info->parity_key_a();
+        const std::string parity_key_b = info->parity_key_b();
+        const std::string new_parity_key = info->new_parity_key();
+        const int block_size = info->block_size();
+        const unsigned char coeff = static_cast<unsigned char>(info->gf_coeff());
+        const std::string parity_b_ip = info->parity_b_datanode_ip();
+        const int parity_b_port = info->parity_b_datanode_port();
+        auto finish = [&](bool ok) {
+            response->set_message(ok);
+            response->set_exec_seconds(std::chrono::duration<double>(
+                std::chrono::steady_clock::now() - started).count());
+        };
 
-        std::string targetdir = "./storage/" + std::to_string(m_port) + "/";
-        std::string path_a = targetdir + parity_key_a;
-        std::string path_b = targetdir + parity_key_b;
-        std::string path_new = targetdir + new_parity_key;
-
-        if (access(path_a.c_str(), 0) == -1) {
-            std::cerr << "[Datanode" << m_port << "][StripeMergeParity] parity A not found: " << path_a << std::endl;
-            response->set_message(false);
+        if (block_size <= 0 || parity_key_a.empty() || parity_key_b.empty() ||
+            new_parity_key.empty()) {
+            finish(false);
             return grpc::Status::OK;
         }
-        std::unique_ptr<char[]> buf_a(new char[block_size]);
-        std::unique_ptr<char[]> buf_b(new char[block_size]);
-        std::unique_ptr<char[]> buf_new(new char[block_size]);
+
+        const std::string targetdir = "./storage/" + std::to_string(m_port) + "/";
+        const std::string path_a = targetdir + parity_key_a;
+        const std::string path_b = targetdir + parity_key_b;
+        const std::string path_new = targetdir + new_parity_key;
+        std::vector<unsigned char> buf_a(static_cast<size_t>(block_size));
+        std::vector<unsigned char> buf_b(static_cast<size_t>(block_size));
+        std::vector<unsigned char> buf_new(static_cast<size_t>(block_size));
 
         std::ifstream ifs_a(path_a, std::ios::binary);
-        ifs_a.read(buf_a.get(), block_size);
-        ifs_a.close();
+        if (!ifs_a.is_open()) {
+            std::cerr << "[Datanode" << m_port
+                      << "][StripeMergeParity] parity A not found: " << path_a
+                      << std::endl;
+            finish(false);
+            return grpc::Status::OK;
+        }
+        ifs_a.read(reinterpret_cast<char *>(buf_a.data()), block_size);
+        if (ifs_a.gcount() != static_cast<std::streamsize>(block_size)) {
+            std::cerr << "[Datanode" << m_port
+                      << "][StripeMergeParity] short read for parity A: " << path_a
+                      << std::endl;
+            finish(false);
+            return grpc::Status::OK;
+        }
 
         bool loaded_b = false;
-        if (access(path_b.c_str(), 0) != -1) {
-            std::ifstream ifs_b(path_b, std::ios::binary);
-            ifs_b.read(buf_b.get(), block_size);
-            ifs_b.close();
-            loaded_b = true;
+        std::ifstream ifs_b(path_b, std::ios::binary);
+        if (ifs_b.is_open()) {
+            ifs_b.read(reinterpret_cast<char *>(buf_b.data()), block_size);
+            loaded_b = ifs_b.gcount() == static_cast<std::streamsize>(block_size);
         } else if (!parity_b_ip.empty() && parity_b_port > 0) {
             const std::string peer_addr =
                 parity_b_ip + ":" + std::to_string(parity_b_port);
@@ -902,49 +920,62 @@ namespace ECProject
                 }
             }
             grpc::ClientContext read_ctx;
+            read_ctx.set_deadline(std::chrono::system_clock::now() +
+                                  std::chrono::seconds(120));
             datanode_proto::ReadBlockBytesRequest read_req;
             datanode_proto::ReadBlockBytesReply read_rep;
             read_req.set_block_key(parity_key_b);
             read_req.set_block_size(block_size);
-            grpc::Status read_st = stub->readBlockBytes(&read_ctx, read_req, &read_rep);
-            if (read_st.ok() && read_rep.ok() &&
+            grpc::Status read_status =
+                stub->readBlockBytes(&read_ctx, read_req, &read_rep);
+            if (read_status.ok() && read_rep.ok() &&
                 read_rep.data().size() == static_cast<size_t>(block_size)) {
-                memcpy(buf_b.get(), read_rep.data().data(), static_cast<size_t>(block_size));
+                memcpy(buf_b.data(), read_rep.data().data(),
+                       static_cast<size_t>(block_size));
                 loaded_b = true;
+            } else {
+                std::cerr << "[Datanode" << m_port
+                          << "][StripeMergeParity] remote parity read failed from "
+                          << peer_addr << ": " << read_status.error_message()
+                          << std::endl;
             }
         }
 
-        if (!loaded_b) {
+        if (!loaded_b || context->IsCancelled()) {
             std::cerr << "[Datanode" << m_port
-                      << "][StripeMergeParity] parity B not found locally or remotely: "
+                      << "][StripeMergeParity] parity B unavailable: "
                       << parity_key_b << std::endl;
-            response->set_message(false);
+            finish(false);
             return grpc::Status::OK;
         }
 
-        // P'_j = P^A_j XOR (coeff · P^B_j); vectorized via gf_vect_dot_prod_avx2 + xor when enabled
         ECProject::merge_stripe_parity_gf_xor(
-            block_size,
-            reinterpret_cast<unsigned char *>(buf_a.get()),
-            reinterpret_cast<unsigned char *>(buf_b.get()),
-            coeff,
-            reinterpret_cast<unsigned char *>(buf_new.get()));
+            block_size, buf_a.data(), buf_b.data(), coeff, buf_new.data());
 
-        if (access(targetdir.c_str(), 0) == -1) {
-            createDirectories(targetdir);
+        if (!createDirectories(targetdir)) {
+            finish(false);
+            return grpc::Status::OK;
         }
-
-        std::ofstream ofs(path_new, std::ios::binary | std::ios::out | std::ios::trunc);
-        ofs.write(buf_new.get(), block_size);
+        const std::string temp_path = path_new + ".merge_tmp";
+        std::ofstream ofs(temp_path, std::ios::binary | std::ios::out | std::ios::trunc);
+        if (!ofs.is_open()) {
+            finish(false);
+            return grpc::Status::OK;
+        }
+        ofs.write(reinterpret_cast<const char *>(buf_new.data()), block_size);
         ofs.flush();
+        const bool write_ok = ofs.good();
         ofs.close();
+        if (!write_ok || std::rename(temp_path.c_str(), path_new.c_str()) != 0) {
+            std::remove(temp_path.c_str());
+            finish(false);
+            return grpc::Status::OK;
+        }
 
         std::cout << "[Datanode" << m_port << "][StripeMergeParity] merged "
                   << parity_key_a << " + coeff*" << parity_key_b
                   << " -> " << new_parity_key << std::endl;
-
-        response->set_message(true);
-        response->set_exec_seconds(0.0);
+        finish(true);
         return grpc::Status::OK;
     }
 
