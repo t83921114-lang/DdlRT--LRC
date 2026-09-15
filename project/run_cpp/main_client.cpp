@@ -65,6 +65,8 @@ int main(int argc, char **argv)
     else if(parameters[4] == 5){
         code_type = "DdlRT_LRC";
     }
+    else if(parameters[4] == 6){ code_type = "SRS"; }
+    else if(parameters[4] == 7){ code_type = "ERS"; }
     else{
         std::cout << "Code type error" << std::endl;
         return -1;

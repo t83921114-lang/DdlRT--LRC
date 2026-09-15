@@ -72,6 +72,9 @@ extern RequestResultDefaultTypeInternal _RequestResult_default_instance_;
 class SetInfo;
 struct SetInfoDefaultTypeInternal;
 extern SetInfoDefaultTypeInternal _SetInfo_default_instance_;
+class SrsParityUpdateInfo;
+struct SrsParityUpdateInfoDefaultTypeInternal;
+extern SrsParityUpdateInfoDefaultTypeInternal _SrsParityUpdateInfo_default_instance_;
 class StripeMergeParityInfo;
 struct StripeMergeParityInfoDefaultTypeInternal;
 extern StripeMergeParityInfoDefaultTypeInternal _StripeMergeParityInfo_default_instance_;
@@ -86,6 +89,7 @@ template<> ::datanode_proto::ReadBlockBytesReply* Arena::CreateMaybeMessage<::da
 template<> ::datanode_proto::ReadBlockBytesRequest* Arena::CreateMaybeMessage<::datanode_proto::ReadBlockBytesRequest>(Arena*);
 template<> ::datanode_proto::RequestResult* Arena::CreateMaybeMessage<::datanode_proto::RequestResult>(Arena*);
 template<> ::datanode_proto::SetInfo* Arena::CreateMaybeMessage<::datanode_proto::SetInfo>(Arena*);
+template<> ::datanode_proto::SrsParityUpdateInfo* Arena::CreateMaybeMessage<::datanode_proto::SrsParityUpdateInfo>(Arena*);
 template<> ::datanode_proto::StripeMergeParityInfo* Arena::CreateMaybeMessage<::datanode_proto::StripeMergeParityInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace datanode_proto {
@@ -1458,6 +1462,288 @@ class StripeMergeParityInfo final :
 };
 // -------------------------------------------------------------------
 
+class SrsParityUpdateInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:datanode_proto.SrsParityUpdateInfo) */ {
+ public:
+  inline SrsParityUpdateInfo() : SrsParityUpdateInfo(nullptr) {}
+  ~SrsParityUpdateInfo() override;
+  explicit PROTOBUF_CONSTEXPR SrsParityUpdateInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  SrsParityUpdateInfo(const SrsParityUpdateInfo& from);
+  SrsParityUpdateInfo(SrsParityUpdateInfo&& from) noexcept
+    : SrsParityUpdateInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline SrsParityUpdateInfo& operator=(const SrsParityUpdateInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SrsParityUpdateInfo& operator=(SrsParityUpdateInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SrsParityUpdateInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const SrsParityUpdateInfo* internal_default_instance() {
+    return reinterpret_cast<const SrsParityUpdateInfo*>(
+               &_SrsParityUpdateInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(SrsParityUpdateInfo& a, SrsParityUpdateInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SrsParityUpdateInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SrsParityUpdateInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SrsParityUpdateInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<SrsParityUpdateInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const SrsParityUpdateInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const SrsParityUpdateInfo& from) {
+    SrsParityUpdateInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SrsParityUpdateInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "datanode_proto.SrsParityUpdateInfo";
+  }
+  protected:
+  explicit SrsParityUpdateInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRightDataKeysFieldNumber = 4,
+    kRightDataDatanodeIpsFieldNumber = 5,
+    kRightDataDatanodePortsFieldNumber = 6,
+    kGfCoeffsFieldNumber = 7,
+    kLeftParityKeyFieldNumber = 1,
+    kNewParityKeyFieldNumber = 2,
+    kBlockSizeFieldNumber = 3,
+  };
+  // repeated string right_data_keys = 4;
+  int right_data_keys_size() const;
+  private:
+  int _internal_right_data_keys_size() const;
+  public:
+  void clear_right_data_keys();
+  const std::string& right_data_keys(int index) const;
+  std::string* mutable_right_data_keys(int index);
+  void set_right_data_keys(int index, const std::string& value);
+  void set_right_data_keys(int index, std::string&& value);
+  void set_right_data_keys(int index, const char* value);
+  void set_right_data_keys(int index, const char* value, size_t size);
+  std::string* add_right_data_keys();
+  void add_right_data_keys(const std::string& value);
+  void add_right_data_keys(std::string&& value);
+  void add_right_data_keys(const char* value);
+  void add_right_data_keys(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& right_data_keys() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_right_data_keys();
+  private:
+  const std::string& _internal_right_data_keys(int index) const;
+  std::string* _internal_add_right_data_keys();
+  public:
+
+  // repeated string right_data_datanode_ips = 5;
+  int right_data_datanode_ips_size() const;
+  private:
+  int _internal_right_data_datanode_ips_size() const;
+  public:
+  void clear_right_data_datanode_ips();
+  const std::string& right_data_datanode_ips(int index) const;
+  std::string* mutable_right_data_datanode_ips(int index);
+  void set_right_data_datanode_ips(int index, const std::string& value);
+  void set_right_data_datanode_ips(int index, std::string&& value);
+  void set_right_data_datanode_ips(int index, const char* value);
+  void set_right_data_datanode_ips(int index, const char* value, size_t size);
+  std::string* add_right_data_datanode_ips();
+  void add_right_data_datanode_ips(const std::string& value);
+  void add_right_data_datanode_ips(std::string&& value);
+  void add_right_data_datanode_ips(const char* value);
+  void add_right_data_datanode_ips(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& right_data_datanode_ips() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_right_data_datanode_ips();
+  private:
+  const std::string& _internal_right_data_datanode_ips(int index) const;
+  std::string* _internal_add_right_data_datanode_ips();
+  public:
+
+  // repeated int32 right_data_datanode_ports = 6;
+  int right_data_datanode_ports_size() const;
+  private:
+  int _internal_right_data_datanode_ports_size() const;
+  public:
+  void clear_right_data_datanode_ports();
+  private:
+  int32_t _internal_right_data_datanode_ports(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_right_data_datanode_ports() const;
+  void _internal_add_right_data_datanode_ports(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_right_data_datanode_ports();
+  public:
+  int32_t right_data_datanode_ports(int index) const;
+  void set_right_data_datanode_ports(int index, int32_t value);
+  void add_right_data_datanode_ports(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      right_data_datanode_ports() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_right_data_datanode_ports();
+
+  // repeated int32 gf_coeffs = 7;
+  int gf_coeffs_size() const;
+  private:
+  int _internal_gf_coeffs_size() const;
+  public:
+  void clear_gf_coeffs();
+  private:
+  int32_t _internal_gf_coeffs(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_gf_coeffs() const;
+  void _internal_add_gf_coeffs(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_gf_coeffs();
+  public:
+  int32_t gf_coeffs(int index) const;
+  void set_gf_coeffs(int index, int32_t value);
+  void add_gf_coeffs(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      gf_coeffs() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_gf_coeffs();
+
+  // string left_parity_key = 1;
+  void clear_left_parity_key();
+  const std::string& left_parity_key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_left_parity_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_left_parity_key();
+  PROTOBUF_NODISCARD std::string* release_left_parity_key();
+  void set_allocated_left_parity_key(std::string* left_parity_key);
+  private:
+  const std::string& _internal_left_parity_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_left_parity_key(const std::string& value);
+  std::string* _internal_mutable_left_parity_key();
+  public:
+
+  // string new_parity_key = 2;
+  void clear_new_parity_key();
+  const std::string& new_parity_key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_new_parity_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_new_parity_key();
+  PROTOBUF_NODISCARD std::string* release_new_parity_key();
+  void set_allocated_new_parity_key(std::string* new_parity_key);
+  private:
+  const std::string& _internal_new_parity_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_new_parity_key(const std::string& value);
+  std::string* _internal_mutable_new_parity_key();
+  public:
+
+  // int32 block_size = 3;
+  void clear_block_size();
+  int32_t block_size() const;
+  void set_block_size(int32_t value);
+  private:
+  int32_t _internal_block_size() const;
+  void _internal_set_block_size(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:datanode_proto.SrsParityUpdateInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> right_data_keys_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> right_data_datanode_ips_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > right_data_datanode_ports_;
+    mutable std::atomic<int> _right_data_datanode_ports_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > gf_coeffs_;
+    mutable std::atomic<int> _gf_coeffs_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr left_parity_key_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr new_parity_key_;
+    int32_t block_size_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_datanode_2eproto;
+};
+// -------------------------------------------------------------------
+
 class ReadBlockBytesRequest final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:datanode_proto.ReadBlockBytesRequest) */ {
  public:
@@ -1506,7 +1792,7 @@ class ReadBlockBytesRequest final :
                &_ReadBlockBytesRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(ReadBlockBytesRequest& a, ReadBlockBytesRequest& b) {
     a.Swap(&b);
@@ -1670,7 +1956,7 @@ class ReadBlockBytesReply final :
                &_ReadBlockBytesReply_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(ReadBlockBytesReply& a, ReadBlockBytesReply& b) {
     a.Swap(&b);
@@ -1834,7 +2120,7 @@ class DelInfo final :
                &_DelInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(DelInfo& a, DelInfo& b) {
     a.Swap(&b);
@@ -1959,7 +2245,7 @@ inline const std::string& CheckaliveCMD::name() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void CheckaliveCMD::set_name(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.CheckaliveCMD.name)
 }
@@ -1972,11 +2258,11 @@ inline const std::string& CheckaliveCMD::_internal_name() const {
   return _impl_.name_.Get();
 }
 inline void CheckaliveCMD::_internal_set_name(const std::string& value) {
-  
+
   _impl_.name_.Set(value, GetArenaForAllocation());
 }
 inline std::string* CheckaliveCMD::_internal_mutable_name() {
-  
+
   return _impl_.name_.Mutable(GetArenaForAllocation());
 }
 inline std::string* CheckaliveCMD::release_name() {
@@ -1985,9 +2271,9 @@ inline std::string* CheckaliveCMD::release_name() {
 }
 inline void CheckaliveCMD::set_allocated_name(std::string* name) {
   if (name != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.name_.SetAllocated(name, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2014,7 +2300,7 @@ inline bool RequestResult::message() const {
   return _internal_message();
 }
 inline void RequestResult::_internal_set_message(bool value) {
-  
+
   _impl_.message_ = value;
 }
 inline void RequestResult::set_message(bool value) {
@@ -2034,7 +2320,7 @@ inline int32_t RequestResult::valuesizebytes() const {
   return _internal_valuesizebytes();
 }
 inline void RequestResult::_internal_set_valuesizebytes(int32_t value) {
-  
+
   _impl_.valuesizebytes_ = value;
 }
 inline void RequestResult::set_valuesizebytes(int32_t value) {
@@ -2054,7 +2340,7 @@ inline double RequestResult::disk_io_start_time() const {
   return _internal_disk_io_start_time();
 }
 inline void RequestResult::_internal_set_disk_io_start_time(double value) {
-  
+
   _impl_.disk_io_start_time_ = value;
 }
 inline void RequestResult::set_disk_io_start_time(double value) {
@@ -2074,7 +2360,7 @@ inline double RequestResult::disk_io_end_time() const {
   return _internal_disk_io_end_time();
 }
 inline void RequestResult::_internal_set_disk_io_end_time(double value) {
-  
+
   _impl_.disk_io_end_time_ = value;
 }
 inline void RequestResult::set_disk_io_end_time(double value) {
@@ -2094,7 +2380,7 @@ inline double RequestResult::grpc_start_time() const {
   return _internal_grpc_start_time();
 }
 inline void RequestResult::_internal_set_grpc_start_time(double value) {
-  
+
   _impl_.grpc_start_time_ = value;
 }
 inline void RequestResult::set_grpc_start_time(double value) {
@@ -2114,7 +2400,7 @@ inline double RequestResult::exec_seconds() const {
   return _internal_exec_seconds();
 }
 inline void RequestResult::_internal_set_exec_seconds(double value) {
-  
+
   _impl_.exec_seconds_ = value;
 }
 inline void RequestResult::set_exec_seconds(double value) {
@@ -2137,7 +2423,7 @@ inline const std::string& SetInfo::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void SetInfo::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.SetInfo.block_key)
 }
@@ -2150,11 +2436,11 @@ inline const std::string& SetInfo::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void SetInfo::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* SetInfo::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* SetInfo::release_block_key() {
@@ -2163,9 +2449,9 @@ inline std::string* SetInfo::release_block_key() {
 }
 inline void SetInfo::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2188,7 +2474,7 @@ inline int32_t SetInfo::block_size() const {
   return _internal_block_size();
 }
 inline void SetInfo::_internal_set_block_size(int32_t value) {
-  
+
   _impl_.block_size_ = value;
 }
 inline void SetInfo::set_block_size(int32_t value) {
@@ -2208,7 +2494,7 @@ inline int32_t SetInfo::block_id() const {
   return _internal_block_id();
 }
 inline void SetInfo::_internal_set_block_id(int32_t value) {
-  
+
   _impl_.block_id_ = value;
 }
 inline void SetInfo::set_block_id(int32_t value) {
@@ -2227,7 +2513,7 @@ inline const std::string& SetInfo::proxy_ip() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void SetInfo::set_proxy_ip(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.proxy_ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.SetInfo.proxy_ip)
 }
@@ -2240,11 +2526,11 @@ inline const std::string& SetInfo::_internal_proxy_ip() const {
   return _impl_.proxy_ip_.Get();
 }
 inline void SetInfo::_internal_set_proxy_ip(const std::string& value) {
-  
+
   _impl_.proxy_ip_.Set(value, GetArenaForAllocation());
 }
 inline std::string* SetInfo::_internal_mutable_proxy_ip() {
-  
+
   return _impl_.proxy_ip_.Mutable(GetArenaForAllocation());
 }
 inline std::string* SetInfo::release_proxy_ip() {
@@ -2253,9 +2539,9 @@ inline std::string* SetInfo::release_proxy_ip() {
 }
 inline void SetInfo::set_allocated_proxy_ip(std::string* proxy_ip) {
   if (proxy_ip != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.proxy_ip_.SetAllocated(proxy_ip, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2278,7 +2564,7 @@ inline int32_t SetInfo::proxy_port() const {
   return _internal_proxy_port();
 }
 inline void SetInfo::_internal_set_proxy_port(int32_t value) {
-  
+
   _impl_.proxy_port_ = value;
 }
 inline void SetInfo::set_proxy_port(int32_t value) {
@@ -2298,7 +2584,7 @@ inline bool SetInfo::ispull() const {
   return _internal_ispull();
 }
 inline void SetInfo::_internal_set_ispull(bool value) {
-  
+
   _impl_.ispull_ = value;
 }
 inline void SetInfo::set_ispull(bool value) {
@@ -2321,7 +2607,7 @@ inline const std::string& AppendInfo::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void AppendInfo::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.AppendInfo.block_key)
 }
@@ -2334,11 +2620,11 @@ inline const std::string& AppendInfo::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void AppendInfo::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* AppendInfo::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* AppendInfo::release_block_key() {
@@ -2347,9 +2633,9 @@ inline std::string* AppendInfo::release_block_key() {
 }
 inline void AppendInfo::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2372,7 +2658,7 @@ inline int32_t AppendInfo::block_id() const {
   return _internal_block_id();
 }
 inline void AppendInfo::_internal_set_block_id(int32_t value) {
-  
+
   _impl_.block_id_ = value;
 }
 inline void AppendInfo::set_block_id(int32_t value) {
@@ -2392,7 +2678,7 @@ inline int32_t AppendInfo::append_size() const {
   return _internal_append_size();
 }
 inline void AppendInfo::_internal_set_append_size(int32_t value) {
-  
+
   _impl_.append_size_ = value;
 }
 inline void AppendInfo::set_append_size(int32_t value) {
@@ -2412,7 +2698,7 @@ inline int32_t AppendInfo::append_offset() const {
   return _internal_append_offset();
 }
 inline void AppendInfo::_internal_set_append_offset(int32_t value) {
-  
+
   _impl_.append_offset_ = value;
 }
 inline void AppendInfo::set_append_offset(int32_t value) {
@@ -2432,7 +2718,7 @@ inline bool AppendInfo::is_serialized() const {
   return _internal_is_serialized();
 }
 inline void AppendInfo::_internal_set_is_serialized(bool value) {
-  
+
   _impl_.is_serialized_ = value;
 }
 inline void AppendInfo::set_is_serialized(bool value) {
@@ -2455,7 +2741,7 @@ inline const std::string& MergeParityInfo::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void MergeParityInfo::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.MergeParityInfo.block_key)
 }
@@ -2468,11 +2754,11 @@ inline const std::string& MergeParityInfo::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void MergeParityInfo::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* MergeParityInfo::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* MergeParityInfo::release_block_key() {
@@ -2481,9 +2767,9 @@ inline std::string* MergeParityInfo::release_block_key() {
 }
 inline void MergeParityInfo::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2506,7 +2792,7 @@ inline int32_t MergeParityInfo::block_id() const {
   return _internal_block_id();
 }
 inline void MergeParityInfo::_internal_set_block_id(int32_t value) {
-  
+
   _impl_.block_id_ = value;
 }
 inline void MergeParityInfo::set_block_id(int32_t value) {
@@ -2529,7 +2815,7 @@ inline const std::string& GetInfo::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void GetInfo::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.GetInfo.block_key)
 }
@@ -2542,11 +2828,11 @@ inline const std::string& GetInfo::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void GetInfo::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* GetInfo::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* GetInfo::release_block_key() {
@@ -2555,9 +2841,9 @@ inline std::string* GetInfo::release_block_key() {
 }
 inline void GetInfo::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2580,7 +2866,7 @@ inline int32_t GetInfo::block_size() const {
   return _internal_block_size();
 }
 inline void GetInfo::_internal_set_block_size(int32_t value) {
-  
+
   _impl_.block_size_ = value;
 }
 inline void GetInfo::set_block_size(int32_t value) {
@@ -2600,7 +2886,7 @@ inline int32_t GetInfo::block_id() const {
   return _internal_block_id();
 }
 inline void GetInfo::_internal_set_block_id(int32_t value) {
-  
+
   _impl_.block_id_ = value;
 }
 inline void GetInfo::set_block_id(int32_t value) {
@@ -2619,7 +2905,7 @@ inline const std::string& GetInfo::proxy_ip() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void GetInfo::set_proxy_ip(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.proxy_ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.GetInfo.proxy_ip)
 }
@@ -2632,11 +2918,11 @@ inline const std::string& GetInfo::_internal_proxy_ip() const {
   return _impl_.proxy_ip_.Get();
 }
 inline void GetInfo::_internal_set_proxy_ip(const std::string& value) {
-  
+
   _impl_.proxy_ip_.Set(value, GetArenaForAllocation());
 }
 inline std::string* GetInfo::_internal_mutable_proxy_ip() {
-  
+
   return _impl_.proxy_ip_.Mutable(GetArenaForAllocation());
 }
 inline std::string* GetInfo::release_proxy_ip() {
@@ -2645,9 +2931,9 @@ inline std::string* GetInfo::release_proxy_ip() {
 }
 inline void GetInfo::set_allocated_proxy_ip(std::string* proxy_ip) {
   if (proxy_ip != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.proxy_ip_.SetAllocated(proxy_ip, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2670,7 +2956,7 @@ inline int32_t GetInfo::proxy_port() const {
   return _internal_proxy_port();
 }
 inline void GetInfo::_internal_set_proxy_port(int32_t value) {
-  
+
   _impl_.proxy_port_ = value;
 }
 inline void GetInfo::set_proxy_port(int32_t value) {
@@ -2693,7 +2979,7 @@ inline const std::string& StripeMergeParityInfo::parity_key_a() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void StripeMergeParityInfo::set_parity_key_a(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.parity_key_a_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.StripeMergeParityInfo.parity_key_a)
 }
@@ -2706,11 +2992,11 @@ inline const std::string& StripeMergeParityInfo::_internal_parity_key_a() const 
   return _impl_.parity_key_a_.Get();
 }
 inline void StripeMergeParityInfo::_internal_set_parity_key_a(const std::string& value) {
-  
+
   _impl_.parity_key_a_.Set(value, GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::_internal_mutable_parity_key_a() {
-  
+
   return _impl_.parity_key_a_.Mutable(GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::release_parity_key_a() {
@@ -2719,9 +3005,9 @@ inline std::string* StripeMergeParityInfo::release_parity_key_a() {
 }
 inline void StripeMergeParityInfo::set_allocated_parity_key_a(std::string* parity_key_a) {
   if (parity_key_a != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.parity_key_a_.SetAllocated(parity_key_a, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2743,7 +3029,7 @@ inline const std::string& StripeMergeParityInfo::parity_key_b() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void StripeMergeParityInfo::set_parity_key_b(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.parity_key_b_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.StripeMergeParityInfo.parity_key_b)
 }
@@ -2756,11 +3042,11 @@ inline const std::string& StripeMergeParityInfo::_internal_parity_key_b() const 
   return _impl_.parity_key_b_.Get();
 }
 inline void StripeMergeParityInfo::_internal_set_parity_key_b(const std::string& value) {
-  
+
   _impl_.parity_key_b_.Set(value, GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::_internal_mutable_parity_key_b() {
-  
+
   return _impl_.parity_key_b_.Mutable(GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::release_parity_key_b() {
@@ -2769,9 +3055,9 @@ inline std::string* StripeMergeParityInfo::release_parity_key_b() {
 }
 inline void StripeMergeParityInfo::set_allocated_parity_key_b(std::string* parity_key_b) {
   if (parity_key_b != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.parity_key_b_.SetAllocated(parity_key_b, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2793,7 +3079,7 @@ inline const std::string& StripeMergeParityInfo::new_parity_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void StripeMergeParityInfo::set_new_parity_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.new_parity_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.StripeMergeParityInfo.new_parity_key)
 }
@@ -2806,11 +3092,11 @@ inline const std::string& StripeMergeParityInfo::_internal_new_parity_key() cons
   return _impl_.new_parity_key_.Get();
 }
 inline void StripeMergeParityInfo::_internal_set_new_parity_key(const std::string& value) {
-  
+
   _impl_.new_parity_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::_internal_mutable_new_parity_key() {
-  
+
   return _impl_.new_parity_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::release_new_parity_key() {
@@ -2819,9 +3105,9 @@ inline std::string* StripeMergeParityInfo::release_new_parity_key() {
 }
 inline void StripeMergeParityInfo::set_allocated_new_parity_key(std::string* new_parity_key) {
   if (new_parity_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.new_parity_key_.SetAllocated(new_parity_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2844,7 +3130,7 @@ inline int32_t StripeMergeParityInfo::block_size() const {
   return _internal_block_size();
 }
 inline void StripeMergeParityInfo::_internal_set_block_size(int32_t value) {
-  
+
   _impl_.block_size_ = value;
 }
 inline void StripeMergeParityInfo::set_block_size(int32_t value) {
@@ -2864,7 +3150,7 @@ inline int32_t StripeMergeParityInfo::gf_coeff() const {
   return _internal_gf_coeff();
 }
 inline void StripeMergeParityInfo::_internal_set_gf_coeff(int32_t value) {
-  
+
   _impl_.gf_coeff_ = value;
 }
 inline void StripeMergeParityInfo::set_gf_coeff(int32_t value) {
@@ -2883,7 +3169,7 @@ inline const std::string& StripeMergeParityInfo::parity_b_datanode_ip() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void StripeMergeParityInfo::set_parity_b_datanode_ip(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.parity_b_datanode_ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.StripeMergeParityInfo.parity_b_datanode_ip)
 }
@@ -2896,11 +3182,11 @@ inline const std::string& StripeMergeParityInfo::_internal_parity_b_datanode_ip(
   return _impl_.parity_b_datanode_ip_.Get();
 }
 inline void StripeMergeParityInfo::_internal_set_parity_b_datanode_ip(const std::string& value) {
-  
+
   _impl_.parity_b_datanode_ip_.Set(value, GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::_internal_mutable_parity_b_datanode_ip() {
-  
+
   return _impl_.parity_b_datanode_ip_.Mutable(GetArenaForAllocation());
 }
 inline std::string* StripeMergeParityInfo::release_parity_b_datanode_ip() {
@@ -2909,9 +3195,9 @@ inline std::string* StripeMergeParityInfo::release_parity_b_datanode_ip() {
 }
 inline void StripeMergeParityInfo::set_allocated_parity_b_datanode_ip(std::string* parity_b_datanode_ip) {
   if (parity_b_datanode_ip != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.parity_b_datanode_ip_.SetAllocated(parity_b_datanode_ip, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2934,12 +3220,380 @@ inline int32_t StripeMergeParityInfo::parity_b_datanode_port() const {
   return _internal_parity_b_datanode_port();
 }
 inline void StripeMergeParityInfo::_internal_set_parity_b_datanode_port(int32_t value) {
-  
+
   _impl_.parity_b_datanode_port_ = value;
 }
 inline void StripeMergeParityInfo::set_parity_b_datanode_port(int32_t value) {
   _internal_set_parity_b_datanode_port(value);
   // @@protoc_insertion_point(field_set:datanode_proto.StripeMergeParityInfo.parity_b_datanode_port)
+}
+
+// -------------------------------------------------------------------
+
+// SrsParityUpdateInfo
+
+// string left_parity_key = 1;
+inline void SrsParityUpdateInfo::clear_left_parity_key() {
+  _impl_.left_parity_key_.ClearToEmpty();
+}
+inline const std::string& SrsParityUpdateInfo::left_parity_key() const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.left_parity_key)
+  return _internal_left_parity_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void SrsParityUpdateInfo::set_left_parity_key(ArgT0&& arg0, ArgT... args) {
+
+ _impl_.left_parity_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.left_parity_key)
+}
+inline std::string* SrsParityUpdateInfo::mutable_left_parity_key() {
+  std::string* _s = _internal_mutable_left_parity_key();
+  // @@protoc_insertion_point(field_mutable:datanode_proto.SrsParityUpdateInfo.left_parity_key)
+  return _s;
+}
+inline const std::string& SrsParityUpdateInfo::_internal_left_parity_key() const {
+  return _impl_.left_parity_key_.Get();
+}
+inline void SrsParityUpdateInfo::_internal_set_left_parity_key(const std::string& value) {
+
+  _impl_.left_parity_key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* SrsParityUpdateInfo::_internal_mutable_left_parity_key() {
+
+  return _impl_.left_parity_key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* SrsParityUpdateInfo::release_left_parity_key() {
+  // @@protoc_insertion_point(field_release:datanode_proto.SrsParityUpdateInfo.left_parity_key)
+  return _impl_.left_parity_key_.Release();
+}
+inline void SrsParityUpdateInfo::set_allocated_left_parity_key(std::string* left_parity_key) {
+  if (left_parity_key != nullptr) {
+
+  } else {
+
+  }
+  _impl_.left_parity_key_.SetAllocated(left_parity_key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.left_parity_key_.IsDefault()) {
+    _impl_.left_parity_key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:datanode_proto.SrsParityUpdateInfo.left_parity_key)
+}
+
+// string new_parity_key = 2;
+inline void SrsParityUpdateInfo::clear_new_parity_key() {
+  _impl_.new_parity_key_.ClearToEmpty();
+}
+inline const std::string& SrsParityUpdateInfo::new_parity_key() const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.new_parity_key)
+  return _internal_new_parity_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void SrsParityUpdateInfo::set_new_parity_key(ArgT0&& arg0, ArgT... args) {
+
+ _impl_.new_parity_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.new_parity_key)
+}
+inline std::string* SrsParityUpdateInfo::mutable_new_parity_key() {
+  std::string* _s = _internal_mutable_new_parity_key();
+  // @@protoc_insertion_point(field_mutable:datanode_proto.SrsParityUpdateInfo.new_parity_key)
+  return _s;
+}
+inline const std::string& SrsParityUpdateInfo::_internal_new_parity_key() const {
+  return _impl_.new_parity_key_.Get();
+}
+inline void SrsParityUpdateInfo::_internal_set_new_parity_key(const std::string& value) {
+
+  _impl_.new_parity_key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* SrsParityUpdateInfo::_internal_mutable_new_parity_key() {
+
+  return _impl_.new_parity_key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* SrsParityUpdateInfo::release_new_parity_key() {
+  // @@protoc_insertion_point(field_release:datanode_proto.SrsParityUpdateInfo.new_parity_key)
+  return _impl_.new_parity_key_.Release();
+}
+inline void SrsParityUpdateInfo::set_allocated_new_parity_key(std::string* new_parity_key) {
+  if (new_parity_key != nullptr) {
+
+  } else {
+
+  }
+  _impl_.new_parity_key_.SetAllocated(new_parity_key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.new_parity_key_.IsDefault()) {
+    _impl_.new_parity_key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:datanode_proto.SrsParityUpdateInfo.new_parity_key)
+}
+
+// int32 block_size = 3;
+inline void SrsParityUpdateInfo::clear_block_size() {
+  _impl_.block_size_ = 0;
+}
+inline int32_t SrsParityUpdateInfo::_internal_block_size() const {
+  return _impl_.block_size_;
+}
+inline int32_t SrsParityUpdateInfo::block_size() const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.block_size)
+  return _internal_block_size();
+}
+inline void SrsParityUpdateInfo::_internal_set_block_size(int32_t value) {
+
+  _impl_.block_size_ = value;
+}
+inline void SrsParityUpdateInfo::set_block_size(int32_t value) {
+  _internal_set_block_size(value);
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.block_size)
+}
+
+// repeated string right_data_keys = 4;
+inline int SrsParityUpdateInfo::_internal_right_data_keys_size() const {
+  return _impl_.right_data_keys_.size();
+}
+inline int SrsParityUpdateInfo::right_data_keys_size() const {
+  return _internal_right_data_keys_size();
+}
+inline void SrsParityUpdateInfo::clear_right_data_keys() {
+  _impl_.right_data_keys_.Clear();
+}
+inline std::string* SrsParityUpdateInfo::add_right_data_keys() {
+  std::string* _s = _internal_add_right_data_keys();
+  // @@protoc_insertion_point(field_add_mutable:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+  return _s;
+}
+inline const std::string& SrsParityUpdateInfo::_internal_right_data_keys(int index) const {
+  return _impl_.right_data_keys_.Get(index);
+}
+inline const std::string& SrsParityUpdateInfo::right_data_keys(int index) const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+  return _internal_right_data_keys(index);
+}
+inline std::string* SrsParityUpdateInfo::mutable_right_data_keys(int index) {
+  // @@protoc_insertion_point(field_mutable:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+  return _impl_.right_data_keys_.Mutable(index);
+}
+inline void SrsParityUpdateInfo::set_right_data_keys(int index, const std::string& value) {
+  _impl_.right_data_keys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::set_right_data_keys(int index, std::string&& value) {
+  _impl_.right_data_keys_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::set_right_data_keys(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_data_keys_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::set_right_data_keys(int index, const char* value, size_t size) {
+  _impl_.right_data_keys_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline std::string* SrsParityUpdateInfo::_internal_add_right_data_keys() {
+  return _impl_.right_data_keys_.Add();
+}
+inline void SrsParityUpdateInfo::add_right_data_keys(const std::string& value) {
+  _impl_.right_data_keys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::add_right_data_keys(std::string&& value) {
+  _impl_.right_data_keys_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::add_right_data_keys(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_data_keys_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline void SrsParityUpdateInfo::add_right_data_keys(const char* value, size_t size) {
+  _impl_.right_data_keys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+SrsParityUpdateInfo::right_data_keys() const {
+  // @@protoc_insertion_point(field_list:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+  return _impl_.right_data_keys_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+SrsParityUpdateInfo::mutable_right_data_keys() {
+  // @@protoc_insertion_point(field_mutable_list:datanode_proto.SrsParityUpdateInfo.right_data_keys)
+  return &_impl_.right_data_keys_;
+}
+
+// repeated string right_data_datanode_ips = 5;
+inline int SrsParityUpdateInfo::_internal_right_data_datanode_ips_size() const {
+  return _impl_.right_data_datanode_ips_.size();
+}
+inline int SrsParityUpdateInfo::right_data_datanode_ips_size() const {
+  return _internal_right_data_datanode_ips_size();
+}
+inline void SrsParityUpdateInfo::clear_right_data_datanode_ips() {
+  _impl_.right_data_datanode_ips_.Clear();
+}
+inline std::string* SrsParityUpdateInfo::add_right_data_datanode_ips() {
+  std::string* _s = _internal_add_right_data_datanode_ips();
+  // @@protoc_insertion_point(field_add_mutable:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+  return _s;
+}
+inline const std::string& SrsParityUpdateInfo::_internal_right_data_datanode_ips(int index) const {
+  return _impl_.right_data_datanode_ips_.Get(index);
+}
+inline const std::string& SrsParityUpdateInfo::right_data_datanode_ips(int index) const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+  return _internal_right_data_datanode_ips(index);
+}
+inline std::string* SrsParityUpdateInfo::mutable_right_data_datanode_ips(int index) {
+  // @@protoc_insertion_point(field_mutable:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+  return _impl_.right_data_datanode_ips_.Mutable(index);
+}
+inline void SrsParityUpdateInfo::set_right_data_datanode_ips(int index, const std::string& value) {
+  _impl_.right_data_datanode_ips_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::set_right_data_datanode_ips(int index, std::string&& value) {
+  _impl_.right_data_datanode_ips_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::set_right_data_datanode_ips(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_data_datanode_ips_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::set_right_data_datanode_ips(int index, const char* value, size_t size) {
+  _impl_.right_data_datanode_ips_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline std::string* SrsParityUpdateInfo::_internal_add_right_data_datanode_ips() {
+  return _impl_.right_data_datanode_ips_.Add();
+}
+inline void SrsParityUpdateInfo::add_right_data_datanode_ips(const std::string& value) {
+  _impl_.right_data_datanode_ips_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::add_right_data_datanode_ips(std::string&& value) {
+  _impl_.right_data_datanode_ips_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::add_right_data_datanode_ips(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_data_datanode_ips_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline void SrsParityUpdateInfo::add_right_data_datanode_ips(const char* value, size_t size) {
+  _impl_.right_data_datanode_ips_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+SrsParityUpdateInfo::right_data_datanode_ips() const {
+  // @@protoc_insertion_point(field_list:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+  return _impl_.right_data_datanode_ips_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+SrsParityUpdateInfo::mutable_right_data_datanode_ips() {
+  // @@protoc_insertion_point(field_mutable_list:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips)
+  return &_impl_.right_data_datanode_ips_;
+}
+
+// repeated int32 right_data_datanode_ports = 6;
+inline int SrsParityUpdateInfo::_internal_right_data_datanode_ports_size() const {
+  return _impl_.right_data_datanode_ports_.size();
+}
+inline int SrsParityUpdateInfo::right_data_datanode_ports_size() const {
+  return _internal_right_data_datanode_ports_size();
+}
+inline void SrsParityUpdateInfo::clear_right_data_datanode_ports() {
+  _impl_.right_data_datanode_ports_.Clear();
+}
+inline int32_t SrsParityUpdateInfo::_internal_right_data_datanode_ports(int index) const {
+  return _impl_.right_data_datanode_ports_.Get(index);
+}
+inline int32_t SrsParityUpdateInfo::right_data_datanode_ports(int index) const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ports)
+  return _internal_right_data_datanode_ports(index);
+}
+inline void SrsParityUpdateInfo::set_right_data_datanode_ports(int index, int32_t value) {
+  _impl_.right_data_datanode_ports_.Set(index, value);
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ports)
+}
+inline void SrsParityUpdateInfo::_internal_add_right_data_datanode_ports(int32_t value) {
+  _impl_.right_data_datanode_ports_.Add(value);
+}
+inline void SrsParityUpdateInfo::add_right_data_datanode_ports(int32_t value) {
+  _internal_add_right_data_datanode_ports(value);
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ports)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+SrsParityUpdateInfo::_internal_right_data_datanode_ports() const {
+  return _impl_.right_data_datanode_ports_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+SrsParityUpdateInfo::right_data_datanode_ports() const {
+  // @@protoc_insertion_point(field_list:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ports)
+  return _internal_right_data_datanode_ports();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+SrsParityUpdateInfo::_internal_mutable_right_data_datanode_ports() {
+  return &_impl_.right_data_datanode_ports_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+SrsParityUpdateInfo::mutable_right_data_datanode_ports() {
+  // @@protoc_insertion_point(field_mutable_list:datanode_proto.SrsParityUpdateInfo.right_data_datanode_ports)
+  return _internal_mutable_right_data_datanode_ports();
+}
+
+// repeated int32 gf_coeffs = 7;
+inline int SrsParityUpdateInfo::_internal_gf_coeffs_size() const {
+  return _impl_.gf_coeffs_.size();
+}
+inline int SrsParityUpdateInfo::gf_coeffs_size() const {
+  return _internal_gf_coeffs_size();
+}
+inline void SrsParityUpdateInfo::clear_gf_coeffs() {
+  _impl_.gf_coeffs_.Clear();
+}
+inline int32_t SrsParityUpdateInfo::_internal_gf_coeffs(int index) const {
+  return _impl_.gf_coeffs_.Get(index);
+}
+inline int32_t SrsParityUpdateInfo::gf_coeffs(int index) const {
+  // @@protoc_insertion_point(field_get:datanode_proto.SrsParityUpdateInfo.gf_coeffs)
+  return _internal_gf_coeffs(index);
+}
+inline void SrsParityUpdateInfo::set_gf_coeffs(int index, int32_t value) {
+  _impl_.gf_coeffs_.Set(index, value);
+  // @@protoc_insertion_point(field_set:datanode_proto.SrsParityUpdateInfo.gf_coeffs)
+}
+inline void SrsParityUpdateInfo::_internal_add_gf_coeffs(int32_t value) {
+  _impl_.gf_coeffs_.Add(value);
+}
+inline void SrsParityUpdateInfo::add_gf_coeffs(int32_t value) {
+  _internal_add_gf_coeffs(value);
+  // @@protoc_insertion_point(field_add:datanode_proto.SrsParityUpdateInfo.gf_coeffs)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+SrsParityUpdateInfo::_internal_gf_coeffs() const {
+  return _impl_.gf_coeffs_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+SrsParityUpdateInfo::gf_coeffs() const {
+  // @@protoc_insertion_point(field_list:datanode_proto.SrsParityUpdateInfo.gf_coeffs)
+  return _internal_gf_coeffs();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+SrsParityUpdateInfo::_internal_mutable_gf_coeffs() {
+  return &_impl_.gf_coeffs_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+SrsParityUpdateInfo::mutable_gf_coeffs() {
+  // @@protoc_insertion_point(field_mutable_list:datanode_proto.SrsParityUpdateInfo.gf_coeffs)
+  return _internal_mutable_gf_coeffs();
 }
 
 // -------------------------------------------------------------------
@@ -2957,7 +3611,7 @@ inline const std::string& ReadBlockBytesRequest::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void ReadBlockBytesRequest::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.ReadBlockBytesRequest.block_key)
 }
@@ -2970,11 +3624,11 @@ inline const std::string& ReadBlockBytesRequest::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void ReadBlockBytesRequest::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* ReadBlockBytesRequest::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* ReadBlockBytesRequest::release_block_key() {
@@ -2983,9 +3637,9 @@ inline std::string* ReadBlockBytesRequest::release_block_key() {
 }
 inline void ReadBlockBytesRequest::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3008,7 +3662,7 @@ inline int32_t ReadBlockBytesRequest::block_size() const {
   return _internal_block_size();
 }
 inline void ReadBlockBytesRequest::_internal_set_block_size(int32_t value) {
-  
+
   _impl_.block_size_ = value;
 }
 inline void ReadBlockBytesRequest::set_block_size(int32_t value) {
@@ -3032,7 +3686,7 @@ inline bool ReadBlockBytesReply::ok() const {
   return _internal_ok();
 }
 inline void ReadBlockBytesReply::_internal_set_ok(bool value) {
-  
+
   _impl_.ok_ = value;
 }
 inline void ReadBlockBytesReply::set_ok(bool value) {
@@ -3051,7 +3705,7 @@ inline const std::string& ReadBlockBytesReply::data() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void ReadBlockBytesReply::set_data(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.ReadBlockBytesReply.data)
 }
@@ -3064,11 +3718,11 @@ inline const std::string& ReadBlockBytesReply::_internal_data() const {
   return _impl_.data_.Get();
 }
 inline void ReadBlockBytesReply::_internal_set_data(const std::string& value) {
-  
+
   _impl_.data_.Set(value, GetArenaForAllocation());
 }
 inline std::string* ReadBlockBytesReply::_internal_mutable_data() {
-  
+
   return _impl_.data_.Mutable(GetArenaForAllocation());
 }
 inline std::string* ReadBlockBytesReply::release_data() {
@@ -3077,9 +3731,9 @@ inline std::string* ReadBlockBytesReply::release_data() {
 }
 inline void ReadBlockBytesReply::set_allocated_data(std::string* data) {
   if (data != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.data_.SetAllocated(data, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3105,7 +3759,7 @@ inline const std::string& DelInfo::block_key() const {
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void DelInfo::set_block_key(ArgT0&& arg0, ArgT... args) {
- 
+
  _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:datanode_proto.DelInfo.block_key)
 }
@@ -3118,11 +3772,11 @@ inline const std::string& DelInfo::_internal_block_key() const {
   return _impl_.block_key_.Get();
 }
 inline void DelInfo::_internal_set_block_key(const std::string& value) {
-  
+
   _impl_.block_key_.Set(value, GetArenaForAllocation());
 }
 inline std::string* DelInfo::_internal_mutable_block_key() {
-  
+
   return _impl_.block_key_.Mutable(GetArenaForAllocation());
 }
 inline std::string* DelInfo::release_block_key() {
@@ -3131,9 +3785,9 @@ inline std::string* DelInfo::release_block_key() {
 }
 inline void DelInfo::set_allocated_block_key(std::string* block_key) {
   if (block_key != nullptr) {
-    
+
   } else {
-    
+
   }
   _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3147,6 +3801,8 @@ inline void DelInfo::set_allocated_block_key(std::string* block_key) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

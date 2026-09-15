@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstring>
 #include <chrono>
+#include "devcommon.h"
 namespace ECProject
 {
     static const unsigned char gff_base[] = {

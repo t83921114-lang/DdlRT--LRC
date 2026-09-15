@@ -156,6 +156,7 @@ namespace ECProject
 
     void initialize_equiox_stripe_placement(Stripe *stripe);
     void initialize_ddlrt_lrc_stripe_placement(Stripe *stripe);
+    void initialize_baseline_stripe_placement(Stripe *stripe);
     void initialize_cluster_rt_stripe_placement(Stripe *stripe);
     void initialize_unilrc_and_azurelrc_stripe_placement(Stripe *stripe);
     void initialize_optimal_lrc_stripe_placement(Stripe *stripe);

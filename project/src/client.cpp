@@ -397,7 +397,7 @@ namespace ECProject
   std::vector<int> Client::get_data_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> data_block_num_per_group;
-    if (code_type == "DdlRT_LRC")
+    if (code_type == "DdlRT_LRC" || code_type == "SRS" || code_type == "ERS")
     {
       int data_per_local_group = k / z;
       int rack_capacity = r + 1;
@@ -516,7 +516,7 @@ namespace ECProject
   std::vector<int> Client::get_global_parity_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> global_pairty_block_num_per_group;
-    if (code_type == "DdlRT_LRC")
+    if (code_type == "DdlRT_LRC" || code_type == "SRS" || code_type == "ERS")
     {
       int groups = z * ((k / z + r) / (r + 1));
       for (int i = 0; i < groups; ++i)
@@ -605,7 +605,7 @@ namespace ECProject
   std::vector<int> Client::get_local_parity_block_num_per_group(int k, int r, int z, std::string code_type)
   {
     std::vector<int> local_parity_block_num_per_group;
-    if (code_type == "DdlRT_LRC")
+    if (code_type == "DdlRT_LRC" || code_type == "SRS" || code_type == "ERS")
     {
       int groups = z * ((k / z + r) / (r + 1));
       for (int i = 0; i < groups; ++i)
@@ -782,7 +782,7 @@ namespace ECProject
       std::unique_ptr<bool[]> if_commit_arr(new bool[reply.append_keys_size()]);
       std::fill_n(if_commit_arr.get(), reply.append_keys_size(), false);
 
-      assert(m_sys_config->CodeType == "UniLRC" || m_sys_config->CodeType == "OptimalLRC" || m_sys_config->CodeType == "UniformLRC" || m_sys_config->CodeType == "AzureLRC" || m_sys_config->CodeType == "RS" || m_sys_config->CodeType == "DdlRT_LRC");
+      assert(m_sys_config->CodeType == "UniLRC" || m_sys_config->CodeType == "OptimalLRC" || m_sys_config->CodeType == "UniformLRC" || m_sys_config->CodeType == "AzureLRC" || m_sys_config->CodeType == "RS" || m_sys_config->CodeType == "DdlRT_LRC" || m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS");
       std::vector<int> data_block_num_per_group;
       std::vector<int> global_parity_block_num_per_group;
       std::vector<int> local_parity_block_num_per_group;
@@ -819,7 +819,8 @@ namespace ECProject
         ECProject::encode_uniform_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(parity_ptr_array.data()), m_sys_config->BlockSize);
       }
       else if (m_sys_config->CodeType == "AzureLRC" ||
-               m_sys_config->CodeType == "DdlRT_LRC")
+               m_sys_config->CodeType == "DdlRT_LRC" ||
+               m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS")
       {
         ECProject::encode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, reinterpret_cast<unsigned char **>(data_ptr_array.data()), reinterpret_cast<unsigned char **>(parity_ptr_array.data()), m_sys_config->BlockSize);
       }
@@ -1466,6 +1467,8 @@ namespace ECProject
     {
       parameters.push_back(5);
     }
+    else if(m_sys_config->CodeType == "SRS") { parameters.push_back(6); }
+    else if(m_sys_config->CodeType == "ERS") { parameters.push_back(7); }
     else
     {
       std::cout << "[Client] CodeType not supported!" << std::endl;
@@ -1530,6 +1533,12 @@ namespace ECProject
       stripe_ids.push_back(list_reply.stripe_ids(i));
     }
     std::sort(stripe_ids.begin(), stripe_ids.end());
+    const bool baseline = m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS";
+    if (baseline && merge_round > 1) {
+      std::mt19937_64 rng(m_sys_config->BaselineSeed ^
+                          (0x9e3779b97f4a7c15ULL * static_cast<uint64_t>(merge_round)));
+      std::shuffle(stripe_ids.begin(), stripe_ids.end(), rng);
+    }
 
     if (stripe_ids.size() < 2) {
       std::cout << "[Client] need at least 2 stripes to merge, got "
@@ -1541,9 +1550,7 @@ namespace ECProject
     for (int sid : stripe_ids) std::cout << sid << " ";
     std::cout << std::endl;
 
-    int merge_round_input;
-    std::cout << "Please enter merge round (start from 1, current merge round:  "<<merge_round<<" ): ";
-    std::cin >> merge_round_input;
+    const int merge_round_input = merge_round;
     if (merge_round_input < 1) {
       std::cout << "[Client] invalid merge round" << std::endl;
       return;
@@ -1551,8 +1558,13 @@ namespace ECProject
 
     // Merge consecutive pairs in bounded batches so network transfers can overlap.
     if (m_sys_config->CodeType == "DdlRT_LRC" && stripe_ids.size() % 2 != 0) {
-      std::cout << "[Client] DdlRT_LRC merge requires an even number of stripes" << std::endl;
+      std::cout << "[Client] DdlRT_LRC merge round requires an even number of stripes" << std::endl;
       return;
+    }
+    if (baseline && stripe_ids.size() % 2 != 0) {
+      std::cout << "[Client] stripe " << stripe_ids.back()
+                << " gets a bye and remains unchanged in round " << merge_round_input
+                << std::endl;
     }
     int pairs = stripe_ids.size() / 2;
     // Be conservative by default. Higher merge concurrency can overload the
@@ -1587,7 +1599,7 @@ namespace ECProject
       for (int p = batch_start; p < batch_end; p++) {
         int sid_a = stripe_ids[2 * p];
         int sid_b = stripe_ids[2 * p + 1];
-        const int target_sid = m_sys_config->CodeType == "DdlRT_LRC" ? sid_a : p;
+        const int target_sid = (m_sys_config->CodeType == "DdlRT_LRC" || baseline) ? sid_a : p;
         std::cout << "[Client] queue merge stripe " << sid_a << " + " << sid_b
                   << " as new stripe " << target_sid << std::endl;
 
@@ -1601,7 +1613,7 @@ namespace ECProject
           req.set_stripe_id_a(sid_a);
           req.set_stripe_id_b(sid_b);
           req.set_merge_round(merge_round_input);
-          req.set_new_stripe_id(m_sys_config->CodeType == "DdlRT_LRC" ? sid_a : p);
+          req.set_new_stripe_id((m_sys_config->CodeType == "DdlRT_LRC" || m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS") ? sid_a : p);
 
           grpc::Status st = m_coordinator_ptr->mergeStripes(&ctx, req, &rep);
 

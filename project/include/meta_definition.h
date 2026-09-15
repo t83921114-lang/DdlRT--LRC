@@ -93,6 +93,11 @@ namespace ECProject
     int batch_id = -1;
     int batch_pos = -1;
     std::vector<int> ddlrt_lrc_s;
+    int pair_id = -1;
+    int merge_level = 0;
+    int representative_stripe_id = -1;
+    int parity_cluster = -1;
+    std::vector<int> member_stripe_ids;
   } Stripe;
 
   typedef struct ObjectInfo

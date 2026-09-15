@@ -137,6 +137,27 @@ struct StripeMergeParityInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 StripeMergeParityInfoDefaultTypeInternal _StripeMergeParityInfo_default_instance_;
+PROTOBUF_CONSTEXPR SrsParityUpdateInfo::SrsParityUpdateInfo(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.right_data_keys_)*/{}
+  , /*decltype(_impl_.right_data_datanode_ips_)*/{}
+  , /*decltype(_impl_.right_data_datanode_ports_)*/{}
+  , /*decltype(_impl_._right_data_datanode_ports_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.gf_coeffs_)*/{}
+  , /*decltype(_impl_._gf_coeffs_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.left_parity_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.new_parity_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.block_size_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct SrsParityUpdateInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR SrsParityUpdateInfoDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~SrsParityUpdateInfoDefaultTypeInternal() {}
+  union {
+    SrsParityUpdateInfo _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 SrsParityUpdateInfoDefaultTypeInternal _SrsParityUpdateInfo_default_instance_;
 PROTOBUF_CONSTEXPR ReadBlockBytesRequest::ReadBlockBytesRequest(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.block_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -179,7 +200,7 @@ struct DelInfoDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DelInfoDefaultTypeInternal _DelInfo_default_instance_;
 }  // namespace datanode_proto
-static ::_pb::Metadata file_level_metadata_datanode_2eproto[10];
+static ::_pb::Metadata file_level_metadata_datanode_2eproto[11];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_datanode_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_datanode_2eproto = nullptr;
 
@@ -259,6 +280,19 @@ const uint32_t TableStruct_datanode_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::datanode_proto::StripeMergeParityInfo, _impl_.parity_b_datanode_ip_),
   PROTOBUF_FIELD_OFFSET(::datanode_proto::StripeMergeParityInfo, _impl_.parity_b_datanode_port_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.left_parity_key_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.new_parity_key_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.block_size_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.right_data_keys_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.right_data_datanode_ips_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.right_data_datanode_ports_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::SrsParityUpdateInfo, _impl_.gf_coeffs_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::datanode_proto::ReadBlockBytesRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -290,9 +324,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 42, -1, -1, sizeof(::datanode_proto::MergeParityInfo)},
   { 50, -1, -1, sizeof(::datanode_proto::GetInfo)},
   { 61, -1, -1, sizeof(::datanode_proto::StripeMergeParityInfo)},
-  { 74, -1, -1, sizeof(::datanode_proto::ReadBlockBytesRequest)},
-  { 82, -1, -1, sizeof(::datanode_proto::ReadBlockBytesReply)},
-  { 90, -1, -1, sizeof(::datanode_proto::DelInfo)},
+  { 74, -1, -1, sizeof(::datanode_proto::SrsParityUpdateInfo)},
+  { 87, -1, -1, sizeof(::datanode_proto::ReadBlockBytesRequest)},
+  { 95, -1, -1, sizeof(::datanode_proto::ReadBlockBytesReply)},
+  { 103, -1, -1, sizeof(::datanode_proto::DelInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -303,6 +338,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::datanode_proto::_MergeParityInfo_default_instance_._instance,
   &::datanode_proto::_GetInfo_default_instance_._instance,
   &::datanode_proto::_StripeMergeParityInfo_default_instance_._instance,
+  &::datanode_proto::_SrsParityUpdateInfo_default_instance_._instance,
   &::datanode_proto::_ReadBlockBytesRequest_default_instance_._instance,
   &::datanode_proto::_ReadBlockBytesReply_default_instance_._instance,
   &::datanode_proto::_DelInfo_default_instance_._instance,
@@ -329,42 +365,49 @@ const char descriptor_table_protodef_datanode_2eproto[] PROTOBUF_SECTION_VARIABL
   "ity_key_b\030\002 \001(\t\022\026\n\016new_parity_key\030\003 \001(\t\022"
   "\022\n\nblock_size\030\004 \001(\005\022\020\n\010gf_coeff\030\005 \001(\005\022\034\n"
   "\024parity_b_datanode_ip\030\006 \001(\t\022\036\n\026parity_b_"
-  "datanode_port\030\007 \001(\005\">\n\025ReadBlockBytesReq"
-  "uest\022\021\n\tblock_key\030\001 \001(\t\022\022\n\nblock_size\030\002 "
-  "\001(\005\"/\n\023ReadBlockBytesReply\022\n\n\002ok\030\001 \001(\010\022\014"
-  "\n\004data\030\002 \001(\014\"\034\n\007DelInfo\022\021\n\tblock_key\030\001 \001"
-  "(\t2\345\007\n\017datanodeService\022J\n\ncheckalive\022\035.d"
-  "atanode_proto.CheckaliveCMD\032\035.datanode_p"
-  "roto.RequestResult\022C\n\thandleSet\022\027.datano"
-  "de_proto.SetInfo\032\035.datanode_proto.Reques"
-  "tResult\022I\n\014handleAppend\022\032.datanode_proto"
-  ".AppendInfo\032\035.datanode_proto.RequestResu"
-  "lt\022S\n\021handleMergeParity\022\037.datanode_proto"
-  ".MergeParityInfo\032\035.datanode_proto.Reques"
-  "tResult\022Z\n\030handleMergeParityWithRep\022\037.da"
-  "tanode_proto.MergeParityInfo\032\035.datanode_"
-  "proto.RequestResult\022P\n\016handleRecovery\022\037."
-  "datanode_proto.MergeParityInfo\032\035.datanod"
-  "e_proto.RequestResult\022Y\n\027handleRecoveryB"
-  "reakdown\022\037.datanode_proto.MergeParityInf"
-  "o\032\035.datanode_proto.RequestResult\022C\n\thand"
-  "leGet\022\027.datanode_proto.GetInfo\032\035.datanod"
-  "e_proto.RequestResult\022L\n\022handleGetBreakd"
-  "own\022\027.datanode_proto.GetInfo\032\035.datanode_"
-  "proto.RequestResult\022_\n\027handleStripeMerge"
-  "Parity\022%.datanode_proto.StripeMergeParit"
-  "yInfo\032\035.datanode_proto.RequestResult\022\\\n\016"
-  "readBlockBytes\022%.datanode_proto.ReadBloc"
-  "kBytesRequest\032#.datanode_proto.ReadBlock"
-  "BytesReply\022F\n\014handleDelete\022\027.datanode_pr"
-  "oto.DelInfo\032\035.datanode_proto.RequestResu"
-  "ltb\006proto3"
+  "datanode_port\030\007 \001(\005\"\312\001\n\023SrsParityUpdateI"
+  "nfo\022\027\n\017left_parity_key\030\001 \001(\t\022\026\n\016new_pari"
+  "ty_key\030\002 \001(\t\022\022\n\nblock_size\030\003 \001(\005\022\027\n\017righ"
+  "t_data_keys\030\004 \003(\t\022\037\n\027right_data_datanode"
+  "_ips\030\005 \003(\t\022!\n\031right_data_datanode_ports\030"
+  "\006 \003(\005\022\021\n\tgf_coeffs\030\007 \003(\005\">\n\025ReadBlockByt"
+  "esRequest\022\021\n\tblock_key\030\001 \001(\t\022\022\n\nblock_si"
+  "ze\030\002 \001(\005\"/\n\023ReadBlockBytesReply\022\n\n\002ok\030\001 "
+  "\001(\010\022\014\n\004data\030\002 \001(\014\"\034\n\007DelInfo\022\021\n\tblock_ke"
+  "y\030\001 \001(\t2\302\010\n\017datanodeService\022J\n\ncheckaliv"
+  "e\022\035.datanode_proto.CheckaliveCMD\032\035.datan"
+  "ode_proto.RequestResult\022C\n\thandleSet\022\027.d"
+  "atanode_proto.SetInfo\032\035.datanode_proto.R"
+  "equestResult\022I\n\014handleAppend\022\032.datanode_"
+  "proto.AppendInfo\032\035.datanode_proto.Reques"
+  "tResult\022S\n\021handleMergeParity\022\037.datanode_"
+  "proto.MergeParityInfo\032\035.datanode_proto.R"
+  "equestResult\022Z\n\030handleMergeParityWithRep"
+  "\022\037.datanode_proto.MergeParityInfo\032\035.data"
+  "node_proto.RequestResult\022P\n\016handleRecove"
+  "ry\022\037.datanode_proto.MergeParityInfo\032\035.da"
+  "tanode_proto.RequestResult\022Y\n\027handleReco"
+  "veryBreakdown\022\037.datanode_proto.MergePari"
+  "tyInfo\032\035.datanode_proto.RequestResult\022C\n"
+  "\thandleGet\022\027.datanode_proto.GetInfo\032\035.da"
+  "tanode_proto.RequestResult\022L\n\022handleGetB"
+  "reakdown\022\027.datanode_proto.GetInfo\032\035.data"
+  "node_proto.RequestResult\022_\n\027handleStripe"
+  "MergeParity\022%.datanode_proto.StripeMerge"
+  "ParityInfo\032\035.datanode_proto.RequestResul"
+  "t\022[\n\025handleSrsParityUpdate\022#.datanode_pr"
+  "oto.SrsParityUpdateInfo\032\035.datanode_proto"
+  ".RequestResult\022\\\n\016readBlockBytes\022%.datan"
+  "ode_proto.ReadBlockBytesRequest\032#.datano"
+  "de_proto.ReadBlockBytesReply\022F\n\014handleDe"
+  "lete\022\027.datanode_proto.DelInfo\032\035.datanode"
+  "_proto.RequestResultb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_datanode_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_datanode_2eproto = {
-    false, false, 1970, descriptor_table_protodef_datanode_2eproto,
+    false, false, 2268, descriptor_table_protodef_datanode_2eproto,
     "datanode.proto",
-    &descriptor_table_datanode_2eproto_once, nullptr, 0, 10,
+    &descriptor_table_datanode_2eproto_once, nullptr, 0, 11,
     schemas, file_default_instances, TableStruct_datanode_2eproto::offsets,
     file_level_metadata_datanode_2eproto, file_level_enum_descriptors_datanode_2eproto,
     file_level_service_descriptors_datanode_2eproto,
@@ -402,7 +445,7 @@ CheckaliveCMD::CheckaliveCMD(const CheckaliveCMD& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_name().empty()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
+    _this->_impl_.name_.Set(from._internal_name(),
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:datanode_proto.CheckaliveCMD)
@@ -965,7 +1008,7 @@ SetInfo::SetInfo(const SetInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   _impl_.proxy_ip_.InitDefault();
@@ -973,7 +1016,7 @@ SetInfo::SetInfo(const SetInfo& from)
     _impl_.proxy_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_proxy_ip().empty()) {
-    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(), 
+    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -1325,7 +1368,7 @@ AppendInfo::AppendInfo(const AppendInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_id_, &from._impl_.block_id_,
@@ -1633,7 +1676,7 @@ MergeParityInfo::MergeParityInfo(const MergeParityInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   _this->_impl_.block_id_ = from._impl_.block_id_;
@@ -1866,7 +1909,7 @@ GetInfo::GetInfo(const GetInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   _impl_.proxy_ip_.InitDefault();
@@ -1874,7 +1917,7 @@ GetInfo::GetInfo(const GetInfo& from)
     _impl_.proxy_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_proxy_ip().empty()) {
-    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(), 
+    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -2205,7 +2248,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_key_a_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_key_a().empty()) {
-    _this->_impl_.parity_key_a_.Set(from._internal_parity_key_a(), 
+    _this->_impl_.parity_key_a_.Set(from._internal_parity_key_a(),
       _this->GetArenaForAllocation());
   }
   _impl_.parity_key_b_.InitDefault();
@@ -2213,7 +2256,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_key_b_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_key_b().empty()) {
-    _this->_impl_.parity_key_b_.Set(from._internal_parity_key_b(), 
+    _this->_impl_.parity_key_b_.Set(from._internal_parity_key_b(),
       _this->GetArenaForAllocation());
   }
   _impl_.new_parity_key_.InitDefault();
@@ -2221,7 +2264,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.new_parity_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_new_parity_key().empty()) {
-    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(), 
+    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(),
       _this->GetArenaForAllocation());
   }
   _impl_.parity_b_datanode_ip_.InitDefault();
@@ -2229,7 +2272,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_b_datanode_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_b_datanode_ip().empty()) {
-    _this->_impl_.parity_b_datanode_ip_.Set(from._internal_parity_b_datanode_ip(), 
+    _this->_impl_.parity_b_datanode_ip_.Set(from._internal_parity_b_datanode_ip(),
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -2613,6 +2656,448 @@ void StripeMergeParityInfo::InternalSwap(StripeMergeParityInfo* other) {
 
 // ===================================================================
 
+class SrsParityUpdateInfo::_Internal {
+ public:
+};
+
+SrsParityUpdateInfo::SrsParityUpdateInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:datanode_proto.SrsParityUpdateInfo)
+}
+SrsParityUpdateInfo::SrsParityUpdateInfo(const SrsParityUpdateInfo& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  SrsParityUpdateInfo* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.right_data_keys_){from._impl_.right_data_keys_}
+    , decltype(_impl_.right_data_datanode_ips_){from._impl_.right_data_datanode_ips_}
+    , decltype(_impl_.right_data_datanode_ports_){from._impl_.right_data_datanode_ports_}
+    , /*decltype(_impl_._right_data_datanode_ports_cached_byte_size_)*/{0}
+    , decltype(_impl_.gf_coeffs_){from._impl_.gf_coeffs_}
+    , /*decltype(_impl_._gf_coeffs_cached_byte_size_)*/{0}
+    , decltype(_impl_.left_parity_key_){}
+    , decltype(_impl_.new_parity_key_){}
+    , decltype(_impl_.block_size_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.left_parity_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.left_parity_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_left_parity_key().empty()) {
+    _this->_impl_.left_parity_key_.Set(from._internal_left_parity_key(),
+      _this->GetArenaForAllocation());
+  }
+  _impl_.new_parity_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.new_parity_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_new_parity_key().empty()) {
+    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(),
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.block_size_ = from._impl_.block_size_;
+  // @@protoc_insertion_point(copy_constructor:datanode_proto.SrsParityUpdateInfo)
+}
+
+inline void SrsParityUpdateInfo::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.right_data_keys_){arena}
+    , decltype(_impl_.right_data_datanode_ips_){arena}
+    , decltype(_impl_.right_data_datanode_ports_){arena}
+    , /*decltype(_impl_._right_data_datanode_ports_cached_byte_size_)*/{0}
+    , decltype(_impl_.gf_coeffs_){arena}
+    , /*decltype(_impl_._gf_coeffs_cached_byte_size_)*/{0}
+    , decltype(_impl_.left_parity_key_){}
+    , decltype(_impl_.new_parity_key_){}
+    , decltype(_impl_.block_size_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.left_parity_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.left_parity_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.new_parity_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.new_parity_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+SrsParityUpdateInfo::~SrsParityUpdateInfo() {
+  // @@protoc_insertion_point(destructor:datanode_proto.SrsParityUpdateInfo)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void SrsParityUpdateInfo::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.right_data_keys_.~RepeatedPtrField();
+  _impl_.right_data_datanode_ips_.~RepeatedPtrField();
+  _impl_.right_data_datanode_ports_.~RepeatedField();
+  _impl_.gf_coeffs_.~RepeatedField();
+  _impl_.left_parity_key_.Destroy();
+  _impl_.new_parity_key_.Destroy();
+}
+
+void SrsParityUpdateInfo::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void SrsParityUpdateInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:datanode_proto.SrsParityUpdateInfo)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.right_data_keys_.Clear();
+  _impl_.right_data_datanode_ips_.Clear();
+  _impl_.right_data_datanode_ports_.Clear();
+  _impl_.gf_coeffs_.Clear();
+  _impl_.left_parity_key_.ClearToEmpty();
+  _impl_.new_parity_key_.ClearToEmpty();
+  _impl_.block_size_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SrsParityUpdateInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string left_parity_key = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_left_parity_key();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "datanode_proto.SrsParityUpdateInfo.left_parity_key"));
+        } else
+          goto handle_unusual;
+        continue;
+      // string new_parity_key = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_new_parity_key();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "datanode_proto.SrsParityUpdateInfo.new_parity_key"));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 block_size = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.block_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string right_data_keys = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_right_data_keys();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "datanode_proto.SrsParityUpdateInfo.right_data_keys"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string right_data_datanode_ips = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_right_data_datanode_ips();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            CHK_(::_pbi::VerifyUTF8(str, "datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips"));
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 right_data_datanode_ports = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_right_data_datanode_ports(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 48) {
+          _internal_add_right_data_datanode_ports(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 gf_coeffs = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_gf_coeffs(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 56) {
+          _internal_add_gf_coeffs(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* SrsParityUpdateInfo::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:datanode_proto.SrsParityUpdateInfo)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string left_parity_key = 1;
+  if (!this->_internal_left_parity_key().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_left_parity_key().data(), static_cast<int>(this->_internal_left_parity_key().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "datanode_proto.SrsParityUpdateInfo.left_parity_key");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_left_parity_key(), target);
+  }
+
+  // string new_parity_key = 2;
+  if (!this->_internal_new_parity_key().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_new_parity_key().data(), static_cast<int>(this->_internal_new_parity_key().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "datanode_proto.SrsParityUpdateInfo.new_parity_key");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_new_parity_key(), target);
+  }
+
+  // int32 block_size = 3;
+  if (this->_internal_block_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_block_size(), target);
+  }
+
+  // repeated string right_data_keys = 4;
+  for (int i = 0, n = this->_internal_right_data_keys_size(); i < n; i++) {
+    const auto& s = this->_internal_right_data_keys(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "datanode_proto.SrsParityUpdateInfo.right_data_keys");
+    target = stream->WriteString(4, s, target);
+  }
+
+  // repeated string right_data_datanode_ips = 5;
+  for (int i = 0, n = this->_internal_right_data_datanode_ips_size(); i < n; i++) {
+    const auto& s = this->_internal_right_data_datanode_ips(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "datanode_proto.SrsParityUpdateInfo.right_data_datanode_ips");
+    target = stream->WriteString(5, s, target);
+  }
+
+  // repeated int32 right_data_datanode_ports = 6;
+  {
+    int byte_size = _impl_._right_data_datanode_ports_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          6, _internal_right_data_datanode_ports(), byte_size, target);
+    }
+  }
+
+  // repeated int32 gf_coeffs = 7;
+  {
+    int byte_size = _impl_._gf_coeffs_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          7, _internal_gf_coeffs(), byte_size, target);
+    }
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:datanode_proto.SrsParityUpdateInfo)
+  return target;
+}
+
+size_t SrsParityUpdateInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:datanode_proto.SrsParityUpdateInfo)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string right_data_keys = 4;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.right_data_keys_.size());
+  for (int i = 0, n = _impl_.right_data_keys_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.right_data_keys_.Get(i));
+  }
+
+  // repeated string right_data_datanode_ips = 5;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.right_data_datanode_ips_.size());
+  for (int i = 0, n = _impl_.right_data_datanode_ips_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.right_data_datanode_ips_.Get(i));
+  }
+
+  // repeated int32 right_data_datanode_ports = 6;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.right_data_datanode_ports_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._right_data_datanode_ports_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated int32 gf_coeffs = 7;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.gf_coeffs_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._gf_coeffs_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // string left_parity_key = 1;
+  if (!this->_internal_left_parity_key().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_left_parity_key());
+  }
+
+  // string new_parity_key = 2;
+  if (!this->_internal_new_parity_key().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_new_parity_key());
+  }
+
+  // int32 block_size = 3;
+  if (this->_internal_block_size() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_block_size());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SrsParityUpdateInfo::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    SrsParityUpdateInfo::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SrsParityUpdateInfo::GetClassData() const { return &_class_data_; }
+
+
+void SrsParityUpdateInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<SrsParityUpdateInfo*>(&to_msg);
+  auto& from = static_cast<const SrsParityUpdateInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:datanode_proto.SrsParityUpdateInfo)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.right_data_keys_.MergeFrom(from._impl_.right_data_keys_);
+  _this->_impl_.right_data_datanode_ips_.MergeFrom(from._impl_.right_data_datanode_ips_);
+  _this->_impl_.right_data_datanode_ports_.MergeFrom(from._impl_.right_data_datanode_ports_);
+  _this->_impl_.gf_coeffs_.MergeFrom(from._impl_.gf_coeffs_);
+  if (!from._internal_left_parity_key().empty()) {
+    _this->_internal_set_left_parity_key(from._internal_left_parity_key());
+  }
+  if (!from._internal_new_parity_key().empty()) {
+    _this->_internal_set_new_parity_key(from._internal_new_parity_key());
+  }
+  if (from._internal_block_size() != 0) {
+    _this->_internal_set_block_size(from._internal_block_size());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SrsParityUpdateInfo::CopyFrom(const SrsParityUpdateInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:datanode_proto.SrsParityUpdateInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SrsParityUpdateInfo::IsInitialized() const {
+  return true;
+}
+
+void SrsParityUpdateInfo::InternalSwap(SrsParityUpdateInfo* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.right_data_keys_.InternalSwap(&other->_impl_.right_data_keys_);
+  _impl_.right_data_datanode_ips_.InternalSwap(&other->_impl_.right_data_datanode_ips_);
+  _impl_.right_data_datanode_ports_.InternalSwap(&other->_impl_.right_data_datanode_ports_);
+  _impl_.gf_coeffs_.InternalSwap(&other->_impl_.gf_coeffs_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.left_parity_key_, lhs_arena,
+      &other->_impl_.left_parity_key_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.new_parity_key_, lhs_arena,
+      &other->_impl_.new_parity_key_, rhs_arena
+  );
+  swap(_impl_.block_size_, other->_impl_.block_size_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SrsParityUpdateInfo::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
+      file_level_metadata_datanode_2eproto[7]);
+}
+
+// ===================================================================
+
 class ReadBlockBytesRequest::_Internal {
  public:
 };
@@ -2637,7 +3122,7 @@ ReadBlockBytesRequest::ReadBlockBytesRequest(const ReadBlockBytesRequest& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   _this->_impl_.block_size_ = from._impl_.block_size_;
@@ -2838,7 +3323,7 @@ void ReadBlockBytesRequest::InternalSwap(ReadBlockBytesRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ReadBlockBytesRequest::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
-      file_level_metadata_datanode_2eproto[7]);
+      file_level_metadata_datanode_2eproto[8]);
 }
 
 // ===================================================================
@@ -2867,7 +3352,7 @@ ReadBlockBytesReply::ReadBlockBytesReply(const ReadBlockBytesReply& from)
     _impl_.data_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_data().empty()) {
-    _this->_impl_.data_.Set(from._internal_data(), 
+    _this->_impl_.data_.Set(from._internal_data(),
       _this->GetArenaForAllocation());
   }
   _this->_impl_.ok_ = from._impl_.ok_;
@@ -3063,7 +3548,7 @@ void ReadBlockBytesReply::InternalSwap(ReadBlockBytesReply* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ReadBlockBytesReply::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
-      file_level_metadata_datanode_2eproto[8]);
+      file_level_metadata_datanode_2eproto[9]);
 }
 
 // ===================================================================
@@ -3091,7 +3576,7 @@ DelInfo::DelInfo(const DelInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+    _this->_impl_.block_key_.Set(from._internal_block_key(),
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:datanode_proto.DelInfo)
@@ -3266,7 +3751,7 @@ void DelInfo::InternalSwap(DelInfo* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DelInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
-      file_level_metadata_datanode_2eproto[9]);
+      file_level_metadata_datanode_2eproto[10]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -3299,6 +3784,10 @@ Arena::CreateMaybeMessage< ::datanode_proto::GetInfo >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::datanode_proto::StripeMergeParityInfo*
 Arena::CreateMaybeMessage< ::datanode_proto::StripeMergeParityInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::datanode_proto::StripeMergeParityInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::datanode_proto::SrsParityUpdateInfo*
+Arena::CreateMaybeMessage< ::datanode_proto::SrsParityUpdateInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::datanode_proto::SrsParityUpdateInfo >(arena);
 }
 template<> PROTOBUF_NOINLINE ::datanode_proto::ReadBlockBytesRequest*
 Arena::CreateMaybeMessage< ::datanode_proto::ReadBlockBytesRequest >(Arena* arena) {

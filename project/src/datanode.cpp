@@ -800,6 +800,76 @@ namespace ECProject
         return grpc::Status::OK;
     }
 
+    grpc::Status DatanodeImpl::handleSrsParityUpdate(
+        grpc::ServerContext *context,
+        const datanode_proto::SrsParityUpdateInfo *info,
+        datanode_proto::RequestResult *response)
+    {
+        (void)context;
+        const int block_size = info->block_size();
+        if (block_size <= 0 || info->right_data_keys_size() == 0 ||
+            info->right_data_keys_size() != info->right_data_datanode_ips_size() ||
+            info->right_data_keys_size() != info->right_data_datanode_ports_size() ||
+            info->right_data_keys_size() != info->gf_coeffs_size()) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
+        const std::string targetdir = "./storage/" + std::to_string(m_port) + "/";
+        const std::string left_path = targetdir + info->left_parity_key();
+        if (access(left_path.c_str(), 0) == -1) {
+            response->set_message(false); return grpc::Status::OK;
+        }
+        std::vector<unsigned char> result(static_cast<size_t>(block_size));
+        std::ifstream left(left_path, std::ios::binary);
+        left.read(reinterpret_cast<char *>(result.data()), block_size);
+        if (left.gcount() != block_size) { response->set_message(false); return grpc::Status::OK; }
+
+        for (int i = 0; i < info->right_data_keys_size(); ++i) {
+            std::string bytes;
+            const std::string peer = info->right_data_datanode_ips(i) + ":" +
+                                     std::to_string(info->right_data_datanode_ports(i));
+            if (peer == datanode_ip_port) {
+                std::ifstream in(targetdir + info->right_data_keys(i), std::ios::binary);
+                bytes.resize(static_cast<size_t>(block_size)); in.read(bytes.data(), block_size);
+                if (in.gcount() != block_size) { response->set_message(false); return grpc::Status::OK; }
+            } else {
+                std::shared_ptr<datanode_proto::datanodeService::Stub> stub;
+                {
+                    std::lock_guard<std::mutex> lock(m_remote_read_stub_mutex);
+                    auto it = m_remote_read_stubs.find(peer);
+                    if (it == m_remote_read_stubs.end()) {
+                        auto channel = grpc::CreateChannel(peer, grpc::InsecureChannelCredentials());
+                        auto created = datanode_proto::datanodeService::NewStub(channel);
+                        stub = std::shared_ptr<datanode_proto::datanodeService::Stub>(std::move(created));
+                        m_remote_read_stubs.emplace(peer, stub);
+                    } else stub = it->second;
+                }
+                grpc::ClientContext read_context;
+                datanode_proto::ReadBlockBytesRequest request;
+                datanode_proto::ReadBlockBytesReply reply;
+                request.set_block_key(info->right_data_keys(i)); request.set_block_size(block_size);
+                grpc::Status status = stub->readBlockBytes(&read_context, request, &reply);
+                if (!status.ok() || !reply.ok() || reply.data().size() != static_cast<size_t>(block_size)) {
+                    response->set_message(false); return grpc::Status::OK;
+                }
+                bytes = reply.data();
+            }
+            const unsigned char coeff = static_cast<unsigned char>(info->gf_coeffs(i));
+            for (int pos = 0; pos < block_size; ++pos)
+                result[static_cast<size_t>(pos)] ^= ECProject::gf_mul(
+                    coeff, static_cast<unsigned char>(bytes[static_cast<size_t>(pos)]));
+        }
+        createDirectories(targetdir);
+        const std::string new_path = targetdir + info->new_parity_key();
+        std::ofstream out(new_path, std::ios::binary | std::ios::trunc);
+        out.write(reinterpret_cast<const char *>(result.data()), block_size);
+        out.flush();
+        const bool write_ok = out.good();
+        out.close();
+        response->set_message(write_ok);
+        return grpc::Status::OK;
+    }
+
     grpc::Status DatanodeImpl::handleStripeMergeParity(
         grpc::ServerContext *context,
         const datanode_proto::StripeMergeParityInfo *info,
@@ -829,14 +899,19 @@ namespace ECProject
 
         std::ifstream ifs_a(path_a, std::ios::binary);
         ifs_a.read(buf_a.get(), block_size);
+        const bool loaded_a = ifs_a.gcount() == static_cast<std::streamsize>(block_size);
         ifs_a.close();
+        if (!loaded_a) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
 
         bool loaded_b = false;
         if (access(path_b.c_str(), 0) != -1) {
             std::ifstream ifs_b(path_b, std::ios::binary);
             ifs_b.read(buf_b.get(), block_size);
+            loaded_b = ifs_b.gcount() == static_cast<std::streamsize>(block_size);
             ifs_b.close();
-            loaded_b = true;
         } else if (!parity_b_ip.empty() && parity_b_port > 0) {
             const std::string peer_addr =
                 parity_b_ip + ":" + std::to_string(parity_b_port);
@@ -891,8 +966,12 @@ namespace ECProject
         std::ofstream ofs(path_new, std::ios::binary | std::ios::out | std::ios::trunc);
         ofs.write(buf_new.get(), block_size);
         ofs.flush();
+        const bool write_ok = ofs.good();
         ofs.close();
-
+        if (!write_ok) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
         std::cout << "[Datanode" << m_port << "][StripeMergeParity] merged "
                   << parity_key_a << " + coeff*" << parity_key_b
                   << " -> " << new_parity_key << std::endl;

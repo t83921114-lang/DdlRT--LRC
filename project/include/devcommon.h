@@ -13,4 +13,10 @@
 #include <random>
 #include <set>
 
+namespace ECProject {
+inline bool is_azure_lrc_family(const std::string &code_type) {
+    return code_type == "AzureLRC" || code_type == "SRS" || code_type == "ERS";
+}
+}
+
 #endif

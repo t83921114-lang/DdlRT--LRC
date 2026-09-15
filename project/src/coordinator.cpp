@@ -422,6 +422,111 @@ void CoordinatorImpl::initialize_ddlrt_lrc_stripe_placement(Stripe *stripe) {
             << " logical_racks=" << logical_rack_count << std::endl;
 }
 
+void CoordinatorImpl::initialize_baseline_stripe_placement(Stripe *stripe) {
+  const int k = stripe->k;
+  const int r = stripe->r;
+  const int z = stripe->z;
+  if (k <= 0 || r < 1 || z < 1 || k % z != 0)
+    throw std::runtime_error("SRS/ERS requires k divisible by z");
+  const int pair_id = stripe->stripe_id / 2;
+  const int pair_pos = stripe->stripe_id % 2;
+  const int data_per_group = k / z;
+  const int capacity = r + 1;
+  const int full_parts = data_per_group / capacity;
+  const int tail_load = data_per_group % capacity;
+  const int parts_per_group = full_parts + (tail_load > 0 ? 1 : 0);
+  const int first_data_racks = z * parts_per_group;
+  const int required_racks = 1 + first_data_racks + z * full_parts;
+  if (required_racks > m_sys_config->ClusterNum)
+    throw std::runtime_error("SRS/ERS pair placement exceeds configured racks");
+  if (m_sys_config->DatanodeNumPerCluster < std::max(r + z, capacity) ||
+      (tail_load > 0 && m_sys_config->DatanodeNumPerCluster < 2 * tail_load))
+    throw std::runtime_error("SRS/ERS rack has insufficient nodes");
+
+  std::vector<int> racks;
+  for (const auto &entry : m_cluster_table) racks.push_back(entry.first);
+  std::sort(racks.begin(), racks.end());
+  const int parity_index = pair_id % static_cast<int>(racks.size());
+  const int parity_cluster = racks[parity_index];
+  auto data_rack = [&](int offset) {
+    return racks[(parity_index + 1 + offset) % static_cast<int>(racks.size())];
+  };
+  std::map<int, std::vector<int>> node_orders;
+  for (int cluster : racks) {
+    node_orders[cluster] = m_cluster_table.at(cluster).nodes;
+    std::mt19937_64 node_rng(m_sys_config->BaselineSeed ^
+        (static_cast<uint64_t>(pair_id + 1) << 32) ^ static_cast<uint64_t>(cluster));
+    std::shuffle(node_orders[cluster].begin(), node_orders[cluster].end(), node_rng);
+  }
+
+  stripe->pair_id = pair_id;
+  stripe->merge_level = 0;
+  stripe->representative_stripe_id = stripe->stripe_id;
+  stripe->parity_cluster = parity_cluster;
+  stripe->member_stripe_ids = {stripe->stripe_id};
+  stripe->blocks.clear();
+  stripe->group_to_blocks.clear();
+  stripe->place2clusters.clear();
+  Block *blocks = new Block[stripe->n];
+  int data_id = 0;
+  int placement_group = 0;
+  int new_rack_cursor = pair_pos == 0 ? 0 : first_data_racks;
+  for (int group = 0; group < z; ++group) {
+    for (int part = 0; part < parts_per_group; ++part) {
+      const bool tail = tail_load > 0 && part == parts_per_group - 1;
+      const int load = tail ? tail_load : capacity;
+      int cluster;
+      if (pair_pos == 1 && tail) {
+        cluster = data_rack(group * parts_per_group + part);
+      } else {
+        cluster = data_rack(new_rack_cursor++);
+      }
+      const int node_offset = pair_pos == 1 && tail ? tail_load : 0;
+      if (node_offset + load > static_cast<int>(node_orders[cluster].size()))
+        throw std::runtime_error("SRS/ERS shared tail rack has insufficient distinct nodes");
+      for (int j = 0; j < load; ++j, ++data_id) {
+        Block &block = blocks[data_id];
+        block.block_id = data_id;
+        block.block_key = std::to_string(stripe->stripe_id) +
+                          (data_id < 10 ? "_D0" : "_D") + std::to_string(data_id);
+        block.block_type = 'D'; block.block_size = m_sys_config->BlockSize;
+        block.map2group = placement_group; block.map2stripe = stripe->stripe_id;
+        block.map2cluster = cluster; block.map2node = node_orders[cluster][node_offset + j];
+        block.logical_rack_col = cluster; block.logical_node_col = node_offset + j + 1;
+        block.local_group = group; block.source_stripe = stripe->stripe_id;
+        block.map2key = stripe->object_keys[0];
+        update_stripe_info_in_node(block.map2node, stripe->stripe_id, block.block_id);
+        m_cluster_table[cluster].blocks.push_back(&block);
+        m_cluster_table[cluster].stripes.insert(stripe->stripe_id);
+        stripe->blocks.push_back(&block); stripe->place2clusters.insert(cluster);
+        add_to_map(stripe->group_to_blocks, placement_group, block.block_id);
+      }
+      ++placement_group;
+    }
+  }
+  const auto &parity_nodes = node_orders[parity_cluster];
+  for (int j = 0; j < r + z; ++j) {
+    const int id = k + j; Block &block = blocks[id];
+    const bool global = j < r; const int index = global ? j : j - r;
+    block.block_id = id;
+    block.block_key = std::to_string(stripe->stripe_id) +
+        (global ? (index < 10 ? "_G0" : "_G") : (index < 10 ? "_L0" : "_L")) +
+        std::to_string(index);
+    block.block_type = global ? 'G' : 'L'; block.block_size = m_sys_config->BlockSize;
+    block.map2group = placement_group; block.map2stripe = stripe->stripe_id;
+    block.map2cluster = parity_cluster; block.map2node = parity_nodes[j];
+    block.logical_rack_col = parity_cluster; block.logical_node_col = j + 1;
+    block.local_group = global ? -1 : index; block.source_stripe = stripe->stripe_id;
+    block.map2key = stripe->object_keys[0];
+    update_stripe_info_in_node(block.map2node, stripe->stripe_id, block.block_id);
+    m_cluster_table[parity_cluster].blocks.push_back(&block);
+    m_cluster_table[parity_cluster].stripes.insert(stripe->stripe_id);
+    stripe->blocks.push_back(&block); stripe->place2clusters.insert(parity_cluster);
+    add_to_map(stripe->group_to_blocks, placement_group, block.block_id);
+  }
+  stripe->num_groups = placement_group + 1;
+}
+
 void CoordinatorImpl::initialize_optimal_lrc_stripe_placement(Stripe *stripe) {
   // range 0~k-1: data blocks
   // range k~k+r-1: global parity blocks
@@ -932,7 +1037,7 @@ void CoordinatorImpl::initialize_equiox_stripe_placement(Stripe *stripe) {
       if (code_type == "UniLRC")
         blocks_info[i].map2group =
             int((i - stripe->k) / (stripe->r / stripe->z));
-      else if (code_type == "AzureLRC")
+      else if (ECProject::is_azure_lrc_family(code_type))
         blocks_info[i].map2group = int(stripe->z);
       blocks_info[i].map2cluster =
           (use_OA1_list[0] - 1) % m_sys_config->ClusterNum;
@@ -1114,7 +1219,7 @@ void CoordinatorImpl::initialize_unilrc_and_azurelrc_stripe_placement(
       if (code_type == "UniLRC") {
         blocks_info[i].map2group =
             int((i - stripe->k) / (stripe->r / stripe->z)); // 放置方式
-      } else if (code_type == "AzureLRC") {
+      } else if (ECProject::is_azure_lrc_family(code_type)) {
         blocks_info[i].map2group = int(stripe->z);
       }
     } else {
@@ -1554,10 +1659,11 @@ grpc::Status CoordinatorImpl::uploadSetValue(
   }
   if (code_type != "UniLRC" && code_type != "AzureLRC" &&
       code_type != "OptimalLRC" && code_type != "UniformLRC" &&
-      code_type != "RS" && code_type != "DdlRT_LRC") {
+      code_type != "RS" && code_type != "DdlRT_LRC" &&
+      code_type != "SRS" && code_type != "ERS") {
     return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
                         "code type must be UniLRC, AzureLRC, OptimalLRC, "
-                        "UniformLRC, RS, or DdlRT_LRC; got: " + code_type);
+                        "UniformLRC, RS, DdlRT_LRC, SRS, or ERS; got: " + code_type);
   }
 
   try {
@@ -1570,9 +1676,11 @@ grpc::Status CoordinatorImpl::uploadSetValue(
     t_stripe.N = m_sys_config->N;
     t_stripe.num_arry = m_sys_config->num_arry;
     t_stripe.object_keys.push_back(clientID);
-    if (code_type == "DdlRT_LRC") {
+    if (code_type == "SRS" || code_type == "ERS") {
+      initialize_baseline_stripe_placement(&t_stripe);
+    } else if (code_type == "DdlRT_LRC") {
       initialize_ddlrt_lrc_stripe_placement(&t_stripe);
-    } else if (code_type == "UniLRC" || code_type == "AzureLRC") {
+    } else if (code_type == "UniLRC" || ECProject::is_azure_lrc_family(code_type)) {
       initialize_unilrc_and_azurelrc_stripe_placement(&t_stripe);
     } else if (code_type == "OptimalLRC") {
       initialize_optimal_lrc_stripe_placement(&t_stripe);
@@ -1648,7 +1756,7 @@ grpc::Status CoordinatorImpl::uploadSubsetValue(
                              static_cast<size_t>(m_sys_config->k) &&
          "subset size is larger than the block size!");
   assert(
-      (code_type == "UniLRC" || code_type == "AzureLRC" ||
+      (code_type == "UniLRC" || ECProject::is_azure_lrc_family(code_type) ||
        code_type == "OptimalLRC" || code_type == "UniformLRC") &&
       "Error: code type must be UniLRC, AzureLRC, OptimalLRC, or UniformLRC!");
 
@@ -1659,7 +1767,7 @@ grpc::Status CoordinatorImpl::uploadSubsetValue(
   t_stripe.r = m_sys_config->r;
   t_stripe.z = m_sys_config->z;
   t_stripe.object_keys.push_back(clientID);
-  if (code_type == "UniLRC" || code_type == "AzureLRC") {
+  if (code_type == "UniLRC" || ECProject::is_azure_lrc_family(code_type)) {
     initialize_unilrc_and_azurelrc_stripe_placement(&t_stripe);
   } else if (code_type == "OptimalLRC") {
     initialize_optimal_lrc_stripe_placement(&t_stripe);
@@ -1707,7 +1815,27 @@ std::vector<int> CoordinatorImpl::get_recovery_group_ids(std::string code_type,
                                                          int k, int r, int z,
                                                          int failed_block_id) {
   std::vector<int> recovery_group_ids;
-  if (code_type == "AzureLRC") {
+  if (code_type == "SRS" || code_type == "ERS") {
+    const int data_per_local_group = k / z;
+    const int groups_per_local_group =
+        (data_per_local_group + r) / (r + 1);
+    const int parity_group = z * groups_per_local_group;
+    if (failed_block_id >= k && failed_block_id < k + r) {
+      for (int group = 0; group < parity_group; ++group)
+        recovery_group_ids.push_back(group);
+      recovery_group_ids.push_back(parity_group);
+    } else if (failed_block_id >= k + r) {
+      const int local_group = failed_block_id - k - r;
+      for (int part = 0; part < groups_per_local_group; ++part)
+        recovery_group_ids.push_back(local_group * groups_per_local_group + part);
+      recovery_group_ids.push_back(parity_group);
+    } else {
+      const int local_group = failed_block_id / data_per_local_group;
+      for (int part = 0; part < groups_per_local_group; ++part)
+        recovery_group_ids.push_back(local_group * groups_per_local_group + part);
+      recovery_group_ids.push_back(parity_group);
+    }
+  } else if (ECProject::is_azure_lrc_family(code_type)) {
     if (failed_block_id >= k && failed_block_id < k + r) {
       for (int i = 1; i <= z; i++) {
         recovery_group_ids.push_back(i);
@@ -1863,7 +1991,7 @@ std::vector<int>
 CoordinatorImpl::get_data_block_num_per_group(int k, int r, int z,
                                               std::string code_type) {
   std::vector<int> data_block_num_per_group;
-  if (code_type == "AzureLRC") {
+  if (ECProject::is_azure_lrc_family(code_type)) {
     for (int i = 0; i < z; i++) {
       data_block_num_per_group.push_back((k / z));
     }
@@ -2242,7 +2370,7 @@ bool CoordinatorImpl::recovery_one_block_breakdown(
   grpc::Status status;
 
   if (recovery_group_ids.size() == 1) {
-    // assert((code_type == "UniLRC") || (code_type == "AzureLRC" &&
+    // assert((code_type == "UniLRC") || (ECProject::is_azure_lrc_family(code_type) &&
     // (failed_block_id < m_sys_config->k || failed_block_id >= m_sys_config->k
     // + m_sys_config->r)));
 
@@ -2350,12 +2478,12 @@ bool CoordinatorImpl::recovery_one_block_breakdown(
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (m_sys_config->CodeType == "AzureLRC" &&
+          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
               degraded_read_request.blockids_size() ==
                   (m_sys_config->k / m_sys_config->z))
             break;
 
-          if ((m_sys_config->CodeType == "AzureLRC" &&
+          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                blockids[j] >= m_sys_config->k + m_sys_config->r) ||
               blockids[j] == failed_block_id)
             continue;
@@ -2427,7 +2555,7 @@ bool CoordinatorImpl::recovery_one_block_breakdown(
           recovery_request.set_cross_rack_num(cross_rack_num);
           std::vector<int> blockids = t_stripe.group_to_blocks[dest_group_id];
           for (int i = 0; i < int(blockids.size()); i++) {
-            if (m_sys_config->CodeType == "AzureLRC" &&
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                 recovery_request.blockids_size() ==
                     (m_sys_config->k / m_sys_config->z))
               break;
@@ -2511,10 +2639,10 @@ grpc::Status CoordinatorImpl::decodeTest(
   for (int i = 0; i < recovery_group_ids.size(); i++) {
     std::vector<int> blockids = t_stripe.group_to_blocks[recovery_group_ids[i]];
     for (int j = 0; j < blockids.size(); j++) {
-      if (m_sys_config->CodeType == "AzureLRC" &&
+      if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
           recovery_block_ids.size() == (k / z))
         break;
-      if ((m_sys_config->CodeType == "AzureLRC" &&
+      if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
            blockids[j] >= m_sys_config->k + m_sys_config->r) ||
           blockids[j] == failed_block_id)
         continue;
@@ -2535,7 +2663,7 @@ grpc::Status CoordinatorImpl::decodeTest(
       std::aligned_alloc(32, m_sys_config->BlockSize));
   std::chrono::high_resolution_clock::time_point start =
       std::chrono::high_resolution_clock::now();
-  if (code_type == "AzureLRC") {
+  if (ECProject::is_azure_lrc_family(code_type)) {
     decode_azure_lrc(k, r, z, block_num, &recovery_block_ids,
                      recovery_data_ptrs.data(), res, block_size,
                      failed_block_id);
@@ -2576,7 +2704,7 @@ bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
   grpc::Status status;
 
   if (recovery_group_ids.size() == 1) {
-    // assert((code_type == "UniLRC") || (code_type == "AzureLRC" &&
+    // assert((code_type == "UniLRC") || (ECProject::is_azure_lrc_family(code_type) &&
     // (failed_block_id < m_sys_config->k || failed_block_id >= m_sys_config->k
     // + m_sys_config->r)));
 
@@ -2656,12 +2784,12 @@ bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (m_sys_config->CodeType == "AzureLRC" &&
+          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
               degraded_read_request.blockids_size() ==
                   (m_sys_config->k / m_sys_config->z))
             break;
 
-          if ((m_sys_config->CodeType == "AzureLRC" &&
+          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                blockids[j] >= m_sys_config->k + m_sys_config->r) ||
               blockids[j] == failed_block_id)
             continue;
@@ -2715,7 +2843,7 @@ bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
       }
       std::vector<int> blockids = t_stripe.group_to_blocks[dest_group_id];
       for (int i = 0; i < int(blockids.size()); i++) {
-        if (m_sys_config->CodeType == "AzureLRC" &&
+        if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
             recovery_request.blockids_size() ==
                 (m_sys_config->k / m_sys_config->z))
           break;
@@ -2848,7 +2976,7 @@ bool CoordinatorImpl::degraded_read_one_block_breakdown(
   grpc::Status status;
 
   if (recovery_group_ids.size() == 1) {
-    // assert((code_type == "UniLRC") || (code_type == "AzureLRC" &&
+    // assert((code_type == "UniLRC") || (ECProject::is_azure_lrc_family(code_type) &&
     // (failed_block_id < m_sys_config->k || failed_block_id >= m_sys_config->k
     // + m_sys_config->r)));
 
@@ -2952,12 +3080,12 @@ bool CoordinatorImpl::degraded_read_one_block_breakdown(
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (m_sys_config->CodeType == "AzureLRC" &&
+          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
               degraded_read_request.blockids_size() ==
                   (m_sys_config->k / m_sys_config->z))
             break;
 
-          if ((m_sys_config->CodeType == "AzureLRC" &&
+          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                blockids[j] >= m_sys_config->k + m_sys_config->r) ||
               blockids[j] == failed_block_id)
             continue;
@@ -3024,7 +3152,7 @@ bool CoordinatorImpl::degraded_read_one_block_breakdown(
           recovery_request.set_cross_rack_num(cross_rack_num);
           std::vector<int> blockids = t_stripe.group_to_blocks[dest_group_id];
           for (int i = 0; i < int(blockids.size()); i++) {
-            if (m_sys_config->CodeType == "AzureLRC" &&
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                 recovery_request.blockids_size() ==
                     (m_sys_config->k / m_sys_config->z))
               break;
@@ -3093,7 +3221,7 @@ bool CoordinatorImpl::degraded_read_one_block(int stripe_id,
   grpc::Status status;
 
   if (recovery_group_ids.size() == 1) {
-    // assert((code_type == "UniLRC") || (code_type == "AzureLRC" &&
+    // assert((code_type == "UniLRC") || (ECProject::is_azure_lrc_family(code_type) &&
     // (failed_block_id < m_sys_config->k || failed_block_id >= m_sys_config->k
     // + m_sys_config->r)));
 
@@ -3171,12 +3299,12 @@ bool CoordinatorImpl::degraded_read_one_block(int stripe_id,
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (m_sys_config->CodeType == "AzureLRC" &&
+          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
               degraded_read_request.blockids_size() ==
                   (m_sys_config->k / m_sys_config->z))
             break;
 
-          if ((m_sys_config->CodeType == "AzureLRC" &&
+          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                blockids[j] >= m_sys_config->k + m_sys_config->r) ||
               blockids[j] == failed_block_id)
             continue;
@@ -3220,7 +3348,7 @@ bool CoordinatorImpl::degraded_read_one_block(int stripe_id,
           recovery_request.set_cross_rack_num(cross_rack_num);
           std::vector<int> blockids = t_stripe.group_to_blocks[dest_group_id];
           for (int i = 0; i < int(blockids.size()); i++) {
-            if (m_sys_config->CodeType == "AzureLRC" &&
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                 recovery_request.blockids_size() ==
                     (m_sys_config->k / m_sys_config->z))
               break;
@@ -3269,7 +3397,7 @@ bool CoordinatorImpl::degraded_read_one_block_for_workload(
   grpc::Status status;
 
   if (recovery_group_ids.size() == 1) {
-    // assert((code_type == "UniLRC") || (code_type == "AzureLRC" &&
+    // assert((code_type == "UniLRC") || (ECProject::is_azure_lrc_family(code_type) &&
     // (failed_block_id < m_sys_config->k || failed_block_id >= m_sys_config->k
     // + m_sys_config->r)));
 
@@ -3349,12 +3477,12 @@ bool CoordinatorImpl::degraded_read_one_block_for_workload(
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (m_sys_config->CodeType == "AzureLRC" &&
+          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
               degraded_read_request.blockids_size() ==
                   (m_sys_config->k / m_sys_config->z))
             break;
 
-          if ((m_sys_config->CodeType == "AzureLRC" &&
+          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                blockids[j] >= m_sys_config->k + m_sys_config->r) ||
               blockids[j] == failed_block_id)
             continue;
@@ -3400,7 +3528,7 @@ bool CoordinatorImpl::degraded_read_one_block_for_workload(
           recovery_request.set_block_id_to_send(block_id);
           std::vector<int> blockids = t_stripe.group_to_blocks[dest_group_id];
           for (int i = 0; i < int(blockids.size()); i++) {
-            if (m_sys_config->CodeType == "AzureLRC" &&
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
                 recovery_request.blockids_size() ==
                     (m_sys_config->k / m_sys_config->z))
               break;
@@ -5420,6 +5548,7 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
   const int sid_a = request->stripe_id_a();
   const int sid_b = request->stripe_id_b();
   const int round = request->merge_round();
+  const bool baseline = m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS";
   auto ia = m_stripe_table.find(sid_a);
   auto ib = m_stripe_table.find(sid_b);
   if (ia == m_stripe_table.end() || ib == m_stripe_table.end()) {
@@ -5431,21 +5560,26 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
   const int k = a.k, r = a.r, z = a.z;
   const int base_k = m_sys_config->k;
   const int expected_k = base_k * (1 << (round - 1));
-  if (round < 1 || round > a.N || b.k != k || b.r != r || b.z != z ||
-      k != expected_k || a.batch_id != b.batch_id ||
-      a.batch_pos + (1 << (round - 1)) != b.batch_pos ||
-      a.ddlrt_lrc_s != b.ddlrt_lrc_s ||
+  const bool baseline_pair_ok = !baseline ||
+      (round == 1 ? (a.pair_id == b.pair_id && a.merge_level == 0 && b.merge_level == 0)
+                  : (a.merge_level == round - 1 && b.merge_level == round - 1));
+  const bool ddlrt_pair_ok = baseline ||
+      (round <= a.N && a.batch_id == b.batch_id &&
+       a.batch_pos + (1 << (round - 1)) == b.batch_pos &&
+       a.ddlrt_lrc_s == b.ddlrt_lrc_s);
+  if (round < 1 || b.k != k || b.r != r || b.z != z || k != expected_k ||
+      !baseline_pair_ok || !ddlrt_pair_ok ||
       static_cast<int>(a.blocks.size()) != k + r + z ||
       static_cast<int>(b.blocks.size()) != k + r + z) {
     reply->set_success(false);
     return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
-                        "invalid DdlRT_LRC adjacent merge inputs");
+                        "invalid LRC baseline merge inputs");
   }
   const int new_sid = sid_a;
   if (request->new_stripe_id() != sid_a) {
     reply->set_success(false);
     return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,
-                        "DdlRT_LRC target stripe id must equal left stripe id");
+                        "merge target stripe id must equal left stripe id");
   }
   const int new_k = 2 * k;
   const int data_capacity = r + 1;
@@ -5460,7 +5594,89 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
                         blk->logical_rack_col, blk->logical_node_col};
   }
   std::vector<Migration> migrations;
-  for (int group = 0; group < z; ++group) {
+  if (baseline) {
+    std::set<int> reserved_racks{a.parity_cluster};
+    for (int group = 0; group < z; ++group) {
+      std::vector<Block *> group_blocks;
+      for (int i = 0; i < k; ++i) {
+        if (a.blocks[i]->local_group == group) group_blocks.push_back(a.blocks[i]);
+        if (b.blocks[i]->local_group == group) group_blocks.push_back(b.blocks[i]);
+      }
+      const int target_count = (static_cast<int>(group_blocks.size()) + data_capacity - 1) / data_capacity;
+      struct RackScore { int left; int right; int cluster; };
+      std::vector<RackScore> scores;
+      for (const auto &cluster_entry : m_cluster_table) {
+        const int cluster = cluster_entry.first;
+        if (reserved_racks.count(cluster)) continue;
+        int left = 0, right = 0;
+        for (Block *blk : group_blocks) {
+          if (locations[blk].cluster != cluster) continue;
+          if (std::find(a.blocks.begin(), a.blocks.begin() + k, blk) != a.blocks.begin() + k) ++left;
+          else ++right;
+        }
+        scores.push_back({left, right, cluster});
+      }
+      std::sort(scores.begin(), scores.end(), [](const RackScore &x, const RackScore &y) {
+        return std::tie(x.left, x.right, y.cluster) > std::tie(y.left, y.right, x.cluster);
+      });
+      if (static_cast<int>(scores.size()) < target_count) {
+        reply->set_success(false);
+        return grpc::Status(grpc::StatusCode::RESOURCE_EXHAUSTED,
+                            "not enough mutually exclusive racks for baseline local groups");
+      }
+      std::vector<int> targets;
+      for (int i = 0; i < target_count; ++i) {
+        targets.push_back(scores[i].cluster);
+        reserved_racks.insert(scores[i].cluster);
+      }
+      std::map<int, std::set<int>> used_nodes;
+      std::map<Block *, PlannedLocation> assigned;
+      auto retain = [&](Block *blk) {
+        const PlannedLocation old = locations[blk];
+        if (std::find(targets.begin(), targets.end(), old.cluster) == targets.end() ||
+            static_cast<int>(used_nodes[old.cluster].size()) >= data_capacity ||
+            !used_nodes[old.cluster].insert(old.node).second) return;
+        assigned[blk] = old;
+      };
+      for (Block *blk : group_blocks)
+        if (std::find(a.blocks.begin(), a.blocks.begin() + k, blk) != a.blocks.begin() + k) retain(blk);
+      for (Block *blk : group_blocks)
+        if (std::find(b.blocks.begin(), b.blocks.begin() + k, blk) != b.blocks.begin() + k) retain(blk);
+      for (Block *blk : group_blocks) {
+        if (assigned.count(blk)) continue;
+        bool placed = false;
+        for (int cluster : targets) {
+          std::vector<int> nodes = m_cluster_table.at(cluster).nodes;
+          std::sort(nodes.begin(), nodes.end());
+          const uint64_t node_seed = m_sys_config->BaselineSeed ^
+              (static_cast<uint64_t>(round) << 48) ^
+              (static_cast<uint64_t>(group) << 32) ^
+              static_cast<uint64_t>(cluster);
+          std::mt19937_64 node_rng(node_seed);
+          std::shuffle(nodes.begin(), nodes.end(), node_rng);
+          for (int node : nodes) {
+            if (static_cast<int>(used_nodes[cluster].size()) >= data_capacity) break;
+            if (!used_nodes[cluster].insert(node).second) continue;
+            assigned[blk] = {cluster, node, cluster, static_cast<int>(used_nodes[cluster].size())};
+            placed = true; break;
+          }
+          if (placed) break;
+        }
+        if (!placed) {
+          reply->set_success(false);
+          return grpc::Status(grpc::StatusCode::RESOURCE_EXHAUSTED,
+                              "no deterministic free node for baseline relayout");
+        }
+      }
+      for (Block *blk : group_blocks) {
+        const PlannedLocation from = locations[blk], to = assigned[blk];
+        locations[blk] = to;
+        if (from.cluster != to.cluster || from.node != to.node)
+          migrations.push_back({blk, from, to});
+      }
+    }
+  }
+  if (!baseline) for (int group = 0; group < z; ++group) {
     std::map<int, std::vector<Block *>> by_rack;
     for (int i = 0; i < k; ++i) {
       for (Block *blk : {a.blocks[i], b.blocks[i]})
@@ -5500,8 +5716,8 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
         if (other->block_type == 'D' && other->local_group == group)
           rack_col_to_cluster[entry.second.rack_col] = entry.second.cluster;
       }
-      std::vector<std::vector<int>> oa2 = Get_OA_Information("OA_2.txt");
-      const auto &oa_row = oa2.at(static_cast<size_t>(a.oa2_row_idx));
+      std::vector<std::vector<int>> oa2;
+      if (!baseline) oa2 = Get_OA_Information("OA_2.txt");
       for (const auto &rc : rack_col_to_cluster) {
         int target_cluster = rc.second;
         if (target_cluster == from.cluster) continue;
@@ -5517,9 +5733,10 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
           }
         }
         if (!pure || load >= data_capacity) continue;
-        for (int node_col = 1; node_col <= data_capacity && node_col <= static_cast<int>(oa_row.size()); ++node_col) {
-          int node_index = oa_row[node_col - 1] - 1;
-          const auto &nodes = m_cluster_table.at(target_cluster).nodes;
+        const auto &nodes = m_cluster_table.at(target_cluster).nodes;
+        for (int node_col = 1; node_col <= data_capacity && node_col <= static_cast<int>(nodes.size()); ++node_col) {
+          int node_index = baseline ? node_col - 1
+                                    : oa2.at(static_cast<size_t>(a.oa2_row_idx))[node_col - 1] - 1;
           if (node_index < 0 || node_index >= static_cast<int>(nodes.size())) continue;
           int node = nodes[node_index];
           if (!used_nodes.count(node)) {
@@ -5573,10 +5790,14 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
     std::string old_left_key;
     std::string old_right_key;
   };
-  const uint64_t task_id = (static_cast<uint64_t>(a.batch_id + 1) << 48) |
-                           (static_cast<uint64_t>(round) << 40) |
-                           (static_cast<uint64_t>(sid_a & 0xfffff) << 20) |
-                           static_cast<uint64_t>(sid_b & 0xfffff);
+  const uint64_t task_id = baseline
+      ? ((static_cast<uint64_t>(round & 0xff) << 56) ^
+         (static_cast<uint64_t>(sid_a & 0x0fffffff) << 28) ^
+         static_cast<uint64_t>(sid_b & 0x0fffffff))
+      : ((static_cast<uint64_t>(a.batch_id + 1) << 48) |
+         (static_cast<uint64_t>(round) << 40) |
+         (static_cast<uint64_t>(sid_a & 0xfffff) << 20) |
+         static_cast<uint64_t>(sid_b & 0xfffff));
   std::vector<ParityTask> parity;
   for (int j = 0; j < r + z; ++j) {
     unsigned char coeff = 1;
@@ -5645,17 +5866,39 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
         grpc::ClientContext ctx;
         ctx.set_deadline(std::chrono::system_clock::now() +
                          std::chrono::seconds(MERGE_GRPC_TCP_TIMEOUT_SEC * 3));
-        datanode_proto::StripeMergeParityInfo info;
         datanode_proto::RequestResult result;
-        info.set_parity_key_a(task.left->block_key);
-        info.set_parity_key_b(task.right->block_key);
-        info.set_new_parity_key(task.target_key);
-        info.set_block_size(block_size);
-        info.set_gf_coeff(static_cast<int>(task.coeff));
-        info.set_parity_b_datanode_ip(right_node.node_ip);
-        info.set_parity_b_datanode_port(right_node.node_port);
-
-        grpc::Status status = stub->handleStripeMergeParity(&ctx, info, &result);
+        grpc::Status status;
+        if (m_sys_config->CodeType == "SRS") {
+          datanode_proto::SrsParityUpdateInfo info;
+          info.set_left_parity_key(task.left->block_key);
+          info.set_new_parity_key(task.target_key);
+          info.set_block_size(block_size);
+          const bool global = task.left->block_type == 'G';
+          const int parity_index = task.left->block_id - k;
+          for (int i = 0; i < k; ++i) {
+            Block *data = b.blocks[i];
+            if (!global && data->local_group != task.left->local_group) continue;
+            const Node &data_node = m_node_table.at(data->map2node);
+            info.add_right_data_keys(data->block_key);
+            info.add_right_data_datanode_ips(data_node.node_ip);
+            info.add_right_data_datanode_ports(data_node.node_port);
+            const unsigned char coeff = global
+                ? ECProject::gf_pow(ECProject::gf_pow(2, parity_index + 1), k + i)
+                : 1;
+            info.add_gf_coeffs(static_cast<int>(coeff));
+          }
+          status = stub->handleSrsParityUpdate(&ctx, info, &result);
+        } else {
+          datanode_proto::StripeMergeParityInfo info;
+          info.set_parity_key_a(task.left->block_key);
+          info.set_parity_key_b(task.right->block_key);
+          info.set_new_parity_key(task.target_key);
+          info.set_block_size(block_size);
+          info.set_gf_coeff(static_cast<int>(task.coeff));
+          info.set_parity_b_datanode_ip(right_node.node_ip);
+          info.set_parity_b_datanode_port(right_node.node_port);
+          status = stub->handleStripeMergeParity(&ctx, info, &result);
+        }
         if (!status.ok() || !result.message()) {
           parity_ok = false;
           std::cerr << "[DdlRT_LRC][Merge] pair=" << sid_a << "+" << sid_b
@@ -5717,6 +5960,11 @@ grpc::Status CoordinatorImpl::mergeStripesDdlrtLrc(
   merged.n = new_k + r + z; merged.l = a.l; merged.g_m = a.g_m;
   merged.N = a.N; merged.num_arry = a.num_arry; merged.ddlrt_lrc_s = a.ddlrt_lrc_s;
   merged.batch_id = a.batch_id; merged.batch_pos = a.batch_pos;
+  merged.pair_id = a.pair_id; merged.merge_level = round;
+  merged.representative_stripe_id = new_sid; merged.parity_cluster = a.parity_cluster;
+  merged.member_stripe_ids = a.member_stripe_ids;
+  merged.member_stripe_ids.insert(merged.member_stripe_ids.end(),
+                                  b.member_stripe_ids.begin(), b.member_stripe_ids.end());
   merged.oa1_row_idx = a.oa1_row_idx; merged.oa2_row_idx = a.oa2_row_idx;
   merged.oa1_used_cols = a.oa1_used_cols;
   for (int col : b.oa1_used_cols)
@@ -5776,7 +6024,8 @@ grpc::Status CoordinatorImpl::mergeStripes(
     grpc::ServerContext *context,
     const coordinator_proto::MergeRequest *request,
     coordinator_proto::MergeReply *reply) {
-  if (m_sys_config->CodeType == "DdlRT_LRC")
+  if (m_sys_config->CodeType == "DdlRT_LRC" ||
+      m_sys_config->CodeType == "SRS" || m_sys_config->CodeType == "ERS")
     return mergeStripesDdlrtLrc(context, request, reply);
   (void)context;
 

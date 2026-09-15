@@ -42,6 +42,7 @@ namespace ECProject
     int CoordinatorPort = 55555;
     std::string AppendMode = "EQUIOX_MODE";
     std::string CodeType = "RS";
+    uint64_t BaselineSeed = 0;
   };
 }
 

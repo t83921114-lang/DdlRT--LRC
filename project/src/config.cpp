@@ -18,7 +18,7 @@ namespace ECProject
   {
     assert(BlockSize % UnitSize == 0 && "Error: BlockSize must be divisible by UnitSize");
     assert((AppendMode == "REP_MODE" || AppendMode == "UNILRC_MODE" || AppendMode == "CACHED_MODE" || AppendMode == "EQUIOX_MODE") && "Error: AppendMode must be REP_MODE, UNILRC_MODE, or CACHED_MODE");
-    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS" || CodeType == "DdlRT_LRC") && "Error: unsupported CodeType");
+    assert((CodeType == "UniLRC" || CodeType == "AzureLRC" || CodeType == "OptimalLRC" || CodeType == "UniformLRC" || CodeType == "RS" || CodeType == "DdlRT_LRC" || CodeType == "SRS" || CodeType == "ERS") && "Error: unsupported CodeType");
     assert(DatanodeNumPerCluster > 0 && "Error: DatanodeNumPerCluster must be greater than 0");
     assert(ClusterNum > 0 && "Error: ClusterNum must be greater than 0");
     if (CodeType == "UniLRC")
@@ -30,6 +30,19 @@ namespace ECProject
     {
       assert(DatanodeNumPerCluster > k / z + 1 && "Error: DatanodeNumPerCluster must be greater than k / z + 1");
       assert(ClusterNum > z + 1 && "Error: ClusterNum must be greater than z + 1");
+    }
+    if (CodeType == "SRS" || CodeType == "ERS")
+    {
+      assert(k > 0 && r >= 1 && z >= 1 && k % z == 0 && "Error: SRS/ERS requires k divisible by z");
+      const int capacity = r + 1;
+      const int data_per_group = k / z;
+      const int full_parts = data_per_group / capacity;
+      const int tail_load = data_per_group % capacity;
+      const int parts = full_parts + (tail_load > 0 ? 1 : 0);
+      const int required_racks = 1 + z * parts + z * full_parts;
+      assert(DatanodeNumPerCluster >= std::max(r + z, capacity) && "Error: SRS/ERS rack capacity is insufficient");
+      assert((tail_load == 0 || DatanodeNumPerCluster >= 2 * tail_load) && "Error: SRS/ERS shared tail nodes are insufficient");
+      assert(ClusterNum >= required_racks && "Error: SRS/ERS pair placement needs more racks");
     }
     if (CodeType == "OptimalLRC")
     {
@@ -94,6 +107,8 @@ namespace ECProject
       z = std::stoi(elem->GetText());
     if (auto elem = root->FirstChildElement("CodeType"))
       CodeType = std::string(elem->GetText());
+    if (auto elem = root->FirstChildElement("BaselineSeed"))
+      BaselineSeed = std::stoull(elem->GetText());
     if (CodeType == "UniLRC")
     {
       if (auto elem = root->FirstChildElement("alpha"))
@@ -155,6 +170,7 @@ namespace ECProject
     std::cout << "  CoordinatorPort: " << CoordinatorPort << std::endl;
     std::cout << "  AppendMode: " << AppendMode << std::endl;
     std::cout << "  CodeType: " << CodeType << std::endl;
+    std::cout << "  BaselineSeed: " << BaselineSeed << std::endl;
     if (CodeType == "DdlRT_LRC")
     {
       std::cout << "  DdlRT_LRC merge rounds: " << N << std::endl;
