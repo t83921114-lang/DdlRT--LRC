@@ -800,6 +800,47 @@ namespace ECProject
         return grpc::Status::OK;
     }
 
+    grpc::Status DatanodeImpl::writeBlockBytes(
+        grpc::ServerContext *context,
+        const datanode_proto::WriteBlockBytesRequest *request,
+        datanode_proto::RequestResult *response)
+    {
+        (void)context;
+        const std::string &block_key = request->block_key();
+        const std::string &data = request->data();
+        if (block_key.empty() || data.empty()) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
+
+        const std::string targetdir = "./storage/" + std::to_string(m_port) + "/";
+        if (!createDirectories(targetdir)) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
+
+        const std::string writepath = targetdir + block_key;
+        const std::string temppath = writepath + ".grpc_tmp";
+        std::ofstream ofs(temppath, std::ios::binary | std::ios::out | std::ios::trunc);
+        if (!ofs.is_open()) {
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
+        ofs.write(data.data(), static_cast<std::streamsize>(data.size()));
+        ofs.flush();
+        const bool write_ok = ofs.good();
+        ofs.close();
+        if (!write_ok || std::rename(temppath.c_str(), writepath.c_str()) != 0) {
+            std::remove(temppath.c_str());
+            response->set_message(false);
+            return grpc::Status::OK;
+        }
+
+        response->set_message(true);
+        response->set_valuesizebytes(static_cast<int>(data.size()));
+        return grpc::Status::OK;
+    }
+
     grpc::Status DatanodeImpl::handleStripeMergeParity(
         grpc::ServerContext *context,
         const datanode_proto::StripeMergeParityInfo *info,
@@ -845,8 +886,13 @@ namespace ECProject
                 std::lock_guard<std::mutex> lk(m_remote_read_stub_mutex);
                 auto it = m_remote_read_stubs.find(peer_addr);
                 if (it == m_remote_read_stubs.end()) {
-                    auto channel = grpc::CreateChannel(
-                        peer_addr, grpc::InsecureChannelCredentials());
+                    grpc::ChannelArguments channel_args;
+                    channel_args.SetMaxReceiveMessageSize(
+                        ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
+                    channel_args.SetMaxSendMessageSize(
+                        ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
+                    auto channel = grpc::CreateCustomChannel(
+                        peer_addr, grpc::InsecureChannelCredentials(), channel_args);
                     auto new_stub = datanode_proto::datanodeService::NewStub(channel);
                     stub = std::shared_ptr<datanode_proto::datanodeService::Stub>(
                         std::move(new_stub));

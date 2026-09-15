@@ -36,8 +36,9 @@ service datanodeService {
   rpc handleGetBreakdown(GetInfo) returns(RequestResult);
   // stripe-level parity merge (local)
   rpc handleStripeMergeParity(StripeMergeParityInfo) returns(RequestResult);
-  // read full block bytes for cross-datanode parity merge
+  // read/write full block bytes over gRPC for merge data paths
   rpc readBlockBytes(ReadBlockBytesRequest) returns(ReadBlockBytesReply);
+  rpc writeBlockBytes(WriteBlockBytesRequest) returns(RequestResult);
   // delete
   rpc handleDelete(DelInfo) returns(RequestResult);
 }
@@ -104,6 +105,11 @@ message ReadBlockBytesRequest {
 
 message ReadBlockBytesReply {
     bool ok = 1;
+    bytes data = 2;
+}
+
+message WriteBlockBytesRequest {
+    string block_key = 1;
     bytes data = 2;
 }
 

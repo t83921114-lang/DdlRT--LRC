@@ -110,6 +110,7 @@ message blockRelocPlan {
 
 message blockRelocReply {
   string result = 1;
+  double execution_seconds = 2;
 }
 
 message AskIfSuccess {

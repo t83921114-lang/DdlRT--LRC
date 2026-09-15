@@ -58,6 +58,7 @@ service coordinatorService {
 
   // merge
   rpc mergeStripes(MergeRequest) returns (MergeReply) {};
+  rpc mergeClusterRTLrcRound(ClusterRTLrcRoundRequest) returns (ClusterRTLrcRoundReply) {};
 
   //other
   rpc listStripes(RequestToCoordinator) returns (RepStripeIds) {};
@@ -217,4 +218,19 @@ message MergeReply {
   // Wall time inside mergeStripes for each concurrent phase (seconds).
   double data_migration_seconds = 3;
   double parity_update_seconds = 4;
+}
+
+message ClusterRTLrcRoundRequest {
+  int32 merge_round = 1;
+}
+
+message ClusterRTLrcRoundReply {
+  bool success = 1;
+  repeated int32 new_stripe_ids = 2;
+  int32 pair_count = 3;
+  int32 completed_pairs = 4;
+  double data_migration_seconds = 5;
+  double parity_update_seconds = 6;
+  double critical_path_seconds = 7;
+  string error_message = 8;
 }

@@ -75,6 +75,9 @@ extern SetInfoDefaultTypeInternal _SetInfo_default_instance_;
 class StripeMergeParityInfo;
 struct StripeMergeParityInfoDefaultTypeInternal;
 extern StripeMergeParityInfoDefaultTypeInternal _StripeMergeParityInfo_default_instance_;
+class WriteBlockBytesRequest;
+struct WriteBlockBytesRequestDefaultTypeInternal;
+extern WriteBlockBytesRequestDefaultTypeInternal _WriteBlockBytesRequest_default_instance_;
 }  // namespace datanode_proto
 PROTOBUF_NAMESPACE_OPEN
 template<> ::datanode_proto::AppendInfo* Arena::CreateMaybeMessage<::datanode_proto::AppendInfo>(Arena*);
@@ -87,6 +90,7 @@ template<> ::datanode_proto::ReadBlockBytesRequest* Arena::CreateMaybeMessage<::
 template<> ::datanode_proto::RequestResult* Arena::CreateMaybeMessage<::datanode_proto::RequestResult>(Arena*);
 template<> ::datanode_proto::SetInfo* Arena::CreateMaybeMessage<::datanode_proto::SetInfo>(Arena*);
 template<> ::datanode_proto::StripeMergeParityInfo* Arena::CreateMaybeMessage<::datanode_proto::StripeMergeParityInfo>(Arena*);
+template<> ::datanode_proto::WriteBlockBytesRequest* Arena::CreateMaybeMessage<::datanode_proto::WriteBlockBytesRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace datanode_proto {
 
@@ -1786,6 +1790,175 @@ class ReadBlockBytesReply final :
 };
 // -------------------------------------------------------------------
 
+class WriteBlockBytesRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:datanode_proto.WriteBlockBytesRequest) */ {
+ public:
+  inline WriteBlockBytesRequest() : WriteBlockBytesRequest(nullptr) {}
+  ~WriteBlockBytesRequest() override;
+  explicit PROTOBUF_CONSTEXPR WriteBlockBytesRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  WriteBlockBytesRequest(const WriteBlockBytesRequest& from);
+  WriteBlockBytesRequest(WriteBlockBytesRequest&& from) noexcept
+    : WriteBlockBytesRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline WriteBlockBytesRequest& operator=(const WriteBlockBytesRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline WriteBlockBytesRequest& operator=(WriteBlockBytesRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const WriteBlockBytesRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const WriteBlockBytesRequest* internal_default_instance() {
+    return reinterpret_cast<const WriteBlockBytesRequest*>(
+               &_WriteBlockBytesRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(WriteBlockBytesRequest& a, WriteBlockBytesRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(WriteBlockBytesRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(WriteBlockBytesRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  WriteBlockBytesRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<WriteBlockBytesRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const WriteBlockBytesRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const WriteBlockBytesRequest& from) {
+    WriteBlockBytesRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(WriteBlockBytesRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "datanode_proto.WriteBlockBytesRequest";
+  }
+  protected:
+  explicit WriteBlockBytesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kBlockKeyFieldNumber = 1,
+    kDataFieldNumber = 2,
+  };
+  // string block_key = 1;
+  void clear_block_key();
+  const std::string& block_key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_block_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_block_key();
+  PROTOBUF_NODISCARD std::string* release_block_key();
+  void set_allocated_block_key(std::string* block_key);
+  private:
+  const std::string& _internal_block_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_block_key(const std::string& value);
+  std::string* _internal_mutable_block_key();
+  public:
+
+  // bytes data = 2;
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // @@protoc_insertion_point(class_scope:datanode_proto.WriteBlockBytesRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr block_key_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_datanode_2eproto;
+};
+// -------------------------------------------------------------------
+
 class DelInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:datanode_proto.DelInfo) */ {
  public:
@@ -1834,7 +2007,7 @@ class DelInfo final :
                &_DelInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(DelInfo& a, DelInfo& b) {
     a.Swap(&b);
@@ -3092,6 +3265,110 @@ inline void ReadBlockBytesReply::set_allocated_data(std::string* data) {
 
 // -------------------------------------------------------------------
 
+// WriteBlockBytesRequest
+
+// string block_key = 1;
+inline void WriteBlockBytesRequest::clear_block_key() {
+  _impl_.block_key_.ClearToEmpty();
+}
+inline const std::string& WriteBlockBytesRequest::block_key() const {
+  // @@protoc_insertion_point(field_get:datanode_proto.WriteBlockBytesRequest.block_key)
+  return _internal_block_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WriteBlockBytesRequest::set_block_key(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.block_key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:datanode_proto.WriteBlockBytesRequest.block_key)
+}
+inline std::string* WriteBlockBytesRequest::mutable_block_key() {
+  std::string* _s = _internal_mutable_block_key();
+  // @@protoc_insertion_point(field_mutable:datanode_proto.WriteBlockBytesRequest.block_key)
+  return _s;
+}
+inline const std::string& WriteBlockBytesRequest::_internal_block_key() const {
+  return _impl_.block_key_.Get();
+}
+inline void WriteBlockBytesRequest::_internal_set_block_key(const std::string& value) {
+  
+  _impl_.block_key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* WriteBlockBytesRequest::_internal_mutable_block_key() {
+  
+  return _impl_.block_key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* WriteBlockBytesRequest::release_block_key() {
+  // @@protoc_insertion_point(field_release:datanode_proto.WriteBlockBytesRequest.block_key)
+  return _impl_.block_key_.Release();
+}
+inline void WriteBlockBytesRequest::set_allocated_block_key(std::string* block_key) {
+  if (block_key != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.block_key_.SetAllocated(block_key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.block_key_.IsDefault()) {
+    _impl_.block_key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:datanode_proto.WriteBlockBytesRequest.block_key)
+}
+
+// bytes data = 2;
+inline void WriteBlockBytesRequest::clear_data() {
+  _impl_.data_.ClearToEmpty();
+}
+inline const std::string& WriteBlockBytesRequest::data() const {
+  // @@protoc_insertion_point(field_get:datanode_proto.WriteBlockBytesRequest.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WriteBlockBytesRequest::set_data(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:datanode_proto.WriteBlockBytesRequest.data)
+}
+inline std::string* WriteBlockBytesRequest::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:datanode_proto.WriteBlockBytesRequest.data)
+  return _s;
+}
+inline const std::string& WriteBlockBytesRequest::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void WriteBlockBytesRequest::_internal_set_data(const std::string& value) {
+  
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* WriteBlockBytesRequest::_internal_mutable_data() {
+  
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* WriteBlockBytesRequest::release_data() {
+  // @@protoc_insertion_point(field_release:datanode_proto.WriteBlockBytesRequest.data)
+  return _impl_.data_.Release();
+}
+inline void WriteBlockBytesRequest::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:datanode_proto.WriteBlockBytesRequest.data)
+}
+
+// -------------------------------------------------------------------
+
 // DelInfo
 
 // string block_key = 1;
@@ -3147,6 +3424,8 @@ inline void DelInfo::set_allocated_block_key(std::string* block_key) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

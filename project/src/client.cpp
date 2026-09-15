@@ -1517,8 +1517,36 @@ namespace ECProject
     }
     return true;
   }
-  void Client::start_merge(int merge_round)
+  bool Client::start_merge(int merge_round)
   {
+    if (merge_round < 1) {
+      std::cout << "[Client] invalid merge round" << std::endl;
+      return false;
+    }
+    if (m_sys_config->CodeType == "ClusterRT_LRC") {
+      grpc::ClientContext context;
+      coordinator_proto::ClusterRTLrcRoundRequest request;
+      coordinator_proto::ClusterRTLrcRoundReply reply;
+      request.set_merge_round(merge_round);
+      grpc::Status status = m_coordinator_ptr->mergeClusterRTLrcRound(
+          &context, request, &reply);
+      if (!status.ok()) {
+        std::cout << "[Client] ClusterRT_LRC round RPC failed: "
+                  << status.error_message() << std::endl;
+        return false;
+      }
+      std::cout << "[ClusterRT_LRC merge round " << merge_round << "] pairs="
+                << reply.completed_pairs() << "/" << reply.pair_count()
+                << " migration_sum=" << reply.data_migration_seconds() << " s"
+                << " parity_sum=" << reply.parity_update_seconds() << " s"
+                << " critical_path=" << reply.critical_path_seconds() << " s"
+                << std::endl;
+      if (!reply.success()) {
+        std::cout << "[Client] ClusterRT_LRC round failed: "
+                  << reply.error_message() << std::endl;
+      }
+      return reply.success();
+    }
     // List all stripes first
     grpc::ClientContext list_ctx;
     coordinator_proto::RequestToCoordinator list_req;
@@ -1527,7 +1555,7 @@ namespace ECProject
     grpc::Status list_st = m_coordinator_ptr->listStripes(&list_ctx, list_req, &list_reply);
     if (!list_st.ok()) {
       std::cout << "[Client] listStripes failed: " << list_st.error_message() << std::endl;
-      return;
+      return false;
     }
 
     std::vector<int> stripe_ids;
@@ -1539,25 +1567,19 @@ namespace ECProject
     if (stripe_ids.size() < 2) {
       std::cout << "[Client] need at least 2 stripes to merge, got "
                 << stripe_ids.size() << std::endl;
-      return;
+      return false;
     }
 
     std::cout << "[Client] available stripes: ";
     for (int sid : stripe_ids) std::cout << sid << " ";
     std::cout << std::endl;
 
-    int merge_round_input;
-    std::cout << "Please enter merge round (start from 1, current merge round:  "<<merge_round<<" ): ";
-    std::cin >> merge_round_input;
-    if (merge_round_input < 1) {
-      std::cout << "[Client] invalid merge round" << std::endl;
-      return;
-    }
+    const int merge_round_input = merge_round;
 
     // Merge consecutive pairs in bounded batches so network transfers can overlap.
     if (m_sys_config->CodeType == "DdlRT_LRC" && stripe_ids.size() % 2 != 0) {
       std::cout << "[Client] DdlRT_LRC merge requires an even number of stripes" << std::endl;
-      return;
+      return false;
     }
     int pairs = stripe_ids.size() / 2;
     // Be conservative by default. Higher merge concurrency can overload the
@@ -1659,6 +1681,7 @@ namespace ECProject
               << " coordinator parity update sum: "
               << sum_parity_update_seconds << " s"
               << std::endl;
+    return !merge_failed;
   }
   void Client::get_block_each_stripe_position(int stripe_cnt,const std::vector<int>& pos_list)
   {

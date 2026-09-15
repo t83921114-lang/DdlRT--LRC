@@ -51,6 +51,12 @@ extern AskIfSuccessDefaultTypeInternal _AskIfSuccess_default_instance_;
 class BlockIDsAndClientIP;
 struct BlockIDsAndClientIPDefaultTypeInternal;
 extern BlockIDsAndClientIPDefaultTypeInternal _BlockIDsAndClientIP_default_instance_;
+class ClusterRTLrcRoundReply;
+struct ClusterRTLrcRoundReplyDefaultTypeInternal;
+extern ClusterRTLrcRoundReplyDefaultTypeInternal _ClusterRTLrcRoundReply_default_instance_;
+class ClusterRTLrcRoundRequest;
+struct ClusterRTLrcRoundRequestDefaultTypeInternal;
+extern ClusterRTLrcRoundRequestDefaultTypeInternal _ClusterRTLrcRoundRequest_default_instance_;
 class CommitAbortKey;
 struct CommitAbortKeyDefaultTypeInternal;
 extern CommitAbortKeyDefaultTypeInternal _CommitAbortKey_default_instance_;
@@ -127,6 +133,8 @@ extern StripePosListAndClientDefaultTypeInternal _StripePosListAndClient_default
 PROTOBUF_NAMESPACE_OPEN
 template<> ::coordinator_proto::AskIfSuccess* Arena::CreateMaybeMessage<::coordinator_proto::AskIfSuccess>(Arena*);
 template<> ::coordinator_proto::BlockIDsAndClientIP* Arena::CreateMaybeMessage<::coordinator_proto::BlockIDsAndClientIP>(Arena*);
+template<> ::coordinator_proto::ClusterRTLrcRoundReply* Arena::CreateMaybeMessage<::coordinator_proto::ClusterRTLrcRoundReply>(Arena*);
+template<> ::coordinator_proto::ClusterRTLrcRoundRequest* Arena::CreateMaybeMessage<::coordinator_proto::ClusterRTLrcRoundRequest>(Arena*);
 template<> ::coordinator_proto::CommitAbortKey* Arena::CreateMaybeMessage<::coordinator_proto::CommitAbortKey>(Arena*);
 template<> ::coordinator_proto::DegradedReadReply* Arena::CreateMaybeMessage<::coordinator_proto::DegradedReadReply>(Arena*);
 template<> ::coordinator_proto::KeyAndClientIP* Arena::CreateMaybeMessage<::coordinator_proto::KeyAndClientIP>(Arena*);
@@ -4666,6 +4674,398 @@ class MergeReply final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_coordinator_2eproto;
 };
+// -------------------------------------------------------------------
+
+class ClusterRTLrcRoundRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:coordinator_proto.ClusterRTLrcRoundRequest) */ {
+ public:
+  inline ClusterRTLrcRoundRequest() : ClusterRTLrcRoundRequest(nullptr) {}
+  ~ClusterRTLrcRoundRequest() override;
+  explicit PROTOBUF_CONSTEXPR ClusterRTLrcRoundRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ClusterRTLrcRoundRequest(const ClusterRTLrcRoundRequest& from);
+  ClusterRTLrcRoundRequest(ClusterRTLrcRoundRequest&& from) noexcept
+    : ClusterRTLrcRoundRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline ClusterRTLrcRoundRequest& operator=(const ClusterRTLrcRoundRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ClusterRTLrcRoundRequest& operator=(ClusterRTLrcRoundRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ClusterRTLrcRoundRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ClusterRTLrcRoundRequest* internal_default_instance() {
+    return reinterpret_cast<const ClusterRTLrcRoundRequest*>(
+               &_ClusterRTLrcRoundRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    26;
+
+  friend void swap(ClusterRTLrcRoundRequest& a, ClusterRTLrcRoundRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ClusterRTLrcRoundRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ClusterRTLrcRoundRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ClusterRTLrcRoundRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ClusterRTLrcRoundRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ClusterRTLrcRoundRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ClusterRTLrcRoundRequest& from) {
+    ClusterRTLrcRoundRequest::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClusterRTLrcRoundRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "coordinator_proto.ClusterRTLrcRoundRequest";
+  }
+  protected:
+  explicit ClusterRTLrcRoundRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMergeRoundFieldNumber = 1,
+  };
+  // int32 merge_round = 1;
+  void clear_merge_round();
+  int32_t merge_round() const;
+  void set_merge_round(int32_t value);
+  private:
+  int32_t _internal_merge_round() const;
+  void _internal_set_merge_round(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:coordinator_proto.ClusterRTLrcRoundRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int32_t merge_round_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_coordinator_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ClusterRTLrcRoundReply final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:coordinator_proto.ClusterRTLrcRoundReply) */ {
+ public:
+  inline ClusterRTLrcRoundReply() : ClusterRTLrcRoundReply(nullptr) {}
+  ~ClusterRTLrcRoundReply() override;
+  explicit PROTOBUF_CONSTEXPR ClusterRTLrcRoundReply(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ClusterRTLrcRoundReply(const ClusterRTLrcRoundReply& from);
+  ClusterRTLrcRoundReply(ClusterRTLrcRoundReply&& from) noexcept
+    : ClusterRTLrcRoundReply() {
+    *this = ::std::move(from);
+  }
+
+  inline ClusterRTLrcRoundReply& operator=(const ClusterRTLrcRoundReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ClusterRTLrcRoundReply& operator=(ClusterRTLrcRoundReply&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ClusterRTLrcRoundReply& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ClusterRTLrcRoundReply* internal_default_instance() {
+    return reinterpret_cast<const ClusterRTLrcRoundReply*>(
+               &_ClusterRTLrcRoundReply_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    27;
+
+  friend void swap(ClusterRTLrcRoundReply& a, ClusterRTLrcRoundReply& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ClusterRTLrcRoundReply* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ClusterRTLrcRoundReply* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ClusterRTLrcRoundReply* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ClusterRTLrcRoundReply>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ClusterRTLrcRoundReply& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ClusterRTLrcRoundReply& from) {
+    ClusterRTLrcRoundReply::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ClusterRTLrcRoundReply* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "coordinator_proto.ClusterRTLrcRoundReply";
+  }
+  protected:
+  explicit ClusterRTLrcRoundReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNewStripeIdsFieldNumber = 2,
+    kErrorMessageFieldNumber = 8,
+    kSuccessFieldNumber = 1,
+    kPairCountFieldNumber = 3,
+    kDataMigrationSecondsFieldNumber = 5,
+    kParityUpdateSecondsFieldNumber = 6,
+    kCriticalPathSecondsFieldNumber = 7,
+    kCompletedPairsFieldNumber = 4,
+  };
+  // repeated int32 new_stripe_ids = 2;
+  int new_stripe_ids_size() const;
+  private:
+  int _internal_new_stripe_ids_size() const;
+  public:
+  void clear_new_stripe_ids();
+  private:
+  int32_t _internal_new_stripe_ids(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_new_stripe_ids() const;
+  void _internal_add_new_stripe_ids(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_new_stripe_ids();
+  public:
+  int32_t new_stripe_ids(int index) const;
+  void set_new_stripe_ids(int index, int32_t value);
+  void add_new_stripe_ids(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      new_stripe_ids() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_new_stripe_ids();
+
+  // string error_message = 8;
+  void clear_error_message();
+  const std::string& error_message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_error_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_error_message();
+  PROTOBUF_NODISCARD std::string* release_error_message();
+  void set_allocated_error_message(std::string* error_message);
+  private:
+  const std::string& _internal_error_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_error_message(const std::string& value);
+  std::string* _internal_mutable_error_message();
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // int32 pair_count = 3;
+  void clear_pair_count();
+  int32_t pair_count() const;
+  void set_pair_count(int32_t value);
+  private:
+  int32_t _internal_pair_count() const;
+  void _internal_set_pair_count(int32_t value);
+  public:
+
+  // double data_migration_seconds = 5;
+  void clear_data_migration_seconds();
+  double data_migration_seconds() const;
+  void set_data_migration_seconds(double value);
+  private:
+  double _internal_data_migration_seconds() const;
+  void _internal_set_data_migration_seconds(double value);
+  public:
+
+  // double parity_update_seconds = 6;
+  void clear_parity_update_seconds();
+  double parity_update_seconds() const;
+  void set_parity_update_seconds(double value);
+  private:
+  double _internal_parity_update_seconds() const;
+  void _internal_set_parity_update_seconds(double value);
+  public:
+
+  // double critical_path_seconds = 7;
+  void clear_critical_path_seconds();
+  double critical_path_seconds() const;
+  void set_critical_path_seconds(double value);
+  private:
+  double _internal_critical_path_seconds() const;
+  void _internal_set_critical_path_seconds(double value);
+  public:
+
+  // int32 completed_pairs = 4;
+  void clear_completed_pairs();
+  int32_t completed_pairs() const;
+  void set_completed_pairs(int32_t value);
+  private:
+  int32_t _internal_completed_pairs() const;
+  void _internal_set_completed_pairs(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:coordinator_proto.ClusterRTLrcRoundReply)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > new_stripe_ids_;
+    mutable std::atomic<int> _new_stripe_ids_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr error_message_;
+    bool success_;
+    int32_t pair_count_;
+    double data_migration_seconds_;
+    double parity_update_seconds_;
+    double critical_path_seconds_;
+    int32_t completed_pairs_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_coordinator_2eproto;
+};
 // ===================================================================
 
 
@@ -6822,9 +7222,258 @@ inline void MergeReply::set_parity_update_seconds(double value) {
   // @@protoc_insertion_point(field_set:coordinator_proto.MergeReply.parity_update_seconds)
 }
 
+// -------------------------------------------------------------------
+
+// ClusterRTLrcRoundRequest
+
+// int32 merge_round = 1;
+inline void ClusterRTLrcRoundRequest::clear_merge_round() {
+  _impl_.merge_round_ = 0;
+}
+inline int32_t ClusterRTLrcRoundRequest::_internal_merge_round() const {
+  return _impl_.merge_round_;
+}
+inline int32_t ClusterRTLrcRoundRequest::merge_round() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundRequest.merge_round)
+  return _internal_merge_round();
+}
+inline void ClusterRTLrcRoundRequest::_internal_set_merge_round(int32_t value) {
+  
+  _impl_.merge_round_ = value;
+}
+inline void ClusterRTLrcRoundRequest::set_merge_round(int32_t value) {
+  _internal_set_merge_round(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundRequest.merge_round)
+}
+
+// -------------------------------------------------------------------
+
+// ClusterRTLrcRoundReply
+
+// bool success = 1;
+inline void ClusterRTLrcRoundReply::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool ClusterRTLrcRoundReply::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool ClusterRTLrcRoundReply::success() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.success)
+  return _internal_success();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.success)
+}
+
+// repeated int32 new_stripe_ids = 2;
+inline int ClusterRTLrcRoundReply::_internal_new_stripe_ids_size() const {
+  return _impl_.new_stripe_ids_.size();
+}
+inline int ClusterRTLrcRoundReply::new_stripe_ids_size() const {
+  return _internal_new_stripe_ids_size();
+}
+inline void ClusterRTLrcRoundReply::clear_new_stripe_ids() {
+  _impl_.new_stripe_ids_.Clear();
+}
+inline int32_t ClusterRTLrcRoundReply::_internal_new_stripe_ids(int index) const {
+  return _impl_.new_stripe_ids_.Get(index);
+}
+inline int32_t ClusterRTLrcRoundReply::new_stripe_ids(int index) const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.new_stripe_ids)
+  return _internal_new_stripe_ids(index);
+}
+inline void ClusterRTLrcRoundReply::set_new_stripe_ids(int index, int32_t value) {
+  _impl_.new_stripe_ids_.Set(index, value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.new_stripe_ids)
+}
+inline void ClusterRTLrcRoundReply::_internal_add_new_stripe_ids(int32_t value) {
+  _impl_.new_stripe_ids_.Add(value);
+}
+inline void ClusterRTLrcRoundReply::add_new_stripe_ids(int32_t value) {
+  _internal_add_new_stripe_ids(value);
+  // @@protoc_insertion_point(field_add:coordinator_proto.ClusterRTLrcRoundReply.new_stripe_ids)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+ClusterRTLrcRoundReply::_internal_new_stripe_ids() const {
+  return _impl_.new_stripe_ids_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+ClusterRTLrcRoundReply::new_stripe_ids() const {
+  // @@protoc_insertion_point(field_list:coordinator_proto.ClusterRTLrcRoundReply.new_stripe_ids)
+  return _internal_new_stripe_ids();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+ClusterRTLrcRoundReply::_internal_mutable_new_stripe_ids() {
+  return &_impl_.new_stripe_ids_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+ClusterRTLrcRoundReply::mutable_new_stripe_ids() {
+  // @@protoc_insertion_point(field_mutable_list:coordinator_proto.ClusterRTLrcRoundReply.new_stripe_ids)
+  return _internal_mutable_new_stripe_ids();
+}
+
+// int32 pair_count = 3;
+inline void ClusterRTLrcRoundReply::clear_pair_count() {
+  _impl_.pair_count_ = 0;
+}
+inline int32_t ClusterRTLrcRoundReply::_internal_pair_count() const {
+  return _impl_.pair_count_;
+}
+inline int32_t ClusterRTLrcRoundReply::pair_count() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.pair_count)
+  return _internal_pair_count();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_pair_count(int32_t value) {
+  
+  _impl_.pair_count_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_pair_count(int32_t value) {
+  _internal_set_pair_count(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.pair_count)
+}
+
+// int32 completed_pairs = 4;
+inline void ClusterRTLrcRoundReply::clear_completed_pairs() {
+  _impl_.completed_pairs_ = 0;
+}
+inline int32_t ClusterRTLrcRoundReply::_internal_completed_pairs() const {
+  return _impl_.completed_pairs_;
+}
+inline int32_t ClusterRTLrcRoundReply::completed_pairs() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.completed_pairs)
+  return _internal_completed_pairs();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_completed_pairs(int32_t value) {
+  
+  _impl_.completed_pairs_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_completed_pairs(int32_t value) {
+  _internal_set_completed_pairs(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.completed_pairs)
+}
+
+// double data_migration_seconds = 5;
+inline void ClusterRTLrcRoundReply::clear_data_migration_seconds() {
+  _impl_.data_migration_seconds_ = 0;
+}
+inline double ClusterRTLrcRoundReply::_internal_data_migration_seconds() const {
+  return _impl_.data_migration_seconds_;
+}
+inline double ClusterRTLrcRoundReply::data_migration_seconds() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.data_migration_seconds)
+  return _internal_data_migration_seconds();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_data_migration_seconds(double value) {
+  
+  _impl_.data_migration_seconds_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_data_migration_seconds(double value) {
+  _internal_set_data_migration_seconds(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.data_migration_seconds)
+}
+
+// double parity_update_seconds = 6;
+inline void ClusterRTLrcRoundReply::clear_parity_update_seconds() {
+  _impl_.parity_update_seconds_ = 0;
+}
+inline double ClusterRTLrcRoundReply::_internal_parity_update_seconds() const {
+  return _impl_.parity_update_seconds_;
+}
+inline double ClusterRTLrcRoundReply::parity_update_seconds() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.parity_update_seconds)
+  return _internal_parity_update_seconds();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_parity_update_seconds(double value) {
+  
+  _impl_.parity_update_seconds_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_parity_update_seconds(double value) {
+  _internal_set_parity_update_seconds(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.parity_update_seconds)
+}
+
+// double critical_path_seconds = 7;
+inline void ClusterRTLrcRoundReply::clear_critical_path_seconds() {
+  _impl_.critical_path_seconds_ = 0;
+}
+inline double ClusterRTLrcRoundReply::_internal_critical_path_seconds() const {
+  return _impl_.critical_path_seconds_;
+}
+inline double ClusterRTLrcRoundReply::critical_path_seconds() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.critical_path_seconds)
+  return _internal_critical_path_seconds();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_critical_path_seconds(double value) {
+  
+  _impl_.critical_path_seconds_ = value;
+}
+inline void ClusterRTLrcRoundReply::set_critical_path_seconds(double value) {
+  _internal_set_critical_path_seconds(value);
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.critical_path_seconds)
+}
+
+// string error_message = 8;
+inline void ClusterRTLrcRoundReply::clear_error_message() {
+  _impl_.error_message_.ClearToEmpty();
+}
+inline const std::string& ClusterRTLrcRoundReply::error_message() const {
+  // @@protoc_insertion_point(field_get:coordinator_proto.ClusterRTLrcRoundReply.error_message)
+  return _internal_error_message();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ClusterRTLrcRoundReply::set_error_message(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.error_message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:coordinator_proto.ClusterRTLrcRoundReply.error_message)
+}
+inline std::string* ClusterRTLrcRoundReply::mutable_error_message() {
+  std::string* _s = _internal_mutable_error_message();
+  // @@protoc_insertion_point(field_mutable:coordinator_proto.ClusterRTLrcRoundReply.error_message)
+  return _s;
+}
+inline const std::string& ClusterRTLrcRoundReply::_internal_error_message() const {
+  return _impl_.error_message_.Get();
+}
+inline void ClusterRTLrcRoundReply::_internal_set_error_message(const std::string& value) {
+  
+  _impl_.error_message_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ClusterRTLrcRoundReply::_internal_mutable_error_message() {
+  
+  return _impl_.error_message_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ClusterRTLrcRoundReply::release_error_message() {
+  // @@protoc_insertion_point(field_release:coordinator_proto.ClusterRTLrcRoundReply.error_message)
+  return _impl_.error_message_.Release();
+}
+inline void ClusterRTLrcRoundReply::set_allocated_error_message(std::string* error_message) {
+  if (error_message != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.error_message_.SetAllocated(error_message, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.error_message_.IsDefault()) {
+    _impl_.error_message_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:coordinator_proto.ClusterRTLrcRoundReply.error_message)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

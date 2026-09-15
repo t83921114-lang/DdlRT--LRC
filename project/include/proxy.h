@@ -25,7 +25,21 @@ namespace ECProject
   {
 
   public:
-    ProxyImpl(std::string proxy_ip_port, std::string config_path, std::string coordinator_address) : config_path(config_path), proxy_ip_port(proxy_ip_port), acceptor(io_context, asio::ip::tcp::endpoint(asio::ip::address::from_string(proxy_ip_port.substr(0, proxy_ip_port.find(':')).c_str()), ECProject::PROXY_PORT_SHIFT + std::stoi(proxy_ip_port.substr(proxy_ip_port.find(':') + 1, proxy_ip_port.size())))), m_coordinator_address(coordinator_address)
+    ProxyImpl(std::string proxy_ip_port, std::string config_path, std::string coordinator_address)
+        : config_path(config_path), proxy_ip_port(proxy_ip_port),
+          acceptor(io_context,
+                   asio::ip::tcp::endpoint(
+                       asio::ip::address::from_string(
+                           proxy_ip_port.substr(0, proxy_ip_port.find(':'))),
+                       std::stoi(proxy_ip_port.substr(proxy_ip_port.find(':') + 1)) +
+                           ECProject::PROXY_PORT_SHIFT)),
+          parity_acceptor(parity_io_context,
+                          asio::ip::tcp::endpoint(
+                              asio::ip::address::from_string(
+                                  proxy_ip_port.substr(0, proxy_ip_port.find(':'))),
+                              std::stoi(proxy_ip_port.substr(proxy_ip_port.find(':') + 1)) +
+                                  ECProject::PROXY_PARITY_PORT_SHIFT)),
+          m_coordinator_address(coordinator_address)
     {
       init_coordinator();
       init_datanodes(config_path);
@@ -144,6 +158,7 @@ namespace ECProject
     std::mutex m_mutex;
     std::mutex m_ddlrt_parity_mutex;
     std::mutex m_data_accept_mutex;
+    std::mutex m_parity_accept_mutex;
     std::condition_variable cv;
     bool init_coordinator();
     bool init_datanodes(std::string datanodeinfo_path);
@@ -156,6 +171,8 @@ namespace ECProject
     int m_self_cluster_id;
     asio::io_context io_context;
     asio::ip::tcp::acceptor acceptor;
+    asio::io_context parity_io_context;
+    asio::ip::tcp::acceptor parity_acceptor;
     sem_t sem;
     std::string m_coordinator_address;
   };

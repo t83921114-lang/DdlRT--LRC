@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 
 
     
-    int stripe_num = 1000; // stripe number
+    int stripe_num = 2000; // stripe number
     size_t total_write_size = static_cast<size_t>(stripe_num * block_size * n); // MB, for calculating throughput
     std::cout << "Starting set stripe operation" << std::endl;
     std::chrono::high_resolution_clock::time_point set_start = std::chrono::high_resolution_clock::now();
@@ -98,18 +98,17 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        if(merge_round>2)
-        {
-            std::cout<<"merge completed"<<std::endl;
-            break;
-        }
         std::cout << "start[ "<<merge_round<<" time]merge now? (Y/N)" << std::endl;
         char choose;
         std::cin >> choose;
         if (choose == 'Y' || choose == 'y')
         {      
-            client.start_merge(merge_round);
-            ++merge_round;
+            if (client.start_merge(merge_round)) {
+                ++merge_round;
+            } else {
+                std::cout << "merge round failed; stopping" << std::endl;
+                break;
+            }
         }
         else if (choose == 'N' || choose == 'n')
         {

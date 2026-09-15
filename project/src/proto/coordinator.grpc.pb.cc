@@ -45,6 +45,7 @@ static const char* coordinatorService_method_names[] = {
   "/coordinator_proto.coordinatorService/delByKey",
   "/coordinator_proto.coordinatorService/delByStripe",
   "/coordinator_proto.coordinatorService/mergeStripes",
+  "/coordinator_proto.coordinatorService/mergeClusterRTLrcRound",
   "/coordinator_proto.coordinatorService/listStripes",
   "/coordinator_proto.coordinatorService/decodeTest",
 };
@@ -79,8 +80,9 @@ coordinatorService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>&
   , rpcmethod_delByKey_(coordinatorService_method_names[20], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_delByStripe_(coordinatorService_method_names[21], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_mergeStripes_(coordinatorService_method_names[22], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_listStripes_(coordinatorService_method_names[23], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_decodeTest_(coordinatorService_method_names[24], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_mergeClusterRTLrcRound_(coordinatorService_method_names[23], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_listStripes_(coordinatorService_method_names[24], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_decodeTest_(coordinatorService_method_names[25], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status coordinatorService::Stub::sayHelloToCoordinator(::grpc::ClientContext* context, const ::coordinator_proto::RequestToCoordinator& request, ::coordinator_proto::ReplyFromCoordinator* response) {
@@ -612,6 +614,29 @@ void coordinatorService::Stub::async::mergeStripes(::grpc::ClientContext* contex
   return result;
 }
 
+::grpc::Status coordinatorService::Stub::mergeClusterRTLrcRound(::grpc::ClientContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest& request, ::coordinator_proto::ClusterRTLrcRoundReply* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::coordinator_proto::ClusterRTLrcRoundRequest, ::coordinator_proto::ClusterRTLrcRoundReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_mergeClusterRTLrcRound_, context, request, response);
+}
+
+void coordinatorService::Stub::async::mergeClusterRTLrcRound(::grpc::ClientContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest* request, ::coordinator_proto::ClusterRTLrcRoundReply* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::coordinator_proto::ClusterRTLrcRoundRequest, ::coordinator_proto::ClusterRTLrcRoundReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_mergeClusterRTLrcRound_, context, request, response, std::move(f));
+}
+
+void coordinatorService::Stub::async::mergeClusterRTLrcRound(::grpc::ClientContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest* request, ::coordinator_proto::ClusterRTLrcRoundReply* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_mergeClusterRTLrcRound_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::coordinator_proto::ClusterRTLrcRoundReply>* coordinatorService::Stub::PrepareAsyncmergeClusterRTLrcRoundRaw(::grpc::ClientContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::coordinator_proto::ClusterRTLrcRoundReply, ::coordinator_proto::ClusterRTLrcRoundRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_mergeClusterRTLrcRound_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::coordinator_proto::ClusterRTLrcRoundReply>* coordinatorService::Stub::AsyncmergeClusterRTLrcRoundRaw(::grpc::ClientContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncmergeClusterRTLrcRoundRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 ::grpc::Status coordinatorService::Stub::listStripes(::grpc::ClientContext* context, const ::coordinator_proto::RequestToCoordinator& request, ::coordinator_proto::RepStripeIds* response) {
   return ::grpc::internal::BlockingUnaryCall< ::coordinator_proto::RequestToCoordinator, ::coordinator_proto::RepStripeIds, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_listStripes_, context, request, response);
 }
@@ -892,6 +917,16 @@ coordinatorService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       coordinatorService_method_names[23],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< coordinatorService::Service, ::coordinator_proto::ClusterRTLrcRoundRequest, ::coordinator_proto::ClusterRTLrcRoundReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](coordinatorService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::coordinator_proto::ClusterRTLrcRoundRequest* req,
+             ::coordinator_proto::ClusterRTLrcRoundReply* resp) {
+               return service->mergeClusterRTLrcRound(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      coordinatorService_method_names[24],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< coordinatorService::Service, ::coordinator_proto::RequestToCoordinator, ::coordinator_proto::RepStripeIds, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](coordinatorService::Service* service,
              ::grpc::ServerContext* ctx,
@@ -900,7 +935,7 @@ coordinatorService::Service::Service() {
                return service->listStripes(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      coordinatorService_method_names[24],
+      coordinatorService_method_names[25],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< coordinatorService::Service, ::coordinator_proto::KeyAndClientIP, ::coordinator_proto::DegradedReadReply, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](coordinatorService::Service* service,
@@ -1069,6 +1104,13 @@ coordinatorService::Service::~Service() {
 }
 
 ::grpc::Status coordinatorService::Service::mergeStripes(::grpc::ServerContext* context, const ::coordinator_proto::MergeRequest* request, ::coordinator_proto::MergeReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status coordinatorService::Service::mergeClusterRTLrcRound(::grpc::ServerContext* context, const ::coordinator_proto::ClusterRTLrcRoundRequest* request, ::coordinator_proto::ClusterRTLrcRoundReply* response) {
   (void) context;
   (void) request;
   (void) response;

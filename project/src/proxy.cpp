@@ -55,7 +55,12 @@ namespace ECProject
       for (tinyxml2::XMLElement *node = cluster->FirstChildElement()->FirstChildElement(); node != nullptr; node = node->NextSiblingElement())
       {
         std::string node_uri(node->Attribute("uri"));
-        auto _stub = datanode_proto::datanodeService::NewStub(grpc::CreateChannel(node_uri, grpc::InsecureChannelCredentials()));
+        grpc::ChannelArguments channel_args;
+        channel_args.SetMaxReceiveMessageSize(ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
+        channel_args.SetMaxSendMessageSize(ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
+        auto _stub = datanode_proto::datanodeService::NewStub(
+            grpc::CreateCustomChannel(node_uri, grpc::InsecureChannelCredentials(),
+                                      channel_args));
         // datanode_proto::CheckaliveCMD cmd;
         // datanode_proto::RequestResult result;
         // grpc::ClientContext context;
@@ -2527,47 +2532,89 @@ namespace ECProject
       const proxy_proto::blockRelocPlan *plan,
       proxy_proto::blockRelocReply *response)
   {
-    int block_size = plan->block_size();
-    int num_blocks = plan->blocktomove_size();
-    bool all_ok = true;
+    const auto begin = std::chrono::steady_clock::now();
+    const int block_size = plan->block_size();
+    const int num_blocks = plan->blocktomove_size();
+    bool all_ok = block_size > 0;
 
-    for (int i = 0; i < num_blocks; i++) {
-      std::string block_key = plan->blocktomove(i);
-      std::string from_ip = plan->fromdatanodeip(i);
-      int from_port = plan->fromdatanodeport(i);
-      std::string to_ip = plan->todatanodeip(i);
-      int to_port = plan->todatanodeport(i);
+    if (plan->fromdatanodeip_size() != num_blocks ||
+        plan->fromdatanodeport_size() != num_blocks ||
+        plan->todatanodeip_size() != num_blocks ||
+        plan->todatanodeport_size() != num_blocks) {
+      response->set_result("invalid_plan");
+      return grpc::Status::OK;
+    }
 
-      std::unique_ptr<char[]> buf(new char[block_size]);
-
-      bool get_ok = GetFromDatanode(block_key, buf.get(), block_size, from_ip.c_str(), from_port);
-      if (!get_ok) {
-        std::cerr << "[Proxy" << m_self_cluster_id << "][Relocate] failed to read " << block_key
-                  << " from " << from_ip << ":" << from_port << std::endl;
+    constexpr int kDatanodeRpcTimeoutSeconds = 120;
+    for (int i = 0; i < num_blocks && !context->IsCancelled(); ++i) {
+      const std::string block_key = plan->blocktomove(i);
+      const std::string from_addr = plan->fromdatanodeip(i) + ":" +
+                                    std::to_string(plan->fromdatanodeport(i));
+      const std::string to_addr = plan->todatanodeip(i) + ":" +
+                                  std::to_string(plan->todatanodeport(i));
+      auto from_stub = m_datanode_ptrs.find(from_addr);
+      auto to_stub = m_datanode_ptrs.find(to_addr);
+      if (from_stub == m_datanode_ptrs.end() || to_stub == m_datanode_ptrs.end()) {
+        std::cerr << "[Proxy" << m_self_cluster_id
+                  << "][Relocate] missing datanode stub for " << block_key << std::endl;
         all_ok = false;
         continue;
       }
 
-      bool set_ok = SetToDatanode(block_key.c_str(), block_key.size(),
-                                  buf.get(), block_size,
-                                  to_ip.c_str(), to_port, 0);
-      if (!set_ok) {
-        std::cerr << "[Proxy" << m_self_cluster_id << "][Relocate] failed to write " << block_key
-                  << " to " << to_ip << ":" << to_port << std::endl;
+      datanode_proto::ReadBlockBytesRequest read_request;
+      datanode_proto::ReadBlockBytesReply read_reply;
+      read_request.set_block_key(block_key);
+      read_request.set_block_size(block_size);
+      grpc::ClientContext read_context;
+      read_context.set_deadline(std::chrono::system_clock::now() +
+                                std::chrono::seconds(kDatanodeRpcTimeoutSeconds));
+      grpc::Status read_status =
+          from_stub->second->readBlockBytes(&read_context, read_request, &read_reply);
+      if (!read_status.ok() || !read_reply.ok() ||
+          read_reply.data().size() != static_cast<size_t>(block_size)) {
+        std::cerr << "[Proxy" << m_self_cluster_id << "][Relocate] gRPC read failed for "
+                  << block_key << " from " << from_addr << ": code="
+                  << read_status.error_code() << " message=" << read_status.error_message()
+                  << " bytes=" << read_reply.data().size() << std::endl;
+        all_ok = false;
+        continue;
+      }
+
+      datanode_proto::WriteBlockBytesRequest write_request;
+      datanode_proto::RequestResult write_reply;
+      write_request.set_block_key(block_key);
+      write_request.set_data(read_reply.data());
+      grpc::ClientContext write_context;
+      write_context.set_deadline(std::chrono::system_clock::now() +
+                                 std::chrono::seconds(kDatanodeRpcTimeoutSeconds));
+      grpc::Status write_status =
+          to_stub->second->writeBlockBytes(&write_context, write_request, &write_reply);
+      if (!write_status.ok() || !write_reply.message() ||
+          write_reply.valuesizebytes() != block_size) {
+        std::cerr << "[Proxy" << m_self_cluster_id << "][Relocate] gRPC write failed for "
+                  << block_key << " to " << to_addr << ": code="
+                  << write_status.error_code() << " message=" << write_status.error_message()
+                  << " bytes=" << write_reply.valuesizebytes() << std::endl;
         all_ok = false;
         continue;
       }
 
       if (!plan->keep_source()) {
-        DelInDatanode(block_key, from_ip + ":" + std::to_string(from_port));
+        DelInDatanode(block_key, from_addr);
       }
 
       std::cout << "[Proxy" << m_self_cluster_id << "][Relocate] moved " << block_key
-                << " from " << from_ip << ":" << from_port
-                << " to " << to_ip << ":" << to_port << std::endl;
+                << " from " << from_addr << " to " << to_addr << std::endl;
     }
 
-    response->set_result(all_ok ? "ok" : "partial_failure");
+    if (context->IsCancelled()) {
+      all_ok = false;
+      response->set_result("cancelled");
+    } else {
+      response->set_result(all_ok ? "ok" : "partial_failure");
+    }
+    response->set_execution_seconds(
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count());
     return grpc::Status::OK;
   }
 
@@ -2665,27 +2712,27 @@ namespace ECProject
           throw std::runtime_error("failed to read left parity " + b.block_key());
       }
 
-      asio::ip::tcp::socket socket(io_context);
+      asio::ip::tcp::socket socket(parity_io_context);
       {
-        std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex);
+        std::lock_guard<std::mutex> accept_lock(m_parity_accept_mutex);
         asio::error_code accept_error;
-        acceptor.non_blocking(true, accept_error);
+        parity_acceptor.non_blocking(true, accept_error);
         if (accept_error) throw std::runtime_error("failed to configure parity acceptor");
         while (true) {
-          acceptor.accept(socket, accept_error);
+          parity_acceptor.accept(socket, accept_error);
           if (!accept_error) break;
           if (accept_error != asio::error::would_block &&
               accept_error != asio::error::try_again) {
-            acceptor.non_blocking(false);
+            parity_acceptor.non_blocking(false);
             throw std::runtime_error("failed to accept DdlRT parity connection");
           }
           if (context->IsCancelled()) {
-            acceptor.non_blocking(false);
+            parity_acceptor.non_blocking(false);
             throw std::runtime_error("DdlRT parity receive cancelled");
           }
           std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-        acceptor.non_blocking(false);
+        parity_acceptor.non_blocking(false);
       }
       uint32_t magic = 0, version = 0, wire_count = 0, wire_size = 0;
       uint64_t task_id = 0;

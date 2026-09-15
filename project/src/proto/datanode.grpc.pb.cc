@@ -33,6 +33,7 @@ static const char* datanodeService_method_names[] = {
   "/datanode_proto.datanodeService/handleGetBreakdown",
   "/datanode_proto.datanodeService/handleStripeMergeParity",
   "/datanode_proto.datanodeService/readBlockBytes",
+  "/datanode_proto.datanodeService/writeBlockBytes",
   "/datanode_proto.datanodeService/handleDelete",
 };
 
@@ -54,7 +55,8 @@ datanodeService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& ch
   , rpcmethod_handleGetBreakdown_(datanodeService_method_names[8], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_handleStripeMergeParity_(datanodeService_method_names[9], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_readBlockBytes_(datanodeService_method_names[10], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_handleDelete_(datanodeService_method_names[11], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_writeBlockBytes_(datanodeService_method_names[11], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_handleDelete_(datanodeService_method_names[12], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status datanodeService::Stub::checkalive(::grpc::ClientContext* context, const ::datanode_proto::CheckaliveCMD& request, ::datanode_proto::RequestResult* response) {
@@ -310,6 +312,29 @@ void datanodeService::Stub::async::readBlockBytes(::grpc::ClientContext* context
   return result;
 }
 
+::grpc::Status datanodeService::Stub::writeBlockBytes(::grpc::ClientContext* context, const ::datanode_proto::WriteBlockBytesRequest& request, ::datanode_proto::RequestResult* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::datanode_proto::WriteBlockBytesRequest, ::datanode_proto::RequestResult, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_writeBlockBytes_, context, request, response);
+}
+
+void datanodeService::Stub::async::writeBlockBytes(::grpc::ClientContext* context, const ::datanode_proto::WriteBlockBytesRequest* request, ::datanode_proto::RequestResult* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::datanode_proto::WriteBlockBytesRequest, ::datanode_proto::RequestResult, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_writeBlockBytes_, context, request, response, std::move(f));
+}
+
+void datanodeService::Stub::async::writeBlockBytes(::grpc::ClientContext* context, const ::datanode_proto::WriteBlockBytesRequest* request, ::datanode_proto::RequestResult* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_writeBlockBytes_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::datanode_proto::RequestResult>* datanodeService::Stub::PrepareAsyncwriteBlockBytesRaw(::grpc::ClientContext* context, const ::datanode_proto::WriteBlockBytesRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::datanode_proto::RequestResult, ::datanode_proto::WriteBlockBytesRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_writeBlockBytes_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::datanode_proto::RequestResult>* datanodeService::Stub::AsyncwriteBlockBytesRaw(::grpc::ClientContext* context, const ::datanode_proto::WriteBlockBytesRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncwriteBlockBytesRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 ::grpc::Status datanodeService::Stub::handleDelete(::grpc::ClientContext* context, const ::datanode_proto::DelInfo& request, ::datanode_proto::RequestResult* response) {
   return ::grpc::internal::BlockingUnaryCall< ::datanode_proto::DelInfo, ::datanode_proto::RequestResult, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_handleDelete_, context, request, response);
 }
@@ -447,6 +472,16 @@ datanodeService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       datanodeService_method_names[11],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< datanodeService::Service, ::datanode_proto::WriteBlockBytesRequest, ::datanode_proto::RequestResult, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](datanodeService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::datanode_proto::WriteBlockBytesRequest* req,
+             ::datanode_proto::RequestResult* resp) {
+               return service->writeBlockBytes(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      datanodeService_method_names[12],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< datanodeService::Service, ::datanode_proto::DelInfo, ::datanode_proto::RequestResult, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](datanodeService::Service* service,
              ::grpc::ServerContext* ctx,
@@ -530,6 +565,13 @@ datanodeService::Service::~Service() {
 }
 
 ::grpc::Status datanodeService::Service::readBlockBytes(::grpc::ServerContext* context, const ::datanode_proto::ReadBlockBytesRequest* request, ::datanode_proto::ReadBlockBytesReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status datanodeService::Service::writeBlockBytes(::grpc::ServerContext* context, const ::datanode_proto::WriteBlockBytesRequest* request, ::datanode_proto::RequestResult* response) {
   (void) context;
   (void) request;
   (void) response;

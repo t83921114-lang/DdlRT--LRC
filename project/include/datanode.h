@@ -79,6 +79,10 @@ namespace ECProject
             grpc::ServerContext *context,
             const datanode_proto::ReadBlockBytesRequest *request,
             datanode_proto::ReadBlockBytesReply *response) override;
+        grpc::Status writeBlockBytes(
+            grpc::ServerContext *context,
+            const datanode_proto::WriteBlockBytesRequest *request,
+            datanode_proto::RequestResult *response) override;
         // delete
         grpc::Status handleDelete(
             grpc::ServerContext *context,
@@ -120,6 +124,8 @@ namespace ECProject
             grpc::reflection::InitProtoReflectionServerBuilderPlugin();
             grpc::ServerBuilder builder;
             std::cout << "datanode_ip_port:" << datanode_ip_port << std::endl;
+            builder.SetMaxReceiveMessageSize(ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
+            builder.SetMaxSendMessageSize(ECProject::GRPC_MAX_BLOCK_MESSAGE_SIZE);
             builder.AddListeningPort(datanode_ip_port, grpc::InsecureServerCredentials());
             builder.RegisterService(&m_datanodeImpl_ptr);
             std::unique_ptr<grpc::Server> server(builder.BuildAndStart());

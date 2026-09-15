@@ -83,6 +83,7 @@ namespace ECProject
     std::vector<Block *> blocks;
     std::unordered_set<int> place2clusters;
     int N;//L1的放置参数
+    int base_k = 0;
     std::vector<int> num_arry;
     int n, r, z;
     int num_groups;

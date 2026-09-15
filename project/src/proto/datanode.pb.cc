@@ -165,6 +165,20 @@ struct ReadBlockBytesReplyDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ReadBlockBytesReplyDefaultTypeInternal _ReadBlockBytesReply_default_instance_;
+PROTOBUF_CONSTEXPR WriteBlockBytesRequest::WriteBlockBytesRequest(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.block_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct WriteBlockBytesRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR WriteBlockBytesRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~WriteBlockBytesRequestDefaultTypeInternal() {}
+  union {
+    WriteBlockBytesRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 WriteBlockBytesRequestDefaultTypeInternal _WriteBlockBytesRequest_default_instance_;
 PROTOBUF_CONSTEXPR DelInfo::DelInfo(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.block_key_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -179,7 +193,7 @@ struct DelInfoDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 DelInfoDefaultTypeInternal _DelInfo_default_instance_;
 }  // namespace datanode_proto
-static ::_pb::Metadata file_level_metadata_datanode_2eproto[10];
+static ::_pb::Metadata file_level_metadata_datanode_2eproto[11];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_datanode_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_datanode_2eproto = nullptr;
 
@@ -275,6 +289,14 @@ const uint32_t TableStruct_datanode_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::datanode_proto::ReadBlockBytesReply, _impl_.ok_),
   PROTOBUF_FIELD_OFFSET(::datanode_proto::ReadBlockBytesReply, _impl_.data_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::WriteBlockBytesRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::WriteBlockBytesRequest, _impl_.block_key_),
+  PROTOBUF_FIELD_OFFSET(::datanode_proto::WriteBlockBytesRequest, _impl_.data_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::datanode_proto::DelInfo, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -292,7 +314,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 61, -1, -1, sizeof(::datanode_proto::StripeMergeParityInfo)},
   { 74, -1, -1, sizeof(::datanode_proto::ReadBlockBytesRequest)},
   { 82, -1, -1, sizeof(::datanode_proto::ReadBlockBytesReply)},
-  { 90, -1, -1, sizeof(::datanode_proto::DelInfo)},
+  { 90, -1, -1, sizeof(::datanode_proto::WriteBlockBytesRequest)},
+  { 98, -1, -1, sizeof(::datanode_proto::DelInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -305,6 +328,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::datanode_proto::_StripeMergeParityInfo_default_instance_._instance,
   &::datanode_proto::_ReadBlockBytesRequest_default_instance_._instance,
   &::datanode_proto::_ReadBlockBytesReply_default_instance_._instance,
+  &::datanode_proto::_WriteBlockBytesRequest_default_instance_._instance,
   &::datanode_proto::_DelInfo_default_instance_._instance,
 };
 
@@ -332,39 +356,42 @@ const char descriptor_table_protodef_datanode_2eproto[] PROTOBUF_SECTION_VARIABL
   "datanode_port\030\007 \001(\005\">\n\025ReadBlockBytesReq"
   "uest\022\021\n\tblock_key\030\001 \001(\t\022\022\n\nblock_size\030\002 "
   "\001(\005\"/\n\023ReadBlockBytesReply\022\n\n\002ok\030\001 \001(\010\022\014"
-  "\n\004data\030\002 \001(\014\"\034\n\007DelInfo\022\021\n\tblock_key\030\001 \001"
-  "(\t2\345\007\n\017datanodeService\022J\n\ncheckalive\022\035.d"
-  "atanode_proto.CheckaliveCMD\032\035.datanode_p"
-  "roto.RequestResult\022C\n\thandleSet\022\027.datano"
-  "de_proto.SetInfo\032\035.datanode_proto.Reques"
-  "tResult\022I\n\014handleAppend\022\032.datanode_proto"
-  ".AppendInfo\032\035.datanode_proto.RequestResu"
-  "lt\022S\n\021handleMergeParity\022\037.datanode_proto"
-  ".MergeParityInfo\032\035.datanode_proto.Reques"
-  "tResult\022Z\n\030handleMergeParityWithRep\022\037.da"
-  "tanode_proto.MergeParityInfo\032\035.datanode_"
-  "proto.RequestResult\022P\n\016handleRecovery\022\037."
-  "datanode_proto.MergeParityInfo\032\035.datanod"
-  "e_proto.RequestResult\022Y\n\027handleRecoveryB"
-  "reakdown\022\037.datanode_proto.MergeParityInf"
-  "o\032\035.datanode_proto.RequestResult\022C\n\thand"
-  "leGet\022\027.datanode_proto.GetInfo\032\035.datanod"
-  "e_proto.RequestResult\022L\n\022handleGetBreakd"
-  "own\022\027.datanode_proto.GetInfo\032\035.datanode_"
-  "proto.RequestResult\022_\n\027handleStripeMerge"
-  "Parity\022%.datanode_proto.StripeMergeParit"
-  "yInfo\032\035.datanode_proto.RequestResult\022\\\n\016"
-  "readBlockBytes\022%.datanode_proto.ReadBloc"
-  "kBytesRequest\032#.datanode_proto.ReadBlock"
-  "BytesReply\022F\n\014handleDelete\022\027.datanode_pr"
-  "oto.DelInfo\032\035.datanode_proto.RequestResu"
-  "ltb\006proto3"
+  "\n\004data\030\002 \001(\014\"9\n\026WriteBlockBytesRequest\022\021"
+  "\n\tblock_key\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\"\034\n\007DelIn"
+  "fo\022\021\n\tblock_key\030\001 \001(\t2\277\010\n\017datanodeServic"
+  "e\022J\n\ncheckalive\022\035.datanode_proto.Checkal"
+  "iveCMD\032\035.datanode_proto.RequestResult\022C\n"
+  "\thandleSet\022\027.datanode_proto.SetInfo\032\035.da"
+  "tanode_proto.RequestResult\022I\n\014handleAppe"
+  "nd\022\032.datanode_proto.AppendInfo\032\035.datanod"
+  "e_proto.RequestResult\022S\n\021handleMergePari"
+  "ty\022\037.datanode_proto.MergeParityInfo\032\035.da"
+  "tanode_proto.RequestResult\022Z\n\030handleMerg"
+  "eParityWithRep\022\037.datanode_proto.MergePar"
+  "ityInfo\032\035.datanode_proto.RequestResult\022P"
+  "\n\016handleRecovery\022\037.datanode_proto.MergeP"
+  "arityInfo\032\035.datanode_proto.RequestResult"
+  "\022Y\n\027handleRecoveryBreakdown\022\037.datanode_p"
+  "roto.MergeParityInfo\032\035.datanode_proto.Re"
+  "questResult\022C\n\thandleGet\022\027.datanode_prot"
+  "o.GetInfo\032\035.datanode_proto.RequestResult"
+  "\022L\n\022handleGetBreakdown\022\027.datanode_proto."
+  "GetInfo\032\035.datanode_proto.RequestResult\022_"
+  "\n\027handleStripeMergeParity\022%.datanode_pro"
+  "to.StripeMergeParityInfo\032\035.datanode_prot"
+  "o.RequestResult\022\\\n\016readBlockBytes\022%.data"
+  "node_proto.ReadBlockBytesRequest\032#.datan"
+  "ode_proto.ReadBlockBytesReply\022X\n\017writeBl"
+  "ockBytes\022&.datanode_proto.WriteBlockByte"
+  "sRequest\032\035.datanode_proto.RequestResult\022"
+  "F\n\014handleDelete\022\027.datanode_proto.DelInfo"
+  "\032\035.datanode_proto.RequestResultb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_datanode_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_datanode_2eproto = {
-    false, false, 1970, descriptor_table_protodef_datanode_2eproto,
+    false, false, 2119, descriptor_table_protodef_datanode_2eproto,
     "datanode.proto",
-    &descriptor_table_datanode_2eproto_once, nullptr, 0, 10,
+    &descriptor_table_datanode_2eproto_once, nullptr, 0, 11,
     schemas, file_default_instances, TableStruct_datanode_2eproto::offsets,
     file_level_metadata_datanode_2eproto, file_level_enum_descriptors_datanode_2eproto,
     file_level_service_descriptors_datanode_2eproto,
@@ -3068,6 +3095,254 @@ void ReadBlockBytesReply::InternalSwap(ReadBlockBytesReply* other) {
 
 // ===================================================================
 
+class WriteBlockBytesRequest::_Internal {
+ public:
+};
+
+WriteBlockBytesRequest::WriteBlockBytesRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:datanode_proto.WriteBlockBytesRequest)
+}
+WriteBlockBytesRequest::WriteBlockBytesRequest(const WriteBlockBytesRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  WriteBlockBytesRequest* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_key_){}
+    , decltype(_impl_.data_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.block_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.block_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_block_key().empty()) {
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.data_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.data_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_data().empty()) {
+    _this->_impl_.data_.Set(from._internal_data(), 
+      _this->GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:datanode_proto.WriteBlockBytesRequest)
+}
+
+inline void WriteBlockBytesRequest::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.block_key_){}
+    , decltype(_impl_.data_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.block_key_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.block_key_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.data_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.data_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+WriteBlockBytesRequest::~WriteBlockBytesRequest() {
+  // @@protoc_insertion_point(destructor:datanode_proto.WriteBlockBytesRequest)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void WriteBlockBytesRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.block_key_.Destroy();
+  _impl_.data_.Destroy();
+}
+
+void WriteBlockBytesRequest::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void WriteBlockBytesRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:datanode_proto.WriteBlockBytesRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.block_key_.ClearToEmpty();
+  _impl_.data_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* WriteBlockBytesRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string block_key = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_block_key();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "datanode_proto.WriteBlockBytesRequest.block_key"));
+        } else
+          goto handle_unusual;
+        continue;
+      // bytes data = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_data();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* WriteBlockBytesRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:datanode_proto.WriteBlockBytesRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string block_key = 1;
+  if (!this->_internal_block_key().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_block_key().data(), static_cast<int>(this->_internal_block_key().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "datanode_proto.WriteBlockBytesRequest.block_key");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_block_key(), target);
+  }
+
+  // bytes data = 2;
+  if (!this->_internal_data().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        2, this->_internal_data(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:datanode_proto.WriteBlockBytesRequest)
+  return target;
+}
+
+size_t WriteBlockBytesRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:datanode_proto.WriteBlockBytesRequest)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string block_key = 1;
+  if (!this->_internal_block_key().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_block_key());
+  }
+
+  // bytes data = 2;
+  if (!this->_internal_data().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_data());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData WriteBlockBytesRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    WriteBlockBytesRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*WriteBlockBytesRequest::GetClassData() const { return &_class_data_; }
+
+
+void WriteBlockBytesRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<WriteBlockBytesRequest*>(&to_msg);
+  auto& from = static_cast<const WriteBlockBytesRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:datanode_proto.WriteBlockBytesRequest)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_block_key().empty()) {
+    _this->_internal_set_block_key(from._internal_block_key());
+  }
+  if (!from._internal_data().empty()) {
+    _this->_internal_set_data(from._internal_data());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void WriteBlockBytesRequest::CopyFrom(const WriteBlockBytesRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:datanode_proto.WriteBlockBytesRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool WriteBlockBytesRequest::IsInitialized() const {
+  return true;
+}
+
+void WriteBlockBytesRequest::InternalSwap(WriteBlockBytesRequest* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.block_key_, lhs_arena,
+      &other->_impl_.block_key_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.data_, lhs_arena,
+      &other->_impl_.data_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata WriteBlockBytesRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
+      file_level_metadata_datanode_2eproto[9]);
+}
+
+// ===================================================================
+
 class DelInfo::_Internal {
  public:
 };
@@ -3266,7 +3541,7 @@ void DelInfo::InternalSwap(DelInfo* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata DelInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_datanode_2eproto_getter, &descriptor_table_datanode_2eproto_once,
-      file_level_metadata_datanode_2eproto[9]);
+      file_level_metadata_datanode_2eproto[10]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -3307,6 +3582,10 @@ Arena::CreateMaybeMessage< ::datanode_proto::ReadBlockBytesRequest >(Arena* aren
 template<> PROTOBUF_NOINLINE ::datanode_proto::ReadBlockBytesReply*
 Arena::CreateMaybeMessage< ::datanode_proto::ReadBlockBytesReply >(Arena* arena) {
   return Arena::CreateMessageInternal< ::datanode_proto::ReadBlockBytesReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::datanode_proto::WriteBlockBytesRequest*
+Arena::CreateMaybeMessage< ::datanode_proto::WriteBlockBytesRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::datanode_proto::WriteBlockBytesRequest >(arena);
 }
 template<> PROTOBUF_NOINLINE ::datanode_proto::DelInfo*
 Arena::CreateMaybeMessage< ::datanode_proto::DelInfo >(Arena* arena) {

@@ -409,8 +409,42 @@ struct MergeReplyDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MergeReplyDefaultTypeInternal _MergeReply_default_instance_;
+PROTOBUF_CONSTEXPR ClusterRTLrcRoundRequest::ClusterRTLrcRoundRequest(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.merge_round_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct ClusterRTLrcRoundRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ClusterRTLrcRoundRequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ClusterRTLrcRoundRequestDefaultTypeInternal() {}
+  union {
+    ClusterRTLrcRoundRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ClusterRTLrcRoundRequestDefaultTypeInternal _ClusterRTLrcRoundRequest_default_instance_;
+PROTOBUF_CONSTEXPR ClusterRTLrcRoundReply::ClusterRTLrcRoundReply(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.new_stripe_ids_)*/{}
+  , /*decltype(_impl_._new_stripe_ids_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.error_message_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.success_)*/false
+  , /*decltype(_impl_.pair_count_)*/0
+  , /*decltype(_impl_.data_migration_seconds_)*/0
+  , /*decltype(_impl_.parity_update_seconds_)*/0
+  , /*decltype(_impl_.critical_path_seconds_)*/0
+  , /*decltype(_impl_.completed_pairs_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct ClusterRTLrcRoundReplyDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ClusterRTLrcRoundReplyDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ClusterRTLrcRoundReplyDefaultTypeInternal() {}
+  union {
+    ClusterRTLrcRoundReply _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ClusterRTLrcRoundReplyDefaultTypeInternal _ClusterRTLrcRoundReply_default_instance_;
 }  // namespace coordinator_proto
-static ::_pb::Metadata file_level_metadata_coordinator_2eproto[26];
+static ::_pb::Metadata file_level_metadata_coordinator_2eproto[28];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_coordinator_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_coordinator_2eproto = nullptr;
 
@@ -642,6 +676,27 @@ const uint32_t TableStruct_coordinator_2eproto::offsets[] PROTOBUF_SECTION_VARIA
   PROTOBUF_FIELD_OFFSET(::coordinator_proto::MergeReply, _impl_.new_stripe_id_),
   PROTOBUF_FIELD_OFFSET(::coordinator_proto::MergeReply, _impl_.data_migration_seconds_),
   PROTOBUF_FIELD_OFFSET(::coordinator_proto::MergeReply, _impl_.parity_update_seconds_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundRequest, _impl_.merge_round_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.success_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.new_stripe_ids_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.pair_count_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.completed_pairs_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.data_migration_seconds_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.parity_update_seconds_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.critical_path_seconds_),
+  PROTOBUF_FIELD_OFFSET(::coordinator_proto::ClusterRTLrcRoundReply, _impl_.error_message_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::coordinator_proto::Parameter)},
@@ -670,6 +725,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 198, -1, -1, sizeof(::coordinator_proto::StripePosListAndClient)},
   { 207, -1, -1, sizeof(::coordinator_proto::MergeRequest)},
   { 217, -1, -1, sizeof(::coordinator_proto::MergeReply)},
+  { 227, -1, -1, sizeof(::coordinator_proto::ClusterRTLrcRoundRequest)},
+  { 234, -1, -1, sizeof(::coordinator_proto::ClusterRTLrcRoundReply)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -699,6 +756,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::coordinator_proto::_StripePosListAndClient_default_instance_._instance,
   &::coordinator_proto::_MergeRequest_default_instance_._instance,
   &::coordinator_proto::_MergeReply_default_instance_._instance,
+  &::coordinator_proto::_ClusterRTLrcRoundRequest_default_instance_._instance,
+  &::coordinator_proto::_ClusterRTLrcRoundReply_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_coordinator_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -753,73 +812,83 @@ const char descriptor_table_protodef_coordinator_2eproto[] PROTOBUF_SECTION_VARI
   "\030\003 \001(\005\022\025\n\rnew_stripe_id\030\004 \001(\005\"s\n\nMergeRe"
   "ply\022\017\n\007success\030\001 \001(\010\022\025\n\rnew_stripe_id\030\002 "
   "\001(\005\022\036\n\026data_migration_seconds\030\003 \001(\001\022\035\n\025p"
-  "arity_update_seconds\030\004 \001(\0012\343\022\n\022coordinat"
-  "orService\022k\n\025sayHelloToCoordinator\022\'.coo"
-  "rdinator_proto.RequestToCoordinator\032\'.co"
-  "ordinator_proto.ReplyFromCoordinator\"\000\022`"
-  "\n\ncheckalive\022\'.coordinator_proto.Request"
-  "ToCoordinator\032\'.coordinator_proto.ReplyF"
-  "romCoordinator\"\000\022V\n\014setParameter\022\034.coord"
-  "inator_proto.Parameter\032&.coordinator_pro"
-  "to.RepIfSetParaSuccess\"\000\022d\n\024uploadOrigin"
-  "KeyValue\022%.coordinator_proto.RequestProx"
-  "yIPPort\032#.coordinator_proto.ReplyProxyIP"
-  "Port\"\000\022a\n\021reportCommitAbort\022!.coordinato"
-  "r_proto.CommitAbortKey\032\'.coordinator_pro"
-  "to.ReplyFromCoordinator\"\000\022V\n\020checkCommit"
-  "Abort\022\037.coordinator_proto.AskIfSuccess\032\037"
-  ".coordinator_proto.RepIfSuccess\"\000\022`\n\016upl"
-  "oadSetValue\022%.coordinator_proto.RequestP"
-  "roxyIPPort\032%.coordinator_proto.ReplyProx"
-  "yIPsPorts\"\000\022c\n\021uploadSubsetValue\022%.coord"
-  "inator_proto.RequestProxyIPPort\032%.coordi"
-  "nator_proto.ReplyProxyIPsPorts\"\000\022c\n\021uplo"
-  "adAppendValue\022%.coordinator_proto.Reques"
-  "tProxyIPPort\032%.coordinator_proto.ReplyPr"
-  "oxyIPsPorts\"\000\022S\n\010getValue\022!.coordinator_"
-  "proto.KeyAndClientIP\032\".coordinator_proto"
-  ".RepIfGetSuccess\"\000\022W\n\tgetStripe\022!.coordi"
-  "nator_proto.KeyAndClientIP\032%.coordinator"
-  "_proto.ReplyProxyIPsPorts\"\000\022\\\n\tgetBlocks"
-  "\022&.coordinator_proto.BlockIDsAndClientIP"
-  "\032%.coordinator_proto.ReplyProxyIPsPorts\""
-  "\000\022j\n\024getBlocksByStripePos\022).coordinator_"
-  "proto.StripePosListAndClient\032%.coordinat"
-  "or_proto.ReplyProxyIPsPorts\"\000\022h\n\025getDegr"
-  "adedReadBlocks\022&.coordinator_proto.Block"
-  "IDsAndClientIP\032%.coordinator_proto.Reply"
-  "ProxyIPsPorts\"\000\022a\n\024getDegradedReadBlock\022"
-  "!.coordinator_proto.KeyAndClientIP\032$.coo"
-  "rdinator_proto.DegradedReadReply\"\000\022j\n\035ge"
-  "tDegradedReadBlockBreakdown\022!.coordinato"
-  "r_proto.KeyAndClientIP\032$.coordinator_pro"
-  "to.DegradedReadReply\"\000\022T\n\013getRecovery\022!."
-  "coordinator_proto.KeyAndClientIP\032 .coord"
-  "inator_proto.RecoveryReply\"\000\022]\n\024getRecov"
-  "eryBreakdown\022!.coordinator_proto.KeyAndC"
-  "lientIP\032 .coordinator_proto.RecoveryRepl"
-  "y\"\000\022Y\n\020fullNodeRecovery\022#.coordinator_pr"
-  "oto.NodeIdFromClient\032\036.coordinator_proto"
-  ".RepBlockNum\"\000\022j\n\022multiBlockRecovery\0220.c"
-  "oordinator_proto.StripeIdAndBlockIDsFrom"
-  "Client\032 .coordinator_proto.RecoveryReply"
-  "\"\000\022N\n\010delByKey\022 .coordinator_proto.KeyFr"
-  "omClient\032\036.coordinator_proto.RepIfDeling"
-  "\"\000\022V\n\013delByStripe\022%.coordinator_proto.St"
-  "ripeIdFromClient\032\036.coordinator_proto.Rep"
-  "IfDeling\"\000\022P\n\014mergeStripes\022\037.coordinator"
-  "_proto.MergeRequest\032\035.coordinator_proto."
-  "MergeReply\"\000\022Y\n\013listStripes\022\'.coordinato"
-  "r_proto.RequestToCoordinator\032\037.coordinat"
-  "or_proto.RepStripeIds\"\000\022W\n\ndecodeTest\022!."
-  "coordinator_proto.KeyAndClientIP\032$.coord"
-  "inator_proto.DegradedReadReply\"\000b\006proto3"
+  "arity_update_seconds\030\004 \001(\001\"/\n\030ClusterRTL"
+  "rcRoundRequest\022\023\n\013merge_round\030\001 \001(\005\"\343\001\n\026"
+  "ClusterRTLrcRoundReply\022\017\n\007success\030\001 \001(\010\022"
+  "\026\n\016new_stripe_ids\030\002 \003(\005\022\022\n\npair_count\030\003 "
+  "\001(\005\022\027\n\017completed_pairs\030\004 \001(\005\022\036\n\026data_mig"
+  "ration_seconds\030\005 \001(\001\022\035\n\025parity_update_se"
+  "conds\030\006 \001(\001\022\035\n\025critical_path_seconds\030\007 \001"
+  "(\001\022\025\n\rerror_message\030\010 \001(\t2\327\023\n\022coordinato"
+  "rService\022k\n\025sayHelloToCoordinator\022\'.coor"
+  "dinator_proto.RequestToCoordinator\032\'.coo"
+  "rdinator_proto.ReplyFromCoordinator\"\000\022`\n"
+  "\ncheckalive\022\'.coordinator_proto.RequestT"
+  "oCoordinator\032\'.coordinator_proto.ReplyFr"
+  "omCoordinator\"\000\022V\n\014setParameter\022\034.coordi"
+  "nator_proto.Parameter\032&.coordinator_prot"
+  "o.RepIfSetParaSuccess\"\000\022d\n\024uploadOriginK"
+  "eyValue\022%.coordinator_proto.RequestProxy"
+  "IPPort\032#.coordinator_proto.ReplyProxyIPP"
+  "ort\"\000\022a\n\021reportCommitAbort\022!.coordinator"
+  "_proto.CommitAbortKey\032\'.coordinator_prot"
+  "o.ReplyFromCoordinator\"\000\022V\n\020checkCommitA"
+  "bort\022\037.coordinator_proto.AskIfSuccess\032\037."
+  "coordinator_proto.RepIfSuccess\"\000\022`\n\016uplo"
+  "adSetValue\022%.coordinator_proto.RequestPr"
+  "oxyIPPort\032%.coordinator_proto.ReplyProxy"
+  "IPsPorts\"\000\022c\n\021uploadSubsetValue\022%.coordi"
+  "nator_proto.RequestProxyIPPort\032%.coordin"
+  "ator_proto.ReplyProxyIPsPorts\"\000\022c\n\021uploa"
+  "dAppendValue\022%.coordinator_proto.Request"
+  "ProxyIPPort\032%.coordinator_proto.ReplyPro"
+  "xyIPsPorts\"\000\022S\n\010getValue\022!.coordinator_p"
+  "roto.KeyAndClientIP\032\".coordinator_proto."
+  "RepIfGetSuccess\"\000\022W\n\tgetStripe\022!.coordin"
+  "ator_proto.KeyAndClientIP\032%.coordinator_"
+  "proto.ReplyProxyIPsPorts\"\000\022\\\n\tgetBlocks\022"
+  "&.coordinator_proto.BlockIDsAndClientIP\032"
+  "%.coordinator_proto.ReplyProxyIPsPorts\"\000"
+  "\022j\n\024getBlocksByStripePos\022).coordinator_p"
+  "roto.StripePosListAndClient\032%.coordinato"
+  "r_proto.ReplyProxyIPsPorts\"\000\022h\n\025getDegra"
+  "dedReadBlocks\022&.coordinator_proto.BlockI"
+  "DsAndClientIP\032%.coordinator_proto.ReplyP"
+  "roxyIPsPorts\"\000\022a\n\024getDegradedReadBlock\022!"
+  ".coordinator_proto.KeyAndClientIP\032$.coor"
+  "dinator_proto.DegradedReadReply\"\000\022j\n\035get"
+  "DegradedReadBlockBreakdown\022!.coordinator"
+  "_proto.KeyAndClientIP\032$.coordinator_prot"
+  "o.DegradedReadReply\"\000\022T\n\013getRecovery\022!.c"
+  "oordinator_proto.KeyAndClientIP\032 .coordi"
+  "nator_proto.RecoveryReply\"\000\022]\n\024getRecove"
+  "ryBreakdown\022!.coordinator_proto.KeyAndCl"
+  "ientIP\032 .coordinator_proto.RecoveryReply"
+  "\"\000\022Y\n\020fullNodeRecovery\022#.coordinator_pro"
+  "to.NodeIdFromClient\032\036.coordinator_proto."
+  "RepBlockNum\"\000\022j\n\022multiBlockRecovery\0220.co"
+  "ordinator_proto.StripeIdAndBlockIDsFromC"
+  "lient\032 .coordinator_proto.RecoveryReply\""
+  "\000\022N\n\010delByKey\022 .coordinator_proto.KeyFro"
+  "mClient\032\036.coordinator_proto.RepIfDeling\""
+  "\000\022V\n\013delByStripe\022%.coordinator_proto.Str"
+  "ipeIdFromClient\032\036.coordinator_proto.RepI"
+  "fDeling\"\000\022P\n\014mergeStripes\022\037.coordinator_"
+  "proto.MergeRequest\032\035.coordinator_proto.M"
+  "ergeReply\"\000\022r\n\026mergeClusterRTLrcRound\022+."
+  "coordinator_proto.ClusterRTLrcRoundReque"
+  "st\032).coordinator_proto.ClusterRTLrcRound"
+  "Reply\"\000\022Y\n\013listStripes\022\'.coordinator_pro"
+  "to.RequestToCoordinator\032\037.coordinator_pr"
+  "oto.RepStripeIds\"\000\022W\n\ndecodeTest\022!.coord"
+  "inator_proto.KeyAndClientIP\032$.coordinato"
+  "r_proto.DegradedReadReply\"\000b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_coordinator_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_coordinator_2eproto = {
-    false, false, 4480, descriptor_table_protodef_coordinator_2eproto,
+    false, false, 4875, descriptor_table_protodef_coordinator_2eproto,
     "coordinator.proto",
-    &descriptor_table_coordinator_2eproto_once, nullptr, 0, 26,
+    &descriptor_table_coordinator_2eproto_once, nullptr, 0, 28,
     schemas, file_default_instances, TableStruct_coordinator_2eproto::offsets,
     file_level_metadata_coordinator_2eproto, file_level_enum_descriptors_coordinator_2eproto,
     file_level_service_descriptors_coordinator_2eproto,
@@ -7212,6 +7281,621 @@ void MergeReply::InternalSwap(MergeReply* other) {
       file_level_metadata_coordinator_2eproto[25]);
 }
 
+// ===================================================================
+
+class ClusterRTLrcRoundRequest::_Internal {
+ public:
+};
+
+ClusterRTLrcRoundRequest::ClusterRTLrcRoundRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:coordinator_proto.ClusterRTLrcRoundRequest)
+}
+ClusterRTLrcRoundRequest::ClusterRTLrcRoundRequest(const ClusterRTLrcRoundRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  ClusterRTLrcRoundRequest* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.merge_round_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.merge_round_ = from._impl_.merge_round_;
+  // @@protoc_insertion_point(copy_constructor:coordinator_proto.ClusterRTLrcRoundRequest)
+}
+
+inline void ClusterRTLrcRoundRequest::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.merge_round_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+ClusterRTLrcRoundRequest::~ClusterRTLrcRoundRequest() {
+  // @@protoc_insertion_point(destructor:coordinator_proto.ClusterRTLrcRoundRequest)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void ClusterRTLrcRoundRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void ClusterRTLrcRoundRequest::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void ClusterRTLrcRoundRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:coordinator_proto.ClusterRTLrcRoundRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.merge_round_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ClusterRTLrcRoundRequest::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 merge_round = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.merge_round_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* ClusterRTLrcRoundRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:coordinator_proto.ClusterRTLrcRoundRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 merge_round = 1;
+  if (this->_internal_merge_round() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_merge_round(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:coordinator_proto.ClusterRTLrcRoundRequest)
+  return target;
+}
+
+size_t ClusterRTLrcRoundRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:coordinator_proto.ClusterRTLrcRoundRequest)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 merge_round = 1;
+  if (this->_internal_merge_round() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_merge_round());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ClusterRTLrcRoundRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    ClusterRTLrcRoundRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ClusterRTLrcRoundRequest::GetClassData() const { return &_class_data_; }
+
+
+void ClusterRTLrcRoundRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<ClusterRTLrcRoundRequest*>(&to_msg);
+  auto& from = static_cast<const ClusterRTLrcRoundRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:coordinator_proto.ClusterRTLrcRoundRequest)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_merge_round() != 0) {
+    _this->_internal_set_merge_round(from._internal_merge_round());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ClusterRTLrcRoundRequest::CopyFrom(const ClusterRTLrcRoundRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:coordinator_proto.ClusterRTLrcRoundRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClusterRTLrcRoundRequest::IsInitialized() const {
+  return true;
+}
+
+void ClusterRTLrcRoundRequest::InternalSwap(ClusterRTLrcRoundRequest* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.merge_round_, other->_impl_.merge_round_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ClusterRTLrcRoundRequest::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_coordinator_2eproto_getter, &descriptor_table_coordinator_2eproto_once,
+      file_level_metadata_coordinator_2eproto[26]);
+}
+
+// ===================================================================
+
+class ClusterRTLrcRoundReply::_Internal {
+ public:
+};
+
+ClusterRTLrcRoundReply::ClusterRTLrcRoundReply(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:coordinator_proto.ClusterRTLrcRoundReply)
+}
+ClusterRTLrcRoundReply::ClusterRTLrcRoundReply(const ClusterRTLrcRoundReply& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  ClusterRTLrcRoundReply* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.new_stripe_ids_){from._impl_.new_stripe_ids_}
+    , /*decltype(_impl_._new_stripe_ids_cached_byte_size_)*/{0}
+    , decltype(_impl_.error_message_){}
+    , decltype(_impl_.success_){}
+    , decltype(_impl_.pair_count_){}
+    , decltype(_impl_.data_migration_seconds_){}
+    , decltype(_impl_.parity_update_seconds_){}
+    , decltype(_impl_.critical_path_seconds_){}
+    , decltype(_impl_.completed_pairs_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.error_message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.error_message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_error_message().empty()) {
+    _this->_impl_.error_message_.Set(from._internal_error_message(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.success_, &from._impl_.success_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.completed_pairs_) -
+    reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.completed_pairs_));
+  // @@protoc_insertion_point(copy_constructor:coordinator_proto.ClusterRTLrcRoundReply)
+}
+
+inline void ClusterRTLrcRoundReply::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.new_stripe_ids_){arena}
+    , /*decltype(_impl_._new_stripe_ids_cached_byte_size_)*/{0}
+    , decltype(_impl_.error_message_){}
+    , decltype(_impl_.success_){false}
+    , decltype(_impl_.pair_count_){0}
+    , decltype(_impl_.data_migration_seconds_){0}
+    , decltype(_impl_.parity_update_seconds_){0}
+    , decltype(_impl_.critical_path_seconds_){0}
+    , decltype(_impl_.completed_pairs_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.error_message_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.error_message_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+ClusterRTLrcRoundReply::~ClusterRTLrcRoundReply() {
+  // @@protoc_insertion_point(destructor:coordinator_proto.ClusterRTLrcRoundReply)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void ClusterRTLrcRoundReply::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.new_stripe_ids_.~RepeatedField();
+  _impl_.error_message_.Destroy();
+}
+
+void ClusterRTLrcRoundReply::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void ClusterRTLrcRoundReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:coordinator_proto.ClusterRTLrcRoundReply)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.new_stripe_ids_.Clear();
+  _impl_.error_message_.ClearToEmpty();
+  ::memset(&_impl_.success_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.completed_pairs_) -
+      reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.completed_pairs_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ClusterRTLrcRoundReply::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // bool success = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 new_stripe_ids = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_new_stripe_ids(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 16) {
+          _internal_add_new_stripe_ids(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 pair_count = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.pair_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 completed_pairs = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.completed_pairs_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // double data_migration_seconds = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 41)) {
+          _impl_.data_migration_seconds_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // double parity_update_seconds = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 49)) {
+          _impl_.parity_update_seconds_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // double critical_path_seconds = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 57)) {
+          _impl_.critical_path_seconds_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // string error_message = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
+          auto str = _internal_mutable_error_message();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "coordinator_proto.ClusterRTLrcRoundReply.error_message"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* ClusterRTLrcRoundReply::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:coordinator_proto.ClusterRTLrcRoundReply)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
+  }
+
+  // repeated int32 new_stripe_ids = 2;
+  {
+    int byte_size = _impl_._new_stripe_ids_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          2, _internal_new_stripe_ids(), byte_size, target);
+    }
+  }
+
+  // int32 pair_count = 3;
+  if (this->_internal_pair_count() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_pair_count(), target);
+  }
+
+  // int32 completed_pairs = 4;
+  if (this->_internal_completed_pairs() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_completed_pairs(), target);
+  }
+
+  // double data_migration_seconds = 5;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_data_migration_seconds = this->_internal_data_migration_seconds();
+  uint64_t raw_data_migration_seconds;
+  memcpy(&raw_data_migration_seconds, &tmp_data_migration_seconds, sizeof(tmp_data_migration_seconds));
+  if (raw_data_migration_seconds != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteDoubleToArray(5, this->_internal_data_migration_seconds(), target);
+  }
+
+  // double parity_update_seconds = 6;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_parity_update_seconds = this->_internal_parity_update_seconds();
+  uint64_t raw_parity_update_seconds;
+  memcpy(&raw_parity_update_seconds, &tmp_parity_update_seconds, sizeof(tmp_parity_update_seconds));
+  if (raw_parity_update_seconds != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteDoubleToArray(6, this->_internal_parity_update_seconds(), target);
+  }
+
+  // double critical_path_seconds = 7;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_critical_path_seconds = this->_internal_critical_path_seconds();
+  uint64_t raw_critical_path_seconds;
+  memcpy(&raw_critical_path_seconds, &tmp_critical_path_seconds, sizeof(tmp_critical_path_seconds));
+  if (raw_critical_path_seconds != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteDoubleToArray(7, this->_internal_critical_path_seconds(), target);
+  }
+
+  // string error_message = 8;
+  if (!this->_internal_error_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_error_message().data(), static_cast<int>(this->_internal_error_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "coordinator_proto.ClusterRTLrcRoundReply.error_message");
+    target = stream->WriteStringMaybeAliased(
+        8, this->_internal_error_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:coordinator_proto.ClusterRTLrcRoundReply)
+  return target;
+}
+
+size_t ClusterRTLrcRoundReply::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:coordinator_proto.ClusterRTLrcRoundReply)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated int32 new_stripe_ids = 2;
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.new_stripe_ids_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._new_stripe_ids_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // string error_message = 8;
+  if (!this->_internal_error_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_error_message());
+  }
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // int32 pair_count = 3;
+  if (this->_internal_pair_count() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_pair_count());
+  }
+
+  // double data_migration_seconds = 5;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_data_migration_seconds = this->_internal_data_migration_seconds();
+  uint64_t raw_data_migration_seconds;
+  memcpy(&raw_data_migration_seconds, &tmp_data_migration_seconds, sizeof(tmp_data_migration_seconds));
+  if (raw_data_migration_seconds != 0) {
+    total_size += 1 + 8;
+  }
+
+  // double parity_update_seconds = 6;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_parity_update_seconds = this->_internal_parity_update_seconds();
+  uint64_t raw_parity_update_seconds;
+  memcpy(&raw_parity_update_seconds, &tmp_parity_update_seconds, sizeof(tmp_parity_update_seconds));
+  if (raw_parity_update_seconds != 0) {
+    total_size += 1 + 8;
+  }
+
+  // double critical_path_seconds = 7;
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_critical_path_seconds = this->_internal_critical_path_seconds();
+  uint64_t raw_critical_path_seconds;
+  memcpy(&raw_critical_path_seconds, &tmp_critical_path_seconds, sizeof(tmp_critical_path_seconds));
+  if (raw_critical_path_seconds != 0) {
+    total_size += 1 + 8;
+  }
+
+  // int32 completed_pairs = 4;
+  if (this->_internal_completed_pairs() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_completed_pairs());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ClusterRTLrcRoundReply::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    ClusterRTLrcRoundReply::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ClusterRTLrcRoundReply::GetClassData() const { return &_class_data_; }
+
+
+void ClusterRTLrcRoundReply::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<ClusterRTLrcRoundReply*>(&to_msg);
+  auto& from = static_cast<const ClusterRTLrcRoundReply&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:coordinator_proto.ClusterRTLrcRoundReply)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.new_stripe_ids_.MergeFrom(from._impl_.new_stripe_ids_);
+  if (!from._internal_error_message().empty()) {
+    _this->_internal_set_error_message(from._internal_error_message());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
+  }
+  if (from._internal_pair_count() != 0) {
+    _this->_internal_set_pair_count(from._internal_pair_count());
+  }
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_data_migration_seconds = from._internal_data_migration_seconds();
+  uint64_t raw_data_migration_seconds;
+  memcpy(&raw_data_migration_seconds, &tmp_data_migration_seconds, sizeof(tmp_data_migration_seconds));
+  if (raw_data_migration_seconds != 0) {
+    _this->_internal_set_data_migration_seconds(from._internal_data_migration_seconds());
+  }
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_parity_update_seconds = from._internal_parity_update_seconds();
+  uint64_t raw_parity_update_seconds;
+  memcpy(&raw_parity_update_seconds, &tmp_parity_update_seconds, sizeof(tmp_parity_update_seconds));
+  if (raw_parity_update_seconds != 0) {
+    _this->_internal_set_parity_update_seconds(from._internal_parity_update_seconds());
+  }
+  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
+  double tmp_critical_path_seconds = from._internal_critical_path_seconds();
+  uint64_t raw_critical_path_seconds;
+  memcpy(&raw_critical_path_seconds, &tmp_critical_path_seconds, sizeof(tmp_critical_path_seconds));
+  if (raw_critical_path_seconds != 0) {
+    _this->_internal_set_critical_path_seconds(from._internal_critical_path_seconds());
+  }
+  if (from._internal_completed_pairs() != 0) {
+    _this->_internal_set_completed_pairs(from._internal_completed_pairs());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ClusterRTLrcRoundReply::CopyFrom(const ClusterRTLrcRoundReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:coordinator_proto.ClusterRTLrcRoundReply)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClusterRTLrcRoundReply::IsInitialized() const {
+  return true;
+}
+
+void ClusterRTLrcRoundReply::InternalSwap(ClusterRTLrcRoundReply* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.new_stripe_ids_.InternalSwap(&other->_impl_.new_stripe_ids_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.error_message_, lhs_arena,
+      &other->_impl_.error_message_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(ClusterRTLrcRoundReply, _impl_.completed_pairs_)
+      + sizeof(ClusterRTLrcRoundReply::_impl_.completed_pairs_)
+      - PROTOBUF_FIELD_OFFSET(ClusterRTLrcRoundReply, _impl_.success_)>(
+          reinterpret_cast<char*>(&_impl_.success_),
+          reinterpret_cast<char*>(&other->_impl_.success_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ClusterRTLrcRoundReply::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_coordinator_2eproto_getter, &descriptor_table_coordinator_2eproto_once,
+      file_level_metadata_coordinator_2eproto[27]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace coordinator_proto
 PROTOBUF_NAMESPACE_OPEN
@@ -7318,6 +8002,14 @@ Arena::CreateMaybeMessage< ::coordinator_proto::MergeRequest >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::coordinator_proto::MergeReply*
 Arena::CreateMaybeMessage< ::coordinator_proto::MergeReply >(Arena* arena) {
   return Arena::CreateMessageInternal< ::coordinator_proto::MergeReply >(arena);
+}
+template<> PROTOBUF_NOINLINE ::coordinator_proto::ClusterRTLrcRoundRequest*
+Arena::CreateMaybeMessage< ::coordinator_proto::ClusterRTLrcRoundRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::coordinator_proto::ClusterRTLrcRoundRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::coordinator_proto::ClusterRTLrcRoundReply*
+Arena::CreateMaybeMessage< ::coordinator_proto::ClusterRTLrcRoundReply >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::coordinator_proto::ClusterRTLrcRoundReply >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

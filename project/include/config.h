@@ -6,7 +6,9 @@
 namespace ECProject
 {
   const int DATANODE_PORT_SHIFT = 50;
+  const int GRPC_MAX_BLOCK_MESSAGE_SIZE = 64 * 1024 * 1024;
   const int PROXY_PORT_SHIFT = 1;
+  const int PROXY_PARITY_PORT_SHIFT = 2;
 
   class Config
   {  

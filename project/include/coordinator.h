@@ -136,6 +136,10 @@ namespace ECProject
         grpc::ServerContext *context,
         const coordinator_proto::MergeRequest *request,
         coordinator_proto::MergeReply *reply) override;
+    grpc::Status mergeClusterRTLrcRound(
+        grpc::ServerContext *context,
+        const coordinator_proto::ClusterRTLrcRoundRequest *request,
+        coordinator_proto::ClusterRTLrcRoundReply *reply) override;
 
     // other
     grpc::Status listStripes(
@@ -166,6 +170,9 @@ namespace ECProject
         grpc::ServerContext *context,
         const coordinator_proto::MergeRequest *request,
         coordinator_proto::MergeReply *reply);
+    grpc::Status mergeStripesClusterRTLrcPair(
+        int stripe_id_a, int stripe_id_b, int merge_round,
+        int new_stripe_id, coordinator_proto::MergeReply *reply);
     grpc::Status mergeStripesDdlrtLrc(
         grpc::ServerContext *context,
         const coordinator_proto::MergeRequest *request,
@@ -211,6 +218,7 @@ namespace ECProject
 
   private:
     std::mutex m_mutex;
+    std::mutex m_cluster_rt_round_mutex;
     std::vector<std::vector<int>> Get_OA_Information(const std::string& filename);
     std::condition_variable cv;
     std::map<std::string, std::unique_ptr<proxy_proto::proxyService::Stub>>
