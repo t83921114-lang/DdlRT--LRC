@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "description": "DdlRT-LRC overnight experiment matrix. Encoding tuple (k,l,g) maps to XML k=k, z=l, r=g.",
+  "defaults": {
+    "block_size_bytes": 1048576,
+    "stripes": 1000,
+    "intra_gbps": 10,
+    "inter_gbps": 1,
+    "repetitions": 5,
+    "merge_rounds": 2
+  },
+  "encoding_parameters": [
+    {
+      "name": "k6_l2_g2",
+      "k": 6,
+      "l": 2,
+      "g": 2,
+      "xml": {
+        "k": 6,
+        "z": 2,
+        "r": 2
+      }
+    },
+    {
+      "name": "k8_l2_g2",
+      "k": 8,
+      "l": 2,
+      "g": 2,
+      "xml": {
+        "k": 8,
+        "z": 2,
+        "r": 2
+      }
+    },
+    {
+      "name": "k10_l2_g3",
+      "k": 10,
+      "l": 2,
+      "g": 3,
+      "xml": {
+        "k": 10,
+        "z": 2,
+        "r": 3
+      }
+    },
+    {
+      "name": "k12_l2_g2",
+      "k": 12,
+      "l": 2,
+      "g": 2,
+      "xml": {
+        "k": 12,
+        "z": 2,
+        "r": 2
+      }
+    }
+  ],
+  "experiments": [
+    {
+      "name": "encoding",
+      "description": "Encoding parameter sweep at the baseline system settings.",
+      "dimension": "encoding",
+      "values": [
+        "all"
+      ]
+    },
+    {
+      "name": "bandwidth",
+      "description": "Inter-cluster bandwidth sweep in Gbit/s; intra-cluster remains 10 Gbit/s.",
+      "dimension": "inter_gbps",
+      "values": [
+        0.5,
+        1,
+        2,
+        5,
+        10
+      ]
+    },
+    {
+      "name": "stripes",
+      "description": "Stripe-count sweep.",
+      "dimension": "stripes",
+      "values": [
+        500,
+        1000,
+        1500,
+        2000
+      ]
+    },
+    {
+      "name": "block_size",
+      "description": "Block-size sweep in bytes (256 KiB through 4 MiB).",
+      "dimension": "block_size_bytes",
+      "values": [
+        262144,
+        524288,
+        1048576,
+        2097152,
+        4194304
+      ]
+    }
+  ]
+}
