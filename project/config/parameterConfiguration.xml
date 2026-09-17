@@ -2,7 +2,7 @@
 <Configuration>
     <AlignedSize>4096</AlignedSize>
     <UnitSize>8192</UnitSize>
-    <BlockSize>1048576</BlockSize>
+    <BlockSize>4194304</BlockSize>
     
     
     
@@ -17,7 +17,7 @@
     <alpha>2</alpha>
     
     <CodeType>DdlRT_LRC</CodeType>
-    <k>6</k>
+    <k>12</k>
     <r>2</r>
     <z>2</z>
     

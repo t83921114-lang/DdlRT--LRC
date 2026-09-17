@@ -64,8 +64,9 @@ For each attempt the runner:
 1. calls `unlimit_all.sh` and `kill_all_nodes.sh`;
 2. updates `BlockSize`, `k`, `r`, and `z` using an XML parser and an atomic file replacement;
 3. calls `update_all.sh`, `start_proxy.sh`, and `start_coordinator.sh`, then waits for startup;
-4. runs the interactive client handshake above;
-5. removes bandwidth limits, records the result, and continues after bounded retries.
+4. runs the interactive client handshake above and treats client-reported write or merge failures as immediate attempt failures;
+5. removes bandwidth limits and kills all cluster processes after every attempt;
+6. retries once by default, then records a persistent failure and continues with the next run.
 
 On normal exit, SIGINT, or SIGTERM it makes a best effort to terminate the client, remove limits, kill nodes, atomically restore the exact original XML bytes, and synchronize that restored configuration back to the cluster. A copy is also retained as `parameterConfiguration.xml.backup` in the output directory.
 

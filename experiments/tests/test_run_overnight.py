@@ -83,6 +83,34 @@ write throughput: 2 MiB/s
 
 
 class ClientInteractionTests(unittest.TestCase):
+    def test_client_failure_output_terminates_waiting_process(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            client = root / "failing_client.py"
+            client.write_text(r"""#!/usr/bin/env python3
+import sys
+import time
+
+sys.stdout.write("[SET402] upload data fai")
+sys.stdout.flush()
+time.sleep(0.05)
+sys.stdout.write("led! gRPC code=14 message=proxy failed\n")
+sys.stdout.flush()
+time.sleep(30)
+""")
+            client.chmod(0o755)
+            args = argparse.Namespace(
+                output=root / "output", client=client, coordinator="test:55555",
+                client_timeout=5.0, command_timeout=5.0,
+            )
+            instance = runner.Runner(args, [])
+            started = runner.time.monotonic()
+            with self.assertRaisesRegex(runner.ClientOutputError, "upload data failed"):
+                instance._run_client(
+                    {"stripes": 1000, "inter_gbps": 1}, root / "client.log")
+            self.assertLess(runner.time.monotonic() - started, 2.0)
+            self.assertIsNone(instance.current_process)
+
     def test_multiline_output_prompt_is_answered_before_process_exit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

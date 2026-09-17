@@ -36,6 +36,13 @@ CSV_FIELDS = [
 ]
 FLOAT = r"([0-9]+(?:\.[0-9]+)?)"
 PROMPT_RE = re.compile(r"start\[\s*(\d+)\s*time\]merge now\?", re.I)
+CLIENT_FAILURE_RE = re.compile(
+    r"(?:upload data failed|\bset failed|mergeStripes RPC failed|"
+    r"merge returned failure|merge stopped early)", re.I)
+
+
+class ClientOutputError(RuntimeError):
+    pass
 
 
 def utc_now() -> str:
@@ -323,6 +330,7 @@ class Runner:
         started = time.monotonic()
         transcript: List[str] = []
         prompt_buffer = ""
+        failure_buffer = ""
         limited = False
         selector = selectors.DefaultSelector()
         decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
@@ -335,13 +343,22 @@ class Runner:
             selector.register(process.stdout, selectors.EVENT_READ)
 
             def consume_output(output: str) -> None:
-                nonlocal limited, prompt_buffer
+                nonlocal failure_buffer, limited, prompt_buffer
                 if not output:
                     return
                 transcript.append(output)
                 log.write(output)
                 sys.stdout.write(output)
                 sys.stdout.flush()
+                failure_buffer += output
+                failure = CLIENT_FAILURE_RE.search(failure_buffer)
+                if failure:
+                    line_start = failure_buffer.rfind("\n", 0, failure.start()) + 1
+                    line_end = failure_buffer.find("\n", failure.end())
+                    if line_end < 0:
+                        line_end = len(failure_buffer)
+                    raise ClientOutputError(failure_buffer[line_start:line_end].strip())
+                failure_buffer = failure_buffer[-512:]
                 prompt_buffer += output
                 while True:
                     prompt = PROMPT_RE.search(prompt_buffer)
@@ -441,11 +458,10 @@ class Runner:
             record["failure_reason"] = "%s: %s" % (type(error).__name__, error)
         finally:
             record["finished_at"] = utc_now()
-            try:
-                self._command(["bash", str(REPO_ROOT / "unlimit_all.sh")],
-                              self.args.command_timeout, check=False)
-            except Exception:
-                pass
+            # Every attempt leaves a clean baseline. This runs before a retry and
+            # after the final failed attempt, so bandwidth shaping and cluster
+            # processes cannot leak into the next experiment.
+            self.cleanup_cluster()
         return record
 
     def execute(self) -> int:
