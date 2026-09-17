@@ -1,6 +1,7 @@
 #include "client.h"
 #include "toolbox.h"
 #include <fstream>
+#include <filesystem>
 #include <sys/time.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -11,23 +12,73 @@
 #include <chrono>
 #include <algorithm>
 #include <random>
+#include <stdexcept>
 #include "encoder.h"
 
 
 int main(int argc, char **argv)
 {
-    char buff[256];
-    getcwd(buff, 256);
-    std::string cwf = std::string(argv[0]);
-    std::string sys_config_path = std::string(buff) + cwf.substr(1, cwf.rfind('/') - 1) + "/../../config/parameterConfiguration.xml";
-    //std::string sys_config_path = "/home/GuanTian/lql/UniLRC/project/config/parameterConfiguration.xml";
-    std::cout << "Current working directory: " << sys_config_path << std::endl;
+    namespace fs = std::filesystem;
+    std::error_code path_error;
+    fs::path executable_path = fs::canonical("/proc/self/exe", path_error);
+    if (path_error) {
+        executable_path = fs::absolute(argv[0], path_error);
+    }
+    if (path_error) {
+        std::cerr << "Failed to resolve executable path: " << path_error.message() << std::endl;
+        return 2;
+    }
+    const fs::path config_path =
+        (executable_path.parent_path() / "../../config/parameterConfiguration.xml").lexically_normal();
+    if (!fs::is_regular_file(config_path)) {
+        std::cerr << "Config file does not exist: " << config_path << std::endl;
+        return 2;
+    }
+    const std::string sys_config_path = config_path.string();
+    std::cout << "Config file: " << sys_config_path << std::endl;
 
     const ECProject::Config *config = ECProject::Config::getInstance(sys_config_path);
 
     std::string coordinator_addr = config->CoordinatorIP + ":" + std::to_string(config->CoordinatorPort);
-    if (argc >= 2) {
-        coordinator_addr = argv[1];
+    int stripe_num = 1000;
+    bool coordinator_from_cli = false;
+    for (int i = 1; i < argc; ++i) {
+        const std::string argument = argv[i];
+        if (argument == "--coordinator") {
+            if (++i >= argc) {
+                std::cerr << "Missing value for --coordinator" << std::endl;
+                return 2;
+            }
+            coordinator_addr = argv[i];
+            coordinator_from_cli = true;
+        } else if (argument == "--stripes") {
+            if (++i >= argc) {
+                std::cerr << "Missing value for --stripes" << std::endl;
+                return 2;
+            }
+            try {
+                size_t consumed = 0;
+                stripe_num = std::stoi(argv[i], &consumed);
+                if (consumed != std::string(argv[i]).size() || stripe_num <= 0) {
+                    throw std::invalid_argument("not a positive integer");
+                }
+            } catch (const std::exception &) {
+                std::cerr << "Invalid --stripes value: " << argv[i] << std::endl;
+                return 2;
+            }
+        } else if (!argument.empty() && argument[0] != '-' && !coordinator_from_cli) {
+            coordinator_addr = argument;
+            coordinator_from_cli = true;
+        } else if (argument == "--help" || argument == "-h") {
+            std::cout << "Usage: " << argv[0]
+                      << " [--coordinator HOST:PORT] [--stripes COUNT]" << std::endl;
+            return 0;
+        } else {
+            std::cerr << "Unknown argument: " << argument << std::endl;
+            return 2;
+        }
+    }
+    if (coordinator_from_cli) {
         std::cout << "Using coordinator address (from argv): " << coordinator_addr << std::endl;
     } else {
         const char *env_addr = std::getenv("COORDINATOR_ADDR");
@@ -36,6 +87,7 @@ int main(int argc, char **argv)
             std::cout << "Using coordinator address (from COORDINATOR_ADDR): " << coordinator_addr << std::endl;
         }
     }
+    std::cout << "Stripe count: " << stripe_num << std::endl;
 
     std::string client_ip = "10.10.1.1";
     int client_port = 55555;
@@ -77,7 +129,6 @@ int main(int argc, char **argv)
 
 
     
-    int stripe_num = 1000; // stripe number
     size_t total_write_size = static_cast<size_t>(stripe_num * block_size * n); // MB, for calculating throughput
     std::cout << "Starting set stripe operation" << std::endl;
     std::chrono::high_resolution_clock::time_point set_start = std::chrono::high_resolution_clock::now();
