@@ -58,7 +58,7 @@ cluster_informtion = {}
 def generate_cluster_info_dict():
     for i in range(proxy_num):
         new_cluster = {}
-        
+
         new_cluster["proxy"] = proxy_ip_list[i][0]+":"+str(proxy_ip_list[i][1])
         datanode_list = []
         for j in range(datanode_number_per_cluster):
@@ -68,7 +68,7 @@ def generate_cluster_info_dict():
             datanode_list.append([proxy_ip_list[i][0], port])
         new_cluster["datanode"] = datanode_list
         cluster_informtion[i] = new_cluster
-            
+
 def generate_run_proxy_datanode_file():
     local_ip = get_interface_with_ip_prefix(prefix="10.10.1")
     #local_ip = "0.0.0.0" # for test
@@ -81,20 +81,26 @@ def generate_run_proxy_datanode_file():
         f.write("BASE_DIR=\"$(cd \"$(dirname \"$0\")/..\" && pwd)\"\n")
         f.write("export LD_LIBRARY_PATH=\"$BASE_DIR/project/third_party/jerasure/lib:$BASE_DIR/project/third_party/gf-complete/lib:${LD_LIBRARY_PATH:-}\"\n")
         f.write("\n")
-        f.write("pkill -9 run_datanode\n")
-        f.write("pkill -9 run_proxy\n")
+        f.write("pkill -9 run_datanode 2>/dev/null || true\n")
+        f.write("pkill -9 run_proxy 2>/dev/null || true\n")
+        f.write("mkdir -p logs\n")
         f.write("\n")
         print("cluster_id",cluster_id)
         for each_datanode in cluster_informtion[cluster_id]["datanode"]:
-            f.write("./project/cmake/build/run_datanode "+str(each_datanode[0])+":"+str(each_datanode[1])+" & \n")
+            endpoint = str(each_datanode[0]) + ":" + str(each_datanode[1])
+            log_path = "logs/datanode-" + str(each_datanode[1]) + ".log"
+            f.write("nohup ./project/cmake/build/run_datanode " + endpoint +
+                    " </dev/null >>" + log_path + " 2>&1 &\n")
         f.write("\n")
-        
+
         f.write("sleep 5s\n")
-        
+
         f.write("\n")
-        f.write("./project/cmake/build/run_proxy "+str(cluster_informtion[cluster_id]["proxy"])+" "+" & \n")
+        f.write("nohup ./project/cmake/build/run_proxy " +
+                str(cluster_informtion[cluster_id]["proxy"]) +
+                " </dev/null >>logs/proxy.log 2>&1 &\n")
         f.write("\n")
-        
+
 def generater_cluster_information_xml():
     file_name = parent_path + '/project/config/clusterInformation.xml'
     import xml.etree.ElementTree as ET
@@ -120,7 +126,7 @@ def generater_cluster_information_xml():
     #root.tail = '\n'
     tree = ET.ElementTree(root)
     tree.write(file_name, encoding="utf-8", xml_declaration=True)
-            
+
 def cluster_generate_run_proxy_datanode_file(ip, port, i):
     file_name = parent_path + '/run_cluster_sh/' + str(i) +'/cluster_run_proxy_datanode.sh'
     with open(file_name, 'w') as f:
@@ -128,13 +134,17 @@ def cluster_generate_run_proxy_datanode_file(ip, port, i):
         f.write("BASE_DIR=\"$(cd \"$(dirname \"$0\")/../..\" && pwd)\"\n")
         f.write("export LD_LIBRARY_PATH=\"$BASE_DIR/project/third_party/jerasure/lib:$BASE_DIR/project/third_party/gf-complete/lib:${LD_LIBRARY_PATH:-}\"\n")
         f.write("\n")
-        f.write("pkill -9 run_datanode\n")
-        f.write("pkill -9 run_proxy\n")
+        f.write("pkill -9 run_datanode 2>/dev/null || true\n")
+        f.write("pkill -9 run_proxy 2>/dev/null || true\n")
+        f.write("mkdir -p logs\n")
         f.write("\n")
         for each_datanode in cluster_informtion[0]["datanode"]:
-            f.write("./project/cmake/build/run_datanode "+ip+":"+str(each_datanode[1])+" & \n")
-        f.write("\n") 
-        f.write("./project/cmake/build/run_proxy "+ip+":"+str(port)+" "+coordinator_ip+" & \n")   
+            datanode_port = str(each_datanode[1])
+            f.write("nohup ./project/cmake/build/run_datanode " + ip + ":" + datanode_port +
+                    " </dev/null >>logs/datanode-" + datanode_port + ".log 2>&1 &\n")
+        f.write("\n")
+        f.write("nohup ./project/cmake/build/run_proxy " + ip + ":" + str(port) + " " +
+                coordinator_ip + " </dev/null >>logs/proxy.log 2>&1 &\n")
         f.write("\n")
 
 if __name__ == "__main__":
@@ -143,14 +153,14 @@ if __name__ == "__main__":
     local_ip = get_interface_with_ip_prefix(prefix="10.10.1")
     #local_ip = "0.0.0.0" # for test
     local_ip_last_segment = local_ip.split('.')[-1]
-    if int (local_ip_last_segment) >= 3: 
+    if int (local_ip_last_segment) >= 3:
         generate_run_proxy_datanode_file()
     #generater_cluster_information_xml()
     #generate_run_proxy_datanode_file() # for test
     generater_cluster_information_xml()
-    
+
     # cnt = 0
     # for proxy in proxy_ip_list:
         #cluster_generate_run_proxy_datanode_file(proxy[0], proxy[1], cnt)
         #cnt += 1
-    
+

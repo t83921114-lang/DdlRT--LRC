@@ -13,3 +13,6 @@ project/config/*
 small_tools/*
 logs/*
 build/*
+experiments/results/
+**/__pycache__/
+*.pyc
