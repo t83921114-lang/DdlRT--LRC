@@ -88,3 +88,33 @@ Tests use only temporary local files and never invoke cluster scripts:
 ```bash
 python3 -m unittest discover -s experiments/tests -v
 ```
+
+## Experiments 5 and 6: initial-layout baselines
+
+`run_baseline.py` runs without any redundancy conversion or merge. Every attempt starts a clean cluster, applies intra/inter rack bandwidth 10:1, creates exactly one initial-layout stripe with 1 MiB blocks, and then performs one selected operation.
+
+- Experiment 5 (`normal-rw`): records logical write throughput and normal-read throughput. The read fetches the `k` data blocks of stripe 0.
+- Experiment 6 (`recovery`): records logical write throughput and recovery throughput for block 0 by default. Recovery throughput is one repaired block (1 MiB) divided by end-to-end recovery time.
+
+The four `(k,l,g)` encoding tuples from `manifest.json` are tested. By default each point is repeated five times, producing 40 runs total (2 tests × 4 encodings × 5 repetitions). Results are written incrementally under `experiments/results/baseline/` and are ignored by Git.
+
+```bash
+# Plan all experiment 5/6 runs
+bash experiments/run_baseline.sh --dry-run
+
+# Small real smoke test for experiment 5
+bash experiments/run_baseline.sh --execute --test normal-rw --repetitions 1
+
+# Run experiment 6 only; block 0 is the default
+bash experiments/run_baseline.sh --execute --test recovery --resume
+
+# Run both experiments and resume successful points
+bash experiments/run_baseline.sh --execute --resume
+```
+
+The client modes used by this runner can also be invoked directly:
+
+```bash
+./project/cmake/build/main_client --coordinator 10.10.1.2:55555 --stripes 1 --test-mode normal-rw
+./project/cmake/build/main_client --coordinator 10.10.1.2:55555 --stripes 1 --test-mode recovery --failed-block 0
+```

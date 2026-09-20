@@ -41,6 +41,8 @@ int main(int argc, char **argv)
 
     std::string coordinator_addr = config->CoordinatorIP + ":" + std::to_string(config->CoordinatorPort);
     int stripe_num = 1000;
+    std::string test_mode = "merge";
+    int failed_block_id = 0;
     bool coordinator_from_cli = false;
     for (int i = 1; i < argc; ++i) {
         const std::string argument = argv[i];
@@ -66,12 +68,40 @@ int main(int argc, char **argv)
                 std::cerr << "Invalid --stripes value: " << argv[i] << std::endl;
                 return 2;
             }
+        } else if (argument == "--test-mode") {
+            if (++i >= argc) {
+                std::cerr << "Missing value for --test-mode" << std::endl;
+                return 2;
+            }
+            test_mode = argv[i];
+            if (test_mode != "merge" && test_mode != "normal-rw" &&
+                test_mode != "recovery") {
+                std::cerr << "Invalid --test-mode value: " << test_mode << std::endl;
+                return 2;
+            }
+        } else if (argument == "--failed-block") {
+            if (++i >= argc) {
+                std::cerr << "Missing value for --failed-block" << std::endl;
+                return 2;
+            }
+            try {
+                size_t consumed = 0;
+                failed_block_id = std::stoi(argv[i], &consumed);
+                if (consumed != std::string(argv[i]).size() || failed_block_id < 0) {
+                    throw std::invalid_argument("not a non-negative integer");
+                }
+            } catch (const std::exception &) {
+                std::cerr << "Invalid --failed-block value: " << argv[i] << std::endl;
+                return 2;
+            }
         } else if (!argument.empty() && argument[0] != '-' && !coordinator_from_cli) {
             coordinator_addr = argument;
             coordinator_from_cli = true;
         } else if (argument == "--help" || argument == "-h") {
             std::cout << "Usage: " << argv[0]
-                      << " [--coordinator HOST:PORT] [--stripes COUNT]" << std::endl;
+                      << " [--coordinator HOST:PORT] [--stripes COUNT]"
+                      << " [--test-mode merge|normal-rw|recovery]"
+                      << " [--failed-block ID]" << std::endl;
             return 0;
         } else {
             std::cerr << "Unknown argument: " << argument << std::endl;
@@ -88,6 +118,11 @@ int main(int argc, char **argv)
         }
     }
     std::cout << "Stripe count: " << stripe_num << std::endl;
+    std::cout << "Test mode: " << test_mode << std::endl;
+    if (test_mode != "merge" && stripe_num != 1) {
+        std::cerr << test_mode << " requires --stripes 1" << std::endl;
+        return 2;
+    }
 
     std::string client_ip = "10.10.1.1";
     int client_port = 55555;
@@ -123,69 +158,84 @@ int main(int argc, char **argv)
         std::cout << "Code type error" << std::endl;
         return -1;
     }
-    double block_size = static_cast<double> (parameters[3]) / 1024 / 1024; //MB
+    const int block_size_bytes = parameters[3];
+    const double block_size_mib = static_cast<double>(block_size_bytes) /
+                                  (1024.0 * 1024.0);
     int n = k + r + z;
 
-
-    
-    size_t total_write_size = static_cast<size_t>(stripe_num * block_size * n); // MB, for calculating throughput
+    const double logical_write_mib = static_cast<double>(stripe_num) * k * block_size_mib;
     std::cout << "Starting set stripe operation" << std::endl;
-    std::chrono::high_resolution_clock::time_point set_start = std::chrono::high_resolution_clock::now();
-    for(int i = 0; i < stripe_num; i++){
-        client.set();
+    const auto set_start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < stripe_num; i++) {
+        if (!client.set()) {
+            std::cerr << "set failed at stripe " << i << std::endl;
+            return 1;
+        }
     }
-    std::chrono::high_resolution_clock::time_point set_end = std::chrono::high_resolution_clock::now();
+    const auto set_end = std::chrono::high_resolution_clock::now();
+    const std::chrono::duration<double> set_time = set_end - set_start;
     std::cout << "Set stripe operation finished" << std::endl;
-    std::cout << "Conducting experiments, please wait..." << std::endl;
-    std::chrono::duration<double> set_time = std::chrono::duration_cast<std::chrono::duration<double>>(set_end - set_start);
     std::cout << "write time: " << set_time.count() << " seconds" << std::endl;
-    std::cout << "write throughput: " << (static_cast<double> (total_write_size) / set_time.count() / 1024) << "MB/s" << std::endl;
+    std::cout << "write throughput: " << logical_write_mib / set_time.count()
+              << " MiB/s" << std::endl;
+
+    if (test_mode == "normal-rw") {
+        const auto read_start = std::chrono::high_resolution_clock::now();
+        std::shared_ptr<char[]> data = client.get_blocks(0, k - 1);
+        const auto read_end = std::chrono::high_resolution_clock::now();
+        if (!data) {
+            std::cerr << "normal read failed" << std::endl;
+            return 1;
+        }
+        const std::chrono::duration<double> read_time = read_end - read_start;
+        const double logical_read_mib = static_cast<double>(k) * block_size_mib;
+        std::cout << "read time: " << read_time.count() << " seconds" << std::endl;
+        std::cout << "read throughput: " << logical_read_mib / read_time.count()
+                  << " MiB/s" << std::endl;
+        return 0;
+    }
+
+    if (test_mode == "recovery") {
+        if (failed_block_id >= n) {
+            std::cerr << "failed block id is outside the initial stripe: "
+                      << failed_block_id << std::endl;
+            return 2;
+        }
+        const auto recovery_start = std::chrono::high_resolution_clock::now();
+        const bool recovered = client.recovery(0, failed_block_id);
+        const auto recovery_end = std::chrono::high_resolution_clock::now();
+        if (!recovered) {
+            std::cerr << "single-block recovery failed" << std::endl;
+            return 1;
+        }
+        const std::chrono::duration<double> recovery_time = recovery_end - recovery_start;
+        std::cout << "recovery block: " << failed_block_id << std::endl;
+        std::cout << "recovery time: " << recovery_time.count() << " seconds" << std::endl;
+        std::cout << "recovery throughput: " << block_size_mib / recovery_time.count()
+                  << " MiB/s" << std::endl;
+        return 0;
+    }
 
     std::cout << "\n[Merge bandwidth] if you want to limit the bandwidth during merge, please execute the following commands:\n"
-            << "  before merge please execute: sh limit_bandwidth.sh\n"
-            << "  after merge please execute: sh unlimit_all.sh\n\n";
-     int merge_round=1;
-
-    while (true)
-    {
-        if(merge_round>2)
-        {
-            std::cout<<"merge completed"<<std::endl;
+              << "  before merge please execute: sh limit_bandwidth.sh\n"
+              << "  after merge please execute: sh unlimit_all.sh\n\n";
+    int merge_round = 1;
+    while (true) {
+        if (merge_round > 2) {
+            std::cout << "merge completed" << std::endl;
             break;
         }
-        std::cout << "start[ "<<merge_round<<" time]merge now? (Y/N)" << std::endl;
+        std::cout << "start[ " << merge_round << " time]merge now? (Y/N)" << std::endl;
         char choose;
         std::cin >> choose;
-        if (choose == 'Y' || choose == 'y')
-        {      
+        if (choose == 'Y' || choose == 'y') {
             client.start_merge(merge_round);
             ++merge_round;
-        }
-        else if (choose == 'N' || choose == 'n')
-        {
+        } else if (choose == 'N' || choose == 'n') {
             break;
-        }
-        else
-        {
+        } else {
             std::cout << "Invalid input, please enter Y or N." << std::endl;
         }
     }
-    //read test
-    // int stripe_id_to_read = 0;
-    // int start_block_id = stripe_id_to_read * n;
-    // int end_block_id = start_block_id + k - 1;
-    // std::cout << "reading one stripe once"<< std::endl;
-    // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    // client.get_blocks(start_block_id, end_block_id);
-    // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-    // double elapsed_s = time_span.count();
-    // int block_size_bytes = parameters[3];
-    // int requested_blocks = end_block_id - start_block_id + 1;
-    // double physical_tp_mib =
-    //     static_cast<double>(requested_blocks) * block_size_bytes /
-    //     elapsed_s / (1024.0 * 1024.0);
-    // std::cout<<"read time: "<<elapsed_s<<" seconds"<<std::endl;
-    // std::cout << "read rate: " << physical_tp_mib << "MB/s" << std::endl;
     return 0;
 }

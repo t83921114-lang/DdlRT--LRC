@@ -1998,6 +1998,12 @@ namespace ECProject
       {
         std::cout << "[Proxy" << m_self_cluster_id << "][GET]"
                   << "read from datanodes failed!" << std::endl;
+        for (int i = 0; i < recovery_request->datanodeip_size(); i++)
+          std::free(get_bufs[i]);
+        std::free(res_buf);
+        std::free(real_res_buf);
+        return grpc::Status(grpc::StatusCode::INTERNAL,
+                            "recovery source block read failed");
       }
       else
       {
@@ -2107,17 +2113,18 @@ namespace ECProject
           RecoveryToDatanode(failed_block_key.c_str(), failed_block_id, res_buf, replaced_node_ip.c_str(), replaced_node_port);
         }
       }
-      delete res_buf;
-      delete real_res_buf;
+      std::free(res_buf);
+      std::free(real_res_buf);
       for(int i = 0; i < recovery_request->datanodeip_size(); i++)
       {
-        delete get_bufs[i];
+        std::free(get_bufs[i]);
       }
     }
     catch (const std::exception &e)
     {
       std::cout << "exception" << std::endl;
       std::cerr << e.what() << '\n';
+      return grpc::Status(grpc::StatusCode::INTERNAL, e.what());
     }
     return grpc::Status::OK;
   }

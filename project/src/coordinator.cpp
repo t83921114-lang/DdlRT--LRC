@@ -2697,7 +2697,62 @@ grpc::Status CoordinatorImpl::decodeTest(
 
 bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
   std::string code_type = m_sys_config->CodeType;
-  Stripe &t_stripe = m_stripe_table[stripe_id];
+  auto stripe_it = m_stripe_table.find(stripe_id);
+  if (stripe_id < 0 || stripe_it == m_stripe_table.end() || failed_block_id < 0 ||
+      failed_block_id >= static_cast<int>(stripe_it->second.blocks.size())) {
+    return false;
+  }
+  Stripe &t_stripe = stripe_it->second;
+
+  // DdlRT_LRC keeps local parity on the dedicated parity rack. For an
+  // initial-layout data-block repair, fetch the other data in the same local
+  // group plus its local parity directly into the failed block's rack.
+  if (code_type == "DdlRT_LRC" && failed_block_id < t_stripe.k) {
+    Block *failed = t_stripe.blocks[failed_block_id];
+    const int local_group = failed->local_group;
+    const int chosen_cluster_id = failed->map2cluster;
+    std::string chosen_proxy =
+        m_cluster_table[chosen_cluster_id].proxy_ip + ":" +
+        std::to_string(m_cluster_table[chosen_cluster_id].proxy_port);
+
+    grpc::ClientContext recovery_context;
+    proxy_proto::RecoveryRequest recovery_request;
+    proxy_proto::RecoveryReply recovery_reply;
+    recovery_request.set_failed_block_id(failed_block_id);
+    recovery_request.set_failed_block_key(failed->block_key);
+    int replacement_node = randomly_select_a_node(chosen_cluster_id, stripe_id);
+    recovery_request.set_replaced_node_ip(m_node_table[replacement_node].node_ip);
+    recovery_request.set_replaced_node_port(m_node_table[replacement_node].node_port);
+    recovery_request.set_cross_rack_num(0);
+
+    for (Block *block : t_stripe.blocks) {
+      const bool same_group_data =
+          block->block_type == 'D' && block->local_group == local_group;
+      const bool matching_local_parity =
+          block->block_type == 'L' && block->local_group == local_group;
+      if (block->block_id == failed_block_id ||
+          (!same_group_data && !matching_local_parity)) {
+        continue;
+      }
+      recovery_request.add_datanodeip(m_node_table[block->map2node].node_ip);
+      recovery_request.add_datanodeport(m_node_table[block->map2node].node_port);
+      recovery_request.add_blockkeys(block->block_key);
+      recovery_request.add_blockids(block->block_id);
+    }
+
+    grpc::Status ddlrt_status = m_proxy_ptrs[chosen_proxy]->recovery(
+        &recovery_context, recovery_request, &recovery_reply);
+    if (ddlrt_status.ok()) {
+      std::cout << "[Coordinator] DdlRT_LRC recovery of " << stripe_id << "_"
+                << failed_block_id << " success!" << std::endl;
+      return true;
+    }
+    std::cout << "[Coordinator] DdlRT_LRC recovery of " << stripe_id << "_"
+              << failed_block_id << " failed: " << ddlrt_status.error_message()
+              << std::endl;
+    return false;
+  }
+
   std::vector<int> recovery_group_ids =
       get_recovery_group_ids(m_sys_config->CodeType, m_sys_config->k,
                              m_sys_config->r, m_sys_config->z, failed_block_id);
