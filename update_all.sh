@@ -21,7 +21,7 @@ while read -r ip; do
     echo "Copying to host: $ip..."
 
     # use rsync to copy the folder
-    sudo rsync -avz --delete --exclude='project/cmake/build/CMakeFiles' --exclude='project/cmake/build/run_client' --exclude='project/cmake/build/main_test' --exclude='project/cmake/build/main_client' --exclude='storage/*' -e "ssh $SSH_OPTS" "$SOURCE_DIR/" "$ip:$REMOTE_DIR/"
+    sudo rsync -avz --delete --exclude='project/cmake/build/CMakeFiles' --exclude='project/cmake/build/run_client' --exclude='project/cmake/build/main_test' --exclude='project/cmake/build/main_client' --exclude='storage/*' --exclude='experiments/results/' --exclude='**/__pycache__/' --exclude='*.pyc' -e "ssh $SSH_OPTS" "$SOURCE_DIR/" "$ip:$REMOTE_DIR/"
     #rsync -avz -e ssh "$SOURCE_DIR/" "$ip:$REMOTE_DIR/"
 
     # check if rsync is successful

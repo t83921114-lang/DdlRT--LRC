@@ -1195,7 +1195,7 @@ namespace ECProject
           std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_unilrc" << std::endl;
           decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
         }
-        else if (code_type == "AzureLRC")
+        else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
         {
           std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_azure_lrc" << std::endl;
           decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, request_copy->failed_block_id());
@@ -1360,7 +1360,7 @@ namespace ECProject
           std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_unilrc" << std::endl;
           decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
         }
-        else if (code_type == "AzureLRC")
+        else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
         {
           std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_azure_lrc" << std::endl;
           decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, request_copy->failed_block_id());
@@ -1495,7 +1495,7 @@ namespace ECProject
         std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_unilrc" << std::endl;
         decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
       }
-      else if (code_type == "AzureLRC")
+      else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
       {
         std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] decode_azure_lrc" << std::endl;
         decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, request_copy->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, request_copy->failed_block_id());
@@ -1635,7 +1635,7 @@ namespace ECProject
       {
         decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
       }
-      else if (code_type == "AzureLRC")
+      else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
       {
         decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, failed_block_id);
       }
@@ -1830,7 +1830,7 @@ namespace ECProject
       {
         decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
       }
-      else if (code_type == "AzureLRC")
+      else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
       {
         decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, failed_block_id);
       }
@@ -1998,6 +1998,12 @@ namespace ECProject
       {
         std::cout << "[Proxy" << m_self_cluster_id << "][GET]"
                   << "read from datanodes failed!" << std::endl;
+        for (int i = 0; i < recovery_request->datanodeip_size(); i++)
+          std::free(get_bufs[i]);
+        std::free(res_buf);
+        std::free(real_res_buf);
+        return grpc::Status(grpc::StatusCode::INTERNAL,
+                            "recovery source block read failed");
       }
       else
       {
@@ -2020,7 +2026,7 @@ namespace ECProject
         {
           decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
         }
-        else if (code_type == "AzureLRC")
+        else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
         {
           decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, failed_block_id);
         }
@@ -2107,17 +2113,18 @@ namespace ECProject
           RecoveryToDatanode(failed_block_key.c_str(), failed_block_id, res_buf, replaced_node_ip.c_str(), replaced_node_port);
         }
       }
-      delete res_buf;
-      delete real_res_buf;
+      std::free(res_buf);
+      std::free(real_res_buf);
       for(int i = 0; i < recovery_request->datanodeip_size(); i++)
       {
-        delete get_bufs[i];
+        std::free(get_bufs[i]);
       }
     }
     catch (const std::exception &e)
     {
       std::cout << "exception" << std::endl;
       std::cerr << e.what() << '\n';
+      return grpc::Status(grpc::StatusCode::INTERNAL, e.what());
     }
     return grpc::Status::OK;
   }
@@ -2208,7 +2215,7 @@ namespace ECProject
         {
           decode_unilrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize);
         }
-        else if (code_type == "AzureLRC")
+        else if (code_type == "AzureLRC" || code_type == "DdlRT_LRC")
         {
           decode_azure_lrc(m_sys_config->k, m_sys_config->r, m_sys_config->z, recovery_request->datanodeip_size(), &block_idxs, block_ptrs.data(), reinterpret_cast<unsigned char *>(res_buf), m_sys_config->BlockSize, failed_block_id);
         }
