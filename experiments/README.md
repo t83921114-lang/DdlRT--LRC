@@ -88,3 +88,19 @@ Tests use only temporary local files and never invoke cluster scripts:
 ```bash
 python3 -m unittest discover -s experiments/tests -v
 ```
+
+## Experiments 5 and 6: initial-layout baselines
+
+`run_baseline.py` runs without any redundancy conversion or merge. Every attempt starts a clean cluster, applies intra/inter rack bandwidth 10:1, creates exactly one initial-layout ClusterRT_LRC stripe with 1 MiB blocks, and then performs one selected operation.
+
+- Experiment 5 (`normal-rw`): records logical write throughput and normal-read throughput. The read fetches the `k` data blocks of stripe 0.
+- Experiment 6 (`recovery`): records logical write throughput and recovery throughput for block 0 by default. Recovery throughput is one repaired block (1 MiB) divided by end-to-end recovery time.
+
+The four `(k,l,g)` encoding tuples from `manifest.json` are tested. By default each point is repeated five times, producing 40 runs total. Results are written incrementally under `experiments/results/baseline/` and are ignored by Git.
+
+```bash
+bash experiments/run_baseline.sh --dry-run
+bash experiments/run_baseline.sh --execute --test normal-rw --repetitions 1
+bash experiments/run_baseline.sh --execute --test recovery --resume
+bash experiments/run_baseline.sh --execute --resume
+```
