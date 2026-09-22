@@ -445,7 +445,7 @@ CheckaliveCMD::CheckaliveCMD(const CheckaliveCMD& from)
     _impl_.name_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_name().empty()) {
-    _this->_impl_.name_.Set(from._internal_name(),
+    _this->_impl_.name_.Set(from._internal_name(), 
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:datanode_proto.CheckaliveCMD)
@@ -1008,7 +1008,7 @@ SetInfo::SetInfo(const SetInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   _impl_.proxy_ip_.InitDefault();
@@ -1016,7 +1016,7 @@ SetInfo::SetInfo(const SetInfo& from)
     _impl_.proxy_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_proxy_ip().empty()) {
-    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(),
+    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(), 
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -1368,7 +1368,7 @@ AppendInfo::AppendInfo(const AppendInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_id_, &from._impl_.block_id_,
@@ -1676,7 +1676,7 @@ MergeParityInfo::MergeParityInfo(const MergeParityInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.block_id_ = from._impl_.block_id_;
@@ -1909,7 +1909,7 @@ GetInfo::GetInfo(const GetInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   _impl_.proxy_ip_.InitDefault();
@@ -1917,7 +1917,7 @@ GetInfo::GetInfo(const GetInfo& from)
     _impl_.proxy_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_proxy_ip().empty()) {
-    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(),
+    _this->_impl_.proxy_ip_.Set(from._internal_proxy_ip(), 
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -2248,7 +2248,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_key_a_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_key_a().empty()) {
-    _this->_impl_.parity_key_a_.Set(from._internal_parity_key_a(),
+    _this->_impl_.parity_key_a_.Set(from._internal_parity_key_a(), 
       _this->GetArenaForAllocation());
   }
   _impl_.parity_key_b_.InitDefault();
@@ -2256,7 +2256,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_key_b_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_key_b().empty()) {
-    _this->_impl_.parity_key_b_.Set(from._internal_parity_key_b(),
+    _this->_impl_.parity_key_b_.Set(from._internal_parity_key_b(), 
       _this->GetArenaForAllocation());
   }
   _impl_.new_parity_key_.InitDefault();
@@ -2264,7 +2264,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.new_parity_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_new_parity_key().empty()) {
-    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(),
+    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(), 
       _this->GetArenaForAllocation());
   }
   _impl_.parity_b_datanode_ip_.InitDefault();
@@ -2272,7 +2272,7 @@ StripeMergeParityInfo::StripeMergeParityInfo(const StripeMergeParityInfo& from)
     _impl_.parity_b_datanode_ip_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_parity_b_datanode_ip().empty()) {
-    _this->_impl_.parity_b_datanode_ip_.Set(from._internal_parity_b_datanode_ip(),
+    _this->_impl_.parity_b_datanode_ip_.Set(from._internal_parity_b_datanode_ip(), 
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.block_size_, &from._impl_.block_size_,
@@ -2687,7 +2687,7 @@ SrsParityUpdateInfo::SrsParityUpdateInfo(const SrsParityUpdateInfo& from)
     _impl_.left_parity_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_left_parity_key().empty()) {
-    _this->_impl_.left_parity_key_.Set(from._internal_left_parity_key(),
+    _this->_impl_.left_parity_key_.Set(from._internal_left_parity_key(), 
       _this->GetArenaForAllocation());
   }
   _impl_.new_parity_key_.InitDefault();
@@ -2695,7 +2695,7 @@ SrsParityUpdateInfo::SrsParityUpdateInfo(const SrsParityUpdateInfo& from)
     _impl_.new_parity_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_new_parity_key().empty()) {
-    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(),
+    _this->_impl_.new_parity_key_.Set(from._internal_new_parity_key(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.block_size_ = from._impl_.block_size_;
@@ -3122,7 +3122,7 @@ ReadBlockBytesRequest::ReadBlockBytesRequest(const ReadBlockBytesRequest& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.block_size_ = from._impl_.block_size_;
@@ -3352,7 +3352,7 @@ ReadBlockBytesReply::ReadBlockBytesReply(const ReadBlockBytesReply& from)
     _impl_.data_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_data().empty()) {
-    _this->_impl_.data_.Set(from._internal_data(),
+    _this->_impl_.data_.Set(from._internal_data(), 
       _this->GetArenaForAllocation());
   }
   _this->_impl_.ok_ = from._impl_.ok_;
@@ -3576,7 +3576,7 @@ DelInfo::DelInfo(const DelInfo& from)
     _impl_.block_key_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_block_key().empty()) {
-    _this->_impl_.block_key_.Set(from._internal_block_key(),
+    _this->_impl_.block_key_.Set(from._internal_block_key(), 
       _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:datanode_proto.DelInfo)

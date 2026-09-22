@@ -838,7 +838,11 @@ namespace ECProject
                     std::lock_guard<std::mutex> lock(m_remote_read_stub_mutex);
                     auto it = m_remote_read_stubs.find(peer);
                     if (it == m_remote_read_stubs.end()) {
-                        auto channel = grpc::CreateChannel(peer, grpc::InsecureChannelCredentials());
+                        grpc::ChannelArguments args;
+                        args.SetMaxReceiveMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
+                        args.SetMaxSendMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
+                        auto channel = grpc::CreateCustomChannel(
+                            peer, grpc::InsecureChannelCredentials(), args);
                         auto created = datanode_proto::datanodeService::NewStub(channel);
                         stub = std::shared_ptr<datanode_proto::datanodeService::Stub>(std::move(created));
                         m_remote_read_stubs.emplace(peer, stub);
@@ -920,8 +924,11 @@ namespace ECProject
                 std::lock_guard<std::mutex> lk(m_remote_read_stub_mutex);
                 auto it = m_remote_read_stubs.find(peer_addr);
                 if (it == m_remote_read_stubs.end()) {
-                    auto channel = grpc::CreateChannel(
-                        peer_addr, grpc::InsecureChannelCredentials());
+                    grpc::ChannelArguments args;
+                    args.SetMaxReceiveMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
+                    args.SetMaxSendMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
+                    auto channel = grpc::CreateCustomChannel(
+                        peer_addr, grpc::InsecureChannelCredentials(), args);
                     auto new_stub = datanode_proto::datanodeService::NewStub(channel);
                     stub = std::shared_ptr<datanode_proto::datanodeService::Stub>(
                         std::move(new_stub));

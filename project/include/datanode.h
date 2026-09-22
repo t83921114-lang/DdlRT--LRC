@@ -17,6 +17,10 @@
 #define IF_DEBUG false
 namespace ECProject
 {
+    // Full blocks are returned in ReadBlockBytesReply. Keep this above the
+    // largest supported block size to allow for protobuf framing overhead.
+    constexpr int DATANODE_GRPC_MAX_MESSAGE_SIZE = 16 * 1024 * 1024;
+
     class DatanodeImpl final
         : public datanode_proto::datanodeService::Service
     {
@@ -123,6 +127,8 @@ namespace ECProject
             grpc::EnableDefaultHealthCheckService(true);
             grpc::reflection::InitProtoReflectionServerBuilderPlugin();
             grpc::ServerBuilder builder;
+            builder.SetMaxReceiveMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
+            builder.SetMaxSendMessageSize(DATANODE_GRPC_MAX_MESSAGE_SIZE);
             std::cout << "datanode_ip_port:" << datanode_ip_port << std::endl;
             builder.AddListeningPort(datanode_ip_port, grpc::InsecureServerCredentials());
             builder.RegisterService(&m_datanodeImpl_ptr);

@@ -19,8 +19,8 @@
     <!-- LRC: UniLRC; AzureLRC; OptimalLRC; UniformLRC -->
     <CodeType>SRS</CodeType>
     <BaselineSeed>20260915</BaselineSeed>
-    <k>10</k>
-    <r>3</r>
+    <k>12</k>
+    <r>2</r>
     <z>2</z>
     <!-- <CodeType>UniformLRC</CodeType>
     <k>30</k>
