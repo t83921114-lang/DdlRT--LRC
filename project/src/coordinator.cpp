@@ -2838,15 +2838,33 @@ bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
             t_stripe.blocks[failed_block_id]->block_key);
         std::vector<int> blockids =
             t_stripe.group_to_blocks[recovery_group_ids[i]];
+        const bool srs_ers_data_repair =
+            (m_sys_config->CodeType == "SRS" ||
+             m_sys_config->CodeType == "ERS") &&
+            failed_block_id < m_sys_config->k;
+        const int local_parity_id =
+            srs_ers_data_repair
+                ? m_sys_config->k + m_sys_config->r +
+                      failed_block_id / (m_sys_config->k / m_sys_config->z)
+                : -1;
         for (int j = 0; j < int(blockids.size()); j++) {
-          if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
-              degraded_read_request.blockids_size() ==
-                  (m_sys_config->k / m_sys_config->z))
-            break;
+          if (srs_ers_data_repair) {
+            // A data block is repaired from the other data blocks in its
+            // local group and the corresponding local parity block.
+            if (blockids[j] >= m_sys_config->k &&
+                blockids[j] != local_parity_id)
+              continue;
+          } else {
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
+                degraded_read_request.blockids_size() ==
+                    (m_sys_config->k / m_sys_config->z))
+              break;
+            if (ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
+                blockids[j] >= m_sys_config->k + m_sys_config->r)
+              continue;
+          }
 
-          if ((ECProject::is_azure_lrc_family(m_sys_config->CodeType) &&
-               blockids[j] >= m_sys_config->k + m_sys_config->r) ||
-              blockids[j] == failed_block_id)
+          if (blockids[j] == failed_block_id)
             continue;
 
           Block *t_block = t_stripe.blocks[blockids[j]];
