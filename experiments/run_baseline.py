@@ -173,7 +173,9 @@ class Runner:
             self.args.xml, self.args.client, REPO_ROOT / "hosts", REPO_ROOT / "proxy_hosts",
             *[REPO_ROOT / name for name in (
                 "update_all.sh", "kill_all_nodes.sh", "start_proxy.sh",
-                "start_coordinator.sh", "limit_bandwidth.sh", "unlimit_all.sh")],
+                "start_coordinator.sh", "limit_bandwidth.sh", "unlimit_all.sh",
+                "limit_client_proxy_bandwidth.sh",
+                "unlimit_client_proxy_bandwidth.sh")],
         ]
         missing_files = [str(path) for path in required if not path.is_file()]
         if missing_commands or missing_files:
@@ -187,7 +189,8 @@ class Runner:
                            "-l", "root", "-f", "50", "true"], self.args.command_timeout)
 
     def cleanup_cluster(self) -> None:
-        for script in ("unlimit_all.sh", "kill_all_nodes.sh"):
+        for script in ("unlimit_client_proxy_bandwidth.sh", "unlimit_all.sh",
+                       "kill_all_nodes.sh"):
             try:
                 self._command(["bash", str(REPO_ROOT / script)],
                               self.args.command_timeout)
@@ -303,9 +306,15 @@ class Runner:
             self._command(["bash", str(REPO_ROOT / "start_coordinator.sh")],
                           self.args.command_timeout)
             time.sleep(self.args.startup_wait)
-            # Both experiment 5 and 6 require intra/inter rack bandwidth 10:1.
+            # Both experiment 5 and 6 require rack bandwidth 10:1. Only
+            # normal read/write additionally shapes the client/proxy path;
+            # recovery data stays on the proxy/datanode and proxy/proxy paths.
             self._command(["bash", str(REPO_ROOT / "limit_bandwidth.sh"), "1"],
                           self.args.command_timeout)
+            if run["test"] == "normal-rw":
+                self._command(
+                    ["bash", str(REPO_ROOT / "limit_client_proxy_bandwidth.sh")],
+                    self.args.command_timeout)
             return_code, text = self._run_client(run, log_path)
             record.update(parse_client_log(text))
             if return_code != 0:

@@ -91,7 +91,7 @@ python3 -m unittest discover -s experiments/tests -v
 
 ## Experiments 5 and 6: initial-layout baselines
 
-`run_baseline.py` runs without any redundancy conversion or merge. Every attempt starts a clean cluster, applies intra/inter rack bandwidth 10:1, creates exactly one initial-layout stripe with 1 MiB blocks, and then performs one selected operation.
+`run_baseline.py` runs without any redundancy conversion or merge. Every attempt starts a clean cluster, applies intra/inter rack bandwidth 10:1, creates exactly one initial-layout stripe with 1 MiB blocks, and then performs one selected operation. Normal read/write runs additionally apply bidirectional client/proxy limits (10 Gb/s on the client side and 1 Gb/s on every proxy side) for both measured phases. Recovery runs do not shape the client/proxy path because repair data stays on proxy/datanode and proxy/proxy paths. All applied limits are removed during cleanup.
 
 - Experiment 5 (`normal-rw`): records logical write throughput and normal-read throughput. The read fetches the `k` data blocks of stripe 0.
 - Experiment 6 (`recovery`): records logical write throughput and recovery throughput for block 0 by default. Recovery throughput is one repaired block (1 MiB) divided by end-to-end recovery time.
