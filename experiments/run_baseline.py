@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run DdlRT-LRC initial-layout normal I/O and single-block recovery tests."""
+"""Run SRS/ERS initial-layout normal I/O and single-block recovery tests."""
 
 from __future__ import annotations
 
@@ -25,10 +25,11 @@ from typing import Any, Dict, List, Optional, Sequence
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = Path(__file__).with_name("manifest.json")
 DEFAULT_XML = REPO_ROOT / "project/config/parameterConfiguration.xml"
-DEFAULT_OUTPUT = Path(__file__).with_name("results") / "baseline"
+DEFAULT_OUTPUT = Path(__file__).with_name("results") / "baseline-srs-ers"
 TESTS = ("normal-rw", "recovery")
+ALGORITHMS = ("SRS", "ERS")
 CSV_FIELDS = [
-    "run_id", "status", "failure_reason", "attempts", "test", "encoding",
+    "run_id", "status", "failure_reason", "attempts", "test", "algorithm", "encoding",
     "k", "l", "g", "block_size_bytes", "stripes", "intra_gbps",
     "inter_gbps", "failed_block_id", "repetition", "write_time_seconds",
     "write_throughput_mib_s", "read_time_seconds", "read_throughput_mib_s",
@@ -51,28 +52,39 @@ def load_manifest(path: Path = DEFAULT_MANIFEST) -> Dict[str, Any]:
 
 
 def build_runs(manifest: Dict[str, Any], tests: Optional[Sequence[str]] = None,
-               repetitions: int = 5, failed_block_id: int = 0) -> List[Dict[str, Any]]:
+               repetitions: int = 5, failed_block_id: int = 0,
+               algorithms: Optional[Sequence[str]] = None) -> List[Dict[str, Any]]:
     if repetitions <= 0:
         raise ValueError("repetitions must be positive")
     selected = list(tests) if tests else list(TESTS)
     unknown = set(selected) - set(TESTS)
     if unknown:
         raise ValueError("unknown test(s): " + ", ".join(sorted(unknown)))
+    selected_algorithms = (list(algorithms) if algorithms is not None else
+                           list(manifest.get("defaults", {}).get("algorithms", ALGORITHMS)))
+    unknown_algorithms = set(selected_algorithms) - set(ALGORITHMS)
+    if unknown_algorithms:
+        raise ValueError("unknown algorithm(s): " +
+                         ", ".join(sorted(unknown_algorithms)))
+    if not selected_algorithms:
+        raise ValueError("at least one algorithm is required")
     runs: List[Dict[str, Any]] = []
-    for test in selected:
-        for encoding in manifest["encoding_parameters"]:
-            identity = json.dumps(
-                ("DdlRT_LRC", test, encoding["name"], encoding["k"],
-                 encoding["l"], encoding["g"], 1048576, 1, 10, 1,
-                 failed_block_id if test == "recovery" else None),
-                separators=(",", ":"),
-            )
-            config_id = hashlib.sha256(identity.encode()).hexdigest()[:16]
-            for repetition in range(1, repetitions + 1):
-                runs.append({
-                    "run_id": "%s-r%02d" % (config_id, repetition),
-                    "test": test,
-                    "encoding": encoding["name"],
+    for algorithm in selected_algorithms:
+        for test in selected:
+            for encoding in manifest["encoding_parameters"]:
+                identity = json.dumps(
+                    (algorithm, test, encoding["name"], encoding["k"],
+                     encoding["l"], encoding["g"], 1048576, 1, 10, 1,
+                     failed_block_id if test == "recovery" else None),
+                    separators=(",", ":"),
+                )
+                config_id = hashlib.sha256(identity.encode()).hexdigest()[:16]
+                for repetition in range(1, repetitions + 1):
+                    runs.append({
+                        "run_id": "%s-r%02d" % (config_id, repetition),
+                        "test": test,
+                        "algorithm": algorithm,
+                        "encoding": encoding["name"],
                     "k": encoding["k"], "l": encoding["l"], "g": encoding["g"],
                     "block_size_bytes": 1048576, "stripes": 1,
                     "intra_gbps": 10, "inter_gbps": 1,
@@ -86,7 +98,7 @@ def render_xml(source: bytes, run: Dict[str, Any]) -> bytes:
     root = ET.fromstring(source)
     replacements = {
         "BlockSize": run["block_size_bytes"], "k": run["k"],
-        "r": run["g"], "z": run["l"], "CodeType": "DdlRT_LRC",
+        "r": run["g"], "z": run["l"], "CodeType": run["algorithm"],
     }
     for tag, value in replacements.items():
         nodes = root.findall(tag)
@@ -185,8 +197,9 @@ class Runner:
             raise RuntimeError("client is not executable: %s" % self.args.client)
         self._command(["sudo", "-n", "true"], self.args.command_timeout)
         for hosts in (REPO_ROOT / "hosts", REPO_ROOT / "proxy_hosts"):
-            self._command(["pdsh", "-S", "-R", "ssh", "-w", "^" + str(hosts),
-                           "-l", "root", "-f", "50", "true"], self.args.command_timeout)
+            self._command(["sudo", "pdsh", "-S", "-R", "ssh", "-w",
+                           "^" + str(hosts), "-l", "root", "-f", "50", "true"],
+                          self.args.command_timeout)
 
     def cleanup_cluster(self) -> None:
         for script in ("unlimit_client_proxy_bandwidth.sh", "unlimit_all.sh",
@@ -356,9 +369,9 @@ class Runner:
                     print("[%d/%d] skip successful %s" %
                           (index, len(self.runs), run["run_id"]))
                     continue
-                print("[%d/%d] run %s test=%s encoding=%s" %
-                      (index, len(self.runs), run["run_id"], run["test"],
-                       run["encoding"]))
+                print("[%d/%d] run %s algorithm=%s test=%s encoding=%s" %
+                      (index, len(self.runs), run["run_id"], run["algorithm"],
+                       run["test"], run["encoding"]))
                 final: Optional[Dict[str, Any]] = None
                 for attempt in range(1, self.args.retries + 2):
                     final = self._attempt(run, attempt)
@@ -385,6 +398,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--dry-run", action="store_true")
     result.add_argument("--test", action="append", choices=list(TESTS),
                         help="select experiment 5 (normal-rw) and/or 6 (recovery)")
+    result.add_argument("--algorithm", action="append", choices=list(ALGORITHMS),
+                        help="select SRS and/or ERS (default: both)")
     result.add_argument("--repetitions", type=int, default=5)
     result.add_argument("--failed-block", type=int, default=0)
     result.add_argument("--resume", action="store_true")
@@ -411,10 +426,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.repetitions <= 0 or args.failed_block < 0 or args.retries < 0:
         raise SystemExit("repetitions must be positive; failed block/retries non-negative")
     manifest = load_manifest(args.manifest)
-    runs = build_runs(manifest, args.test, args.repetitions, args.failed_block)
+    runs = build_runs(manifest, args.test, args.repetitions, args.failed_block,
+                      args.algorithm)
     print("planned runs: %d" % len(runs))
     for run in runs:
-        print("{run_id} test={test} encoding={encoding} k/l/g={k}/{l}/{g} "
+        print("{run_id} algorithm={algorithm} test={test} encoding={encoding} k/l/g={k}/{l}/{g} "
               "block={block_size_bytes} stripes={stripes} intra/inter={intra_gbps}/{inter_gbps} "
               "failed_block={failed_block_id} repetition={repetition}".format(**run))
     if not args.execute:

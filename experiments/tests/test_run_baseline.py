@@ -12,25 +12,38 @@ SPEC.loader.exec_module(baseline)
 
 
 class BaselineMatrixTests(unittest.TestCase):
-    def test_default_plan_has_both_tests_and_four_encodings(self):
+    def test_default_plan_has_both_tests_algorithms_and_four_encodings(self):
         runs = baseline.build_runs(baseline.load_manifest(), repetitions=5)
-        self.assertEqual(40, len(runs))
+        self.assertEqual(80, len(runs))
         self.assertEqual({"normal-rw", "recovery"}, {run["test"] for run in runs})
+        self.assertEqual({"SRS", "ERS"}, {run["algorithm"] for run in runs})
         self.assertTrue(all(run["stripes"] == 1 for run in runs))
         self.assertTrue(all(run["block_size_bytes"] == 1048576 for run in runs))
         self.assertTrue(all((run["intra_gbps"], run["inter_gbps"]) == (10, 1)
                             for run in runs))
 
     def test_test_filter_and_failed_block(self):
-        runs = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1, 0)
+        runs = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1, 0,
+                                   ["SRS"])
         self.assertEqual(4, len(runs))
         self.assertTrue(all(run["failed_block_id"] == 0 for run in runs))
         self.assertTrue(all(run["test"] == "recovery" for run in runs))
 
     def test_test_type_is_part_of_run_identity(self):
-        normal = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1)[0]
-        recovery = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1)[0]
+        normal = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1,
+                                     algorithms=["SRS"])[0]
+        recovery = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1,
+                                       algorithms=["SRS"])[0]
         self.assertNotEqual(normal["run_id"], recovery["run_id"])
+
+
+class BaselineIdentityTests(unittest.TestCase):
+    def test_algorithm_is_part_of_run_identity(self):
+        srs = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1,
+                                  algorithms=["SRS"])[0]
+        ers = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1,
+                                  algorithms=["ERS"])[0]
+        self.assertNotEqual(srs["run_id"], ers["run_id"])
 
 
 class BaselineParsingTests(unittest.TestCase):
@@ -55,10 +68,11 @@ class BaselineXmlTests(unittest.TestCase):
 <Configuration><BlockSize>4</BlockSize><CodeType>RS</CodeType><k>2</k><r>1</r><z>0</z><Other>x</Other></Configuration>
 '''
 
-    def test_render_enforces_initial_ddlrt_configuration(self):
-        run = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1)[0]
+    def test_render_enforces_initial_srs_ers_configuration(self):
+        run = baseline.build_runs(baseline.load_manifest(), ["normal-rw"], 1,
+                                  algorithms=["ERS"])[0]
         root = baseline.ET.fromstring(baseline.render_xml(self.SAMPLE, run))
-        self.assertEqual("DdlRT_LRC", root.findtext("CodeType"))
+        self.assertEqual("ERS", root.findtext("CodeType"))
         self.assertEqual("1048576", root.findtext("BlockSize"))
         self.assertEqual(str(run["k"]), root.findtext("k"))
         self.assertEqual(str(run["g"]), root.findtext("r"))
@@ -70,7 +84,8 @@ class BaselineXmlTests(unittest.TestCase):
             path = Path(directory) / "config.xml"
             path.write_bytes(self.SAMPLE)
             original = path.read_bytes()
-            run = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1)[0]
+            run = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1,
+                                      algorithms=["SRS"])[0]
             baseline.atomic_write(path, baseline.render_xml(original, run))
             baseline.atomic_write(path, original)
             self.assertEqual(self.SAMPLE, path.read_bytes())
