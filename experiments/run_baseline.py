@@ -36,6 +36,13 @@ CSV_FIELDS = [
     "recovery_time_seconds", "recovery_throughput_mib_s", "started_at",
     "finished_at", "log_path",
 ]
+SUMMARY_FIELDS = [
+    "algorithm", "encoding", "k", "l", "g", "expected_data_blocks", "repetitions",
+    "expected_runs", "successful_runs", "failed_runs", "covered_data_blocks",
+    "mean_recovery_time_seconds", "median_recovery_time_seconds",
+    "min_recovery_time_seconds", "max_recovery_time_seconds",
+    "throughput_from_mean_time_mib_s", "mean_run_throughput_mib_s",
+]
 FLOAT = r"([0-9]+(?:\.[0-9]+)?)"
 FAILURE_RE = re.compile(
     r"(?:upload data failed|\bset failed|normal read failed|"
@@ -53,7 +60,8 @@ def load_manifest(path: Path = DEFAULT_MANIFEST) -> Dict[str, Any]:
 
 def build_runs(manifest: Dict[str, Any], tests: Optional[Sequence[str]] = None,
                repetitions: int = 5, failed_block_id: int = 0,
-               algorithms: Optional[Sequence[str]] = None) -> List[Dict[str, Any]]:
+               algorithms: Optional[Sequence[str]] = None,
+               all_data_blocks: bool = False) -> List[Dict[str, Any]]:
     if repetitions <= 0:
         raise ValueError("repetitions must be positive")
     selected = list(tests) if tests else list(TESTS)
@@ -72,25 +80,29 @@ def build_runs(manifest: Dict[str, Any], tests: Optional[Sequence[str]] = None,
     for algorithm in selected_algorithms:
         for test in selected:
             for encoding in manifest["encoding_parameters"]:
-                identity = json.dumps(
-                    (algorithm, test, encoding["name"], encoding["k"],
-                     encoding["l"], encoding["g"], 1048576, 1, 10, 1,
-                     failed_block_id if test == "recovery" else None),
-                    separators=(",", ":"),
-                )
-                config_id = hashlib.sha256(identity.encode()).hexdigest()[:16]
-                for repetition in range(1, repetitions + 1):
-                    runs.append({
-                        "run_id": "%s-r%02d" % (config_id, repetition),
-                        "test": test,
-                        "algorithm": algorithm,
-                        "encoding": encoding["name"],
-                    "k": encoding["k"], "l": encoding["l"], "g": encoding["g"],
-                    "block_size_bytes": 1048576, "stripes": 1,
-                    "intra_gbps": 10, "inter_gbps": 1,
-                    "failed_block_id": failed_block_id if test == "recovery" else None,
-                    "repetition": repetition,
-                })
+                failed_blocks = (range(encoding["k"]) if
+                                 test == "recovery" and all_data_blocks else
+                                 [failed_block_id if test == "recovery" else None])
+                for block_id in failed_blocks:
+                    identity = json.dumps(
+                        (algorithm, test, encoding["name"], encoding["k"],
+                         encoding["l"], encoding["g"], 1048576, 1, 10, 1,
+                         block_id),
+                        separators=(",", ":"),
+                    )
+                    config_id = hashlib.sha256(identity.encode()).hexdigest()[:16]
+                    for repetition in range(1, repetitions + 1):
+                        runs.append({
+                            "run_id": "%s-r%02d" % (config_id, repetition),
+                            "test": test,
+                            "algorithm": algorithm,
+                            "encoding": encoding["name"],
+                            "k": encoding["k"], "l": encoding["l"], "g": encoding["g"],
+                            "block_size_bytes": 1048576, "stripes": 1,
+                            "intra_gbps": 10, "inter_gbps": 1,
+                            "failed_block_id": block_id,
+                            "repetition": repetition,
+                        })
     return runs
 
 
@@ -158,6 +170,58 @@ def append_results(jsonl_path: Path, csv_path: Path, record: Dict[str, Any]) -> 
         os.fsync(handle.fileno())
 
 
+def write_recovery_summary(results_csv: Path, summary_csv: Path) -> None:
+    import statistics
+
+    groups: Dict[tuple[str, str, int, int, int], List[Dict[str, str]]] = {}
+    if results_csv.exists() and results_csv.stat().st_size:
+        with results_csv.open(newline="", encoding="utf-8") as handle:
+            for row in csv.DictReader(handle):
+                if row.get("test") != "recovery":
+                    continue
+                key = (row["algorithm"], row["encoding"], int(row["k"]),
+                       int(row["l"]), int(row["g"]))
+                groups.setdefault(key, []).append(row)
+
+    records: List[Dict[str, Any]] = []
+    for (algorithm, encoding, k, l, g), rows in sorted(groups.items()):
+        successful = [row for row in rows if row.get("status") == "success" and
+                      row.get("recovery_time_seconds")]
+        times = [float(row["recovery_time_seconds"]) for row in successful]
+        throughputs = [float(row["recovery_throughput_mib_s"])
+                       for row in successful if row.get("recovery_throughput_mib_s")]
+        repetitions = max((int(row["repetition"]) for row in rows), default=0)
+        covered = len({int(row["failed_block_id"]) for row in successful})
+        mean_time = statistics.fmean(times) if times else None
+        records.append({
+            "algorithm": algorithm, "encoding": encoding, "k": k, "l": l, "g": g,
+            "expected_data_blocks": k, "repetitions": repetitions,
+            "expected_runs": k * repetitions,
+            "successful_runs": len(successful),
+            "failed_runs": len(rows) - len(successful),
+            "covered_data_blocks": covered,
+            "mean_recovery_time_seconds": mean_time,
+            "median_recovery_time_seconds": statistics.median(times) if times else None,
+            "min_recovery_time_seconds": min(times) if times else None,
+            "max_recovery_time_seconds": max(times) if times else None,
+            "throughput_from_mean_time_mib_s": (1.0 / mean_time if mean_time else None),
+            "mean_run_throughput_mib_s": (statistics.fmean(throughputs)
+                                            if throughputs else None),
+        })
+
+    summary_csv.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", dir=str(summary_csv.parent),
+                                     prefix=summary_csv.name + ".", delete=False,
+                                     newline="", encoding="utf-8") as handle:
+        temporary = Path(handle.name)
+        writer = csv.DictWriter(handle, fieldnames=SUMMARY_FIELDS)
+        writer.writeheader()
+        writer.writerows(records)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(str(temporary), str(summary_csv))
+
+
 class Runner:
     def __init__(self, args: argparse.Namespace, runs: Sequence[Dict[str, Any]]):
         self.args = args
@@ -167,6 +231,7 @@ class Runner:
         self.state_path = self.output / "state.json"
         self.results_jsonl = self.output / "results.jsonl"
         self.results_csv = self.output / "results.csv"
+        self.recovery_summary_csv = self.output / "recovery_summary.csv"
         self.state: Dict[str, Any] = {"runs": {}}
         self.original_xml: Optional[bytes] = None
         self.current_process: Optional[subprocess.Popen[str]] = None
@@ -380,6 +445,8 @@ class Runner:
                     print("attempt failed: " + final["failure_reason"], file=sys.stderr)
                 assert final is not None
                 append_results(self.results_jsonl, self.results_csv, final)
+                write_recovery_summary(self.results_csv,
+                                       self.recovery_summary_csv)
                 self.state["runs"][run["run_id"]] = {
                     "status": final["status"], "finished_at": final["finished_at"],
                     "failure_reason": final["failure_reason"],
@@ -402,6 +469,8 @@ def parser() -> argparse.ArgumentParser:
                         help="select SRS and/or ERS (default: both)")
     result.add_argument("--repetitions", type=int, default=5)
     result.add_argument("--failed-block", type=int, default=0)
+    result.add_argument("--all-data-blocks", action="store_true",
+                        help="run recovery independently for every data block D0..D(k-1)")
     result.add_argument("--resume", action="store_true")
     result.add_argument("--restart", action="store_true")
     result.add_argument("--coordinator", default="10.10.1.2:55555")
@@ -425,9 +494,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         raise SystemExit("--resume and --restart are mutually exclusive")
     if args.repetitions <= 0 or args.failed_block < 0 or args.retries < 0:
         raise SystemExit("repetitions must be positive; failed block/retries non-negative")
+    if args.all_data_blocks and args.test and "recovery" not in args.test:
+        raise SystemExit("--all-data-blocks requires the recovery test")
     manifest = load_manifest(args.manifest)
     runs = build_runs(manifest, args.test, args.repetitions, args.failed_block,
-                      args.algorithm)
+                      args.algorithm, args.all_data_blocks)
     print("planned runs: %d" % len(runs))
     for run in runs:
         print("{run_id} algorithm={algorithm} test={test} encoding={encoding} k/l/g={k}/{l}/{g} "

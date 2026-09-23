@@ -36,6 +36,18 @@ class BaselineMatrixTests(unittest.TestCase):
                                        algorithms=["SRS"])[0]
         self.assertNotEqual(normal["run_id"], recovery["run_id"])
 
+    def test_all_data_blocks_plan_covers_each_algorithm_and_block(self):
+        runs = baseline.build_runs(
+            baseline.load_manifest(), ["recovery"], repetitions=1,
+            algorithms=["SRS", "ERS"], all_data_blocks=True)
+        self.assertEqual(72, len(runs))
+        for algorithm in ("SRS", "ERS"):
+            for encoding in baseline.load_manifest()["encoding_parameters"]:
+                block_ids = {run["failed_block_id"] for run in runs
+                             if run["algorithm"] == algorithm and
+                             run["encoding"] == encoding["name"]}
+                self.assertEqual(set(range(encoding["k"])), block_ids)
+
 
 class BaselineIdentityTests(unittest.TestCase):
     def test_algorithm_is_part_of_run_identity(self):
@@ -61,6 +73,34 @@ class BaselineParsingTests(unittest.TestCase):
             "recovery time: 0.25 seconds\nrecovery throughput: 4 MiB/s\n")
         self.assertEqual(0.25, parsed["recovery_time_seconds"])
         self.assertEqual(4.0, parsed["recovery_throughput_mib_s"])
+
+
+class BaselineSummaryTests(unittest.TestCase):
+    def test_summary_separates_algorithms(self):
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.csv"
+            summary = Path(directory) / "recovery_summary.csv"
+            rows = []
+            for algorithm, recovery_time in (("SRS", 0.02), ("ERS", 0.04)):
+                row = {field: "" for field in baseline.CSV_FIELDS}
+                row.update({
+                    "run_id": algorithm, "status": "success",
+                    "test": "recovery", "algorithm": algorithm,
+                    "encoding": "sample", "k": 1, "l": 1, "g": 1,
+                    "failed_block_id": 0, "repetition": 1,
+                    "recovery_time_seconds": recovery_time,
+                    "recovery_throughput_mib_s": 1.0 / recovery_time,
+                })
+                rows.append(row)
+            with results.open("w", newline="", encoding="utf-8") as handle:
+                writer = baseline.csv.DictWriter(handle, fieldnames=baseline.CSV_FIELDS)
+                writer.writeheader()
+                writer.writerows(rows)
+            baseline.write_recovery_summary(results, summary)
+            with summary.open(newline="", encoding="utf-8") as handle:
+                records = list(baseline.csv.DictReader(handle))
+            self.assertEqual({"SRS", "ERS"}, {row["algorithm"] for row in records})
+            self.assertEqual({"1"}, {row["covered_data_blocks"] for row in records})
 
 
 class BaselineXmlTests(unittest.TestCase):
