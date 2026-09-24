@@ -32,6 +32,35 @@ class BaselineMatrixTests(unittest.TestCase):
         recovery = baseline.build_runs(baseline.load_manifest(), ["recovery"], 1)[0]
         self.assertNotEqual(normal["run_id"], recovery["run_id"])
 
+    def test_all_data_blocks_plan_covers_each_data_block(self):
+        runs = baseline.build_runs(
+            baseline.load_manifest(), ["recovery"], repetitions=1,
+            all_data_blocks=True)
+        self.assertEqual(36, len(runs))
+        for encoding in baseline.load_manifest()["encoding_parameters"]:
+            block_ids = {run["failed_block_id"] for run in runs
+                         if run["encoding"] == encoding["name"]}
+            self.assertEqual(set(range(encoding["k"])), block_ids)
+
+    def test_all_data_blocks_repetitions_are_complete_rounds(self):
+        runs = baseline.build_runs(
+            baseline.load_manifest(), ["recovery"], repetitions=4,
+            all_data_blocks=True)
+        self.assertEqual(144, len(runs))
+        self.assertEqual(len(runs), len({run["run_id"] for run in runs}))
+        for encoding in baseline.load_manifest()["encoding_parameters"]:
+            encoding_runs = [run for run in runs
+                             if run["encoding"] == encoding["name"]]
+            for repetition in range(1, 5):
+                round_runs = [run for run in encoding_runs
+                              if run["repetition"] == repetition]
+                self.assertEqual(list(range(encoding["k"])),
+                                 [run["failed_block_id"] for run in round_runs])
+                start = (repetition - 1) * encoding["k"]
+                self.assertEqual([repetition] * encoding["k"],
+                                 [run["repetition"] for run in
+                                  encoding_runs[start:start + encoding["k"]]])
+
 
 class BaselineParsingTests(unittest.TestCase):
     def test_parse_normal_rw_metrics(self):
@@ -48,6 +77,78 @@ class BaselineParsingTests(unittest.TestCase):
             "recovery time: 0.25 seconds\nrecovery throughput: 4 MiB/s\n")
         self.assertEqual(0.25, parsed["recovery_time_seconds"])
         self.assertEqual(4.0, parsed["recovery_throughput_mib_s"])
+
+
+class BaselineSummaryTests(unittest.TestCase):
+    def test_summary_keeps_four_complete_round_averages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.csv"
+            round_summary = Path(directory) / "recovery_summary.csv"
+            overall_summary = Path(directory) / "recovery_overall_summary.csv"
+            rows = []
+            round_times = ((0.02, 0.04), (0.03, 0.05),
+                           (0.04, 0.06), (0.05, 0.07))
+            for repetition, times in enumerate(round_times, 1):
+                for block_id, recovery_time in enumerate(times):
+                    row = {field: "" for field in baseline.CSV_FIELDS}
+                    row.update({
+                        "run_id": "r%d-b%d" % (repetition, block_id),
+                        "status": "success", "test": "recovery",
+                        "encoding": "sample", "k": 2, "l": 1, "g": 1,
+                        "failed_block_id": block_id, "repetition": repetition,
+                        "recovery_time_seconds": recovery_time,
+                        "recovery_throughput_mib_s": 1.0 / recovery_time,
+                    })
+                    rows.append(row)
+            with results.open("w", newline="", encoding="utf-8") as handle:
+                writer = baseline.csv.DictWriter(
+                    handle, fieldnames=baseline.CSV_FIELDS)
+                writer.writeheader()
+                writer.writerows(rows)
+            baseline.write_recovery_summaries(
+                results, round_summary, overall_summary,
+                expected_repetitions=4)
+            with round_summary.open(newline="", encoding="utf-8") as handle:
+                round_records = list(baseline.csv.DictReader(handle))
+            self.assertEqual(4, len(round_records))
+            self.assertEqual(["1", "2", "3", "4"],
+                             [row["repetition"] for row in round_records])
+            self.assertEqual([0.03, 0.04, 0.05, 0.06],
+                             [round(float(row["mean_recovery_time_seconds"]), 8)
+                              for row in round_records])
+            with overall_summary.open(newline="", encoding="utf-8") as handle:
+                overall = next(baseline.csv.DictReader(handle))
+            self.assertEqual("4", overall["completed_repetitions"])
+            self.assertEqual("4", overall["expected_repetitions"])
+            self.assertAlmostEqual(
+                0.045, float(overall["mean_round_recovery_time_seconds"]))
+            self.assertAlmostEqual(
+                1.0 / 0.045,
+                float(overall["throughput_from_mean_round_time_mib_s"]))
+
+    def test_incomplete_round_is_excluded_from_overall_summary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results.csv"
+            round_summary = Path(directory) / "recovery_summary.csv"
+            overall_summary = Path(directory) / "recovery_overall_summary.csv"
+            row = {field: "" for field in baseline.CSV_FIELDS}
+            row.update({
+                "run_id": "partial", "status": "success", "test": "recovery",
+                "encoding": "sample", "k": 2, "l": 1, "g": 1,
+                "failed_block_id": 0, "repetition": 1,
+                "recovery_time_seconds": 0.02,
+                "recovery_throughput_mib_s": 50.0,
+            })
+            with results.open("w", newline="", encoding="utf-8") as handle:
+                writer = baseline.csv.DictWriter(
+                    handle, fieldnames=baseline.CSV_FIELDS)
+                writer.writeheader()
+                writer.writerow(row)
+            baseline.write_recovery_summaries(
+                results, round_summary, overall_summary,
+                expected_repetitions=4)
+            with overall_summary.open(newline="", encoding="utf-8") as handle:
+                self.assertEqual([], list(baseline.csv.DictReader(handle)))
 
 
 class BaselineXmlTests(unittest.TestCase):

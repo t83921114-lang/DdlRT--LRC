@@ -2691,51 +2691,116 @@ bool CoordinatorImpl::recovery_one_block(int stripe_id, int failed_block_id) {
   }
   Stripe &t_stripe = stripe_it->second;
 
-  // ClusterRT_LRC keeps local parity on the dedicated parity rack. For an
-  // initial-layout data-block repair, fetch the other data in the same local
-  // group plus its local parity directly into the failed block's rack.
+  // ClusterRT_LRC data repair uses the surviving data in the same local group
+  // plus that group's local parity. Aggregate source blocks within each remote
+  // rack before sending one block per helper rack to the destination proxy.
   if (code_type == "ClusterRT_LRC" && failed_block_id < t_stripe.k) {
     Block *failed = t_stripe.blocks[failed_block_id];
     const int local_group = failed->local_group;
-    const int chosen_cluster_id = failed->map2cluster;
-    std::string chosen_proxy =
-        m_cluster_table[chosen_cluster_id].proxy_ip + ":" +
-        std::to_string(m_cluster_table[chosen_cluster_id].proxy_port);
+    const int dest_cluster_id = failed->map2cluster;
+    const std::string dest_proxy_ip = m_cluster_table[dest_cluster_id].proxy_ip;
+    const int dest_proxy_port = m_cluster_table[dest_cluster_id].proxy_port;
+    const std::string dest_proxy =
+        dest_proxy_ip + ":" + std::to_string(dest_proxy_port);
 
-    grpc::ClientContext recovery_context;
-    proxy_proto::RecoveryRequest recovery_request;
-    proxy_proto::RecoveryReply recovery_reply;
-    recovery_request.set_failed_block_id(failed_block_id);
-    recovery_request.set_failed_block_key(failed->block_key);
-    int replacement_node = randomly_select_a_node(chosen_cluster_id, stripe_id);
-    recovery_request.set_replaced_node_ip(m_node_table[replacement_node].node_ip);
-    recovery_request.set_replaced_node_port(m_node_table[replacement_node].node_port);
-    recovery_request.set_cross_rack_num(0);
-
+    std::map<int, std::vector<Block *>> source_blocks_by_cluster;
     for (Block *block : t_stripe.blocks) {
       const bool same_group_data =
           block->block_type == 'D' && block->local_group == local_group;
       const bool matching_local_parity =
           block->block_type == 'L' && block->local_group == local_group;
-      if (block->block_id == failed_block_id ||
-          (!same_group_data && !matching_local_parity)) {
-        continue;
+      if (block->block_id != failed_block_id &&
+          (same_group_data || matching_local_parity)) {
+        source_blocks_by_cluster[block->map2cluster].push_back(block);
       }
-      recovery_request.add_datanodeip(m_node_table[block->map2node].node_ip);
-      recovery_request.add_datanodeport(m_node_table[block->map2node].node_port);
-      recovery_request.add_blockkeys(block->block_key);
-      recovery_request.add_blockids(block->block_id);
     }
 
-    grpc::Status cluster_status = m_proxy_ptrs[chosen_proxy]->recovery(
-        &recovery_context, recovery_request, &recovery_reply);
-    if (cluster_status.ok()) {
-      std::cout << "[Coordinator] ClusterRT_LRC recovery of " << stripe_id << "_"
-                << failed_block_id << " success!" << std::endl;
+    std::vector<std::pair<int, std::vector<Block *>>> helper_groups;
+    for (const auto &entry : source_blocks_by_cluster) {
+      if (entry.first != dest_cluster_id)
+        helper_groups.push_back(entry);
+    }
+
+    std::atomic<bool> repair_ok{true};
+    std::vector<std::thread> threads;
+    threads.reserve(helper_groups.size() + 1);
+
+    for (const auto &helper : helper_groups) {
+      threads.emplace_back([this, helper, dest_proxy_ip, dest_proxy_port,
+                            failed_block_id, failed, &repair_ok]() {
+        const int helper_cluster_id = helper.first;
+        const std::string helper_proxy =
+            m_cluster_table[helper_cluster_id].proxy_ip + ":" +
+            std::to_string(m_cluster_table[helper_cluster_id].proxy_port);
+        grpc::ClientContext context;
+        proxy_proto::DegradedReadRequest request;
+        proxy_proto::DegradedReadReply reply;
+        request.set_clientip(dest_proxy_ip);
+        request.set_clientport(dest_proxy_port + ECProject::PROXY_PORT_SHIFT);
+        request.set_failed_block_id(failed_block_id);
+        request.set_failed_block_key(failed->block_key);
+        for (Block *block : helper.second) {
+          request.add_datanodeip(m_node_table[block->map2node].node_ip);
+          request.add_datanodeport(m_node_table[block->map2node].node_port);
+          request.add_blockkeys(block->block_key);
+          request.add_blockids(block->block_id);
+        }
+        grpc::Status status = m_proxy_ptrs[helper_proxy]->degradedRead(
+            &context, request, &reply);
+        if (!status.ok()) {
+          repair_ok.store(false);
+          std::cout << "[Coordinator] ClusterRT_LRC helper rack "
+                    << helper_cluster_id << " failed: "
+                    << status.error_message() << std::endl;
+        }
+      });
+    }
+
+    threads.emplace_back([this, &source_blocks_by_cluster, &repair_ok,
+                          dest_cluster_id, dest_proxy, stripe_id,
+                          failed_block_id, failed,
+                          cross_rack_num = static_cast<int>(helper_groups.size())]() {
+      grpc::ClientContext context;
+      proxy_proto::RecoveryRequest request;
+      proxy_proto::RecoveryReply reply;
+      request.set_failed_block_id(failed_block_id);
+      request.set_failed_block_key(failed->block_key);
+      const int replacement_node =
+          randomly_select_a_node(dest_cluster_id, stripe_id);
+      request.set_replaced_node_ip(m_node_table[replacement_node].node_ip);
+      request.set_replaced_node_port(m_node_table[replacement_node].node_port);
+      request.set_cross_rack_num(cross_rack_num);
+
+      const auto local_it = source_blocks_by_cluster.find(dest_cluster_id);
+      if (local_it != source_blocks_by_cluster.end()) {
+        for (Block *block : local_it->second) {
+          request.add_datanodeip(m_node_table[block->map2node].node_ip);
+          request.add_datanodeport(m_node_table[block->map2node].node_port);
+          request.add_blockkeys(block->block_key);
+          request.add_blockids(block->block_id);
+        }
+      }
+
+      grpc::Status status =
+          m_proxy_ptrs[dest_proxy]->recovery(&context, request, &reply);
+      if (!status.ok()) {
+        repair_ok.store(false);
+        std::cout << "[Coordinator] ClusterRT_LRC destination rack failed: "
+                  << status.error_message() << std::endl;
+      }
+    });
+
+    for (std::thread &thread : threads)
+      thread.join();
+
+    if (repair_ok.load()) {
+      std::cout << "[Coordinator] ClusterRT_LRC aggregated recovery of "
+                << stripe_id << "_" << failed_block_id << " success!"
+                << std::endl;
       return true;
     }
-    std::cout << "[Coordinator] ClusterRT_LRC recovery of " << stripe_id << "_"
-              << failed_block_id << " failed: " << cluster_status.error_message()
+    std::cout << "[Coordinator] ClusterRT_LRC aggregated recovery of "
+              << stripe_id << "_" << failed_block_id << " failed!"
               << std::endl;
     return false;
   }

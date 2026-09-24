@@ -1141,8 +1141,9 @@ namespace ECProject
       proxy_proto::DegradedReadReply *response)
   {
     auto request_copy = std::make_shared<proxy_proto::DegradedReadRequest>(*degraded_read_request);
+    std::atomic<bool> degraded_read_ok{false};
 
-    auto degraded_read = [this, request_copy, &response]() mutable
+    auto degraded_read = [this, request_copy, &response, &degraded_read_ok]() mutable
     {
       std::string code_type = m_sys_config->CodeType;
       // auto status = std::make_shared<std::vector<bool>>(request_copy->datanodeip_size(), false);
@@ -1183,6 +1184,9 @@ namespace ECProject
       {
         std::cout << "[Proxy" << m_self_cluster_id << "][GET]"
                   << "read from datanodes failed!" << std::endl;
+        for (int i = 0; i < request_copy->datanodeip_size(); i++)
+          std::free(get_bufs[i]);
+        std::free(res_buf);
       }
       else
       {
@@ -1232,24 +1236,28 @@ namespace ECProject
         asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(client_ip, std::to_string(client_port));
         //asio::io_context io_context;
         asio::ip::tcp::socket socket_data(io_context);
-        asio::connect(socket_data, endpoints);
+        asio::connect(socket_data, endpoints, error);
         //{ std::lock_guard<std::mutex> accept_lock(m_data_accept_mutex); acceptor.accept(socket_data); }
         if (error)
         {
-          std::cout << "error in connect" << std::endl;
+          std::cout << "error in connect: " << error.message() << std::endl;
         }
-        asio::write(socket_data, asio::buffer(res_buf, m_sys_config->BlockSize), error);
-        if (error)
+        else
         {
-          std::cout << "error in write" << std::endl;
+          asio::write(socket_data,
+                      asio::buffer(res_buf, m_sys_config->BlockSize), error);
+          if (error)
+            std::cout << "error in write: " << error.message() << std::endl;
+          else
+            degraded_read_ok.store(true);
         }
         asio::error_code ignore_ec;
         socket_data.shutdown(asio::ip::tcp::socket::shutdown_send, ignore_ec);
         socket_data.close(ignore_ec);
-        delete res_buf;
+        std::free(res_buf);
         for(int i = 0; i < request_copy->datanodeip_size(); i++)
         {
-          delete get_bufs[i];
+          std::free(get_bufs[i]);
         }
         //std::cout << "[Proxy" << m_self_cluster_id << "][Degrade read] send to the client done" << std::endl;
       }
@@ -1269,8 +1277,12 @@ namespace ECProject
     {
       std::cout << "exception" << std::endl;
       std::cerr << e.what() << '\n';
+      return grpc::Status(grpc::StatusCode::INTERNAL, e.what());
     }
 
+    if (!degraded_read_ok.load())
+      return grpc::Status(grpc::StatusCode::INTERNAL,
+                          "degraded read aggregation failed");
     return grpc::Status::OK;
   }
 
@@ -2057,6 +2069,7 @@ namespace ECProject
             cross_rack_bufs[i] = static_cast<char*>(std::aligned_alloc(32, m_sys_config->BlockSize));
           }
           std::vector<std::thread> get_from_proxies_threads;
+          std::atomic<bool> cross_rack_ok{true};
           std::vector<std::string> cross_rack_ips;
           //std::vector<int> cross_rack_ports;
           //for(int i = 0; i < cross_rack_num; i++)
@@ -2067,17 +2080,26 @@ namespace ECProject
           //std::lock_guard<std::mutex> lock(m_mutex);
           for(int i = 0; i < cross_rack_num; i++)
           {
-            get_from_proxies_threads.push_back(std::thread([i, this, &cross_rack_bufs]()mutable{
+            get_from_proxies_threads.push_back(std::thread(
+                [i, this, &cross_rack_bufs, &cross_rack_ok]() mutable {
               asio::ip::tcp::socket socket(this->io_context);
-              std::cout << "connecting to proxy" << std::endl;
-              { std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex); this->acceptor.accept(socket); }
-              std::cout << "connected to porxy" << std::endl;
+              std::cout << "waiting for helper proxy" << std::endl;
               asio::error_code error;
-              asio::read(socket, asio::buffer(cross_rack_bufs[i], this->m_sys_config->BlockSize), error);
-              std::cout << "read from proxy"  << std::endl;
-              if(error)
               {
-                std::cout << "error in read" << std::endl;
+                std::lock_guard<std::mutex> accept_lock(this->m_data_accept_mutex);
+                this->acceptor.accept(socket, error);
+              }
+              if (!error) {
+                std::cout << "connected to helper proxy" << std::endl;
+                asio::read(socket,
+                           asio::buffer(cross_rack_bufs[i],
+                                        this->m_sys_config->BlockSize),
+                           error);
+              }
+              if (error) {
+                cross_rack_ok.store(false);
+                std::cout << "error receiving helper aggregate: "
+                          << error.message() << std::endl;
               }
               asio::error_code ignore_ec;
               socket.shutdown(asio::ip::tcp::socket::shutdown_receive, ignore_ec);
@@ -2087,6 +2109,17 @@ namespace ECProject
           for(int i = 0; i < cross_rack_num; i++)
           {
             get_from_proxies_threads[i].join();
+          }
+          if (!cross_rack_ok.load()) {
+            for (int i = 0; i < cross_rack_num; i++)
+              std::free(cross_rack_bufs[i]);
+            delete[] cross_rack_bufs;
+            for (int i = 0; i < recovery_request->datanodeip_size(); i++)
+              std::free(get_bufs[i]);
+            std::free(res_buf);
+            std::free(real_res_buf);
+            return grpc::Status(grpc::StatusCode::INTERNAL,
+                                "helper aggregate receive failed");
           }
 
           std::cout << "start to xor" << std::endl;
@@ -2100,10 +2133,10 @@ namespace ECProject
           xor_avx(cross_rack_num + 2, m_sys_config->BlockSize, (void**)buf_ptrs);
           for(int i = 0; i < cross_rack_num; i++)
           {
-            delete cross_rack_bufs[i];
+            std::free(cross_rack_bufs[i]);
           }
-          delete cross_rack_bufs;
-          delete buf_ptrs;
+          delete[] cross_rack_bufs;
+          delete[] buf_ptrs;
         }
         else
         {
